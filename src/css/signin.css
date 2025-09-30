@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Base Styles */
+body {
+  background-color: #F5F5F5; /* soft off-white */
+  color: #212121; /* dark gray text */
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+header {
+  background-color: #F9A825; /* yellow */
+  padding: 15px 20px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between; /* logo left, icons right */
+  align-items: center;
+  flex-wrap: wrap; /* allows drop on small screens */
+}
+
+.logo img {
+  height: 50px;
+  width: auto;
+  margin-left: 20px;
+}
+
+.right-icons {
+  display: flex;
+  gap: 35px;
+  padding: 0 20px;
+}
+
+.right-icons a {
+  color: #fff;
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.right-icons a:hover {
+  color: #0288D1; /* blue on hover */
+}
+
+/* Responsive Header */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .right-icons {
+    margin-top: 10px;
+  }
+}
+
+/* Container for logo + form */
+.container {
+  display: flex;
+  justify-content: space-between; /* logo left, form right */
+  align-items: center;
+  margin: 70px auto;
+  padding: 0 50px;
+  max-width: 1200px;
+  gap: 0px; /* space between logo and form */
+  font-family: 'Baloo 2', 'Roboto', Arial, sans-serif;
+  font-weight: bold;
+}
+
+/* Logo side */
+.logo-side img {
+  max-width: 800px;
+  height: auto;
+  display: block;
+}
+
+/* Form Container */
+.form-container {
+  background-color: #ffffff;
+  color: #0288D1; /* blue accents */
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px; /* responsive max width */
+}
+
+/* Heading */
+.form-container h2 {
+  text-align: center;
+  margin: 20px 0 30px;
+  color: #F9A825;
+  font-size: 70px;
+  font-weight: 700;
+  font-family: 'Baloo 2', cursive;
+}
+
+/* Input Group */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #212121;
+}
+
+.input-group input {
+  width: 95%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  transition: border 0.3s ease;
+  display: block;
+  margin: 0 auto; /* centers input if width < 100% */
+}
+
+.input-group input:focus {
+  border: 1px solid #0288D1;
+  outline: none;
+}
+
+/* Buttons */
+button {
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  background-color: #F9A825;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #0288D1;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Mobile Form Tweaks */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* stack logo above form */
+    align-items: center;
+    text-align: center;
+  }
+
+  .logo-side {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container h2 {
+    font-size: 32px;
+    margin: 20px 0 30px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
