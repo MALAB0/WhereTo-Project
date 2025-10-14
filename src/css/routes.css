@@ -1,0 +1,212 @@
+body {
+  background: url('BG.JPG') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+}
+
+.admin-header {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  border-bottom: 4px solid #000;
+}
+
+.menu-btn {
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  text-align: right;
+  line-height: 1.1;
+}
+
+/* --- Sidebar Transition Effect --- */
+.route-main {
+  padding: 32px 40px 0 40px;
+  min-height: 100vh;
+  position: relative;
+  transition: margin-left 0.3s ease; /* smooth slide */
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -220px; /* hidden by default */
+  width: 220px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+  transition: left 0.3s ease;
+  z-index: 1000;
+  padding-top: 60px;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+/* push content when sidebar is active */
+.sidebar.active ~ .route-main {
+  margin-left: 220px;
+}
+
+/* --- Sidebar Links --- */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+.sidebar li {
+  margin: 24px 0;
+}
+.sidebar a {
+  color: #2d6cdf;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 8px 24px;
+  display: block;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.sidebar a:hover {
+  background: #e6f0ff;
+}
+
+/* --- Route Page --- */
+.route-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.route-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.route-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.add-route-btn {
+  background: #e6e6e6;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.routes-grid {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.route-card {
+  background: linear-gradient(90deg, #2d6cdf 60%, #6fb1fc 100%);
+  color: #fff;
+  border-radius: 8px;
+  padding: 22px 20px;
+  min-width: 320px;
+  max-width: 340px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.route-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.route-status {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 12px;
+  border-radius: 12px;
+  background: #fff;
+  color: #2d6cdf;
+  text-transform: lowercase;
+  margin-left: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  display: inline-block;
+}
+
+.route-status.active {
+  color: #2d6cdf;
+  background: #e6f0ff;
+}
+
+.route-status.maintenance {
+  color: #e6a700;
+  background: #fffbe6;
+}
+
+.route-desc {
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.route-riders {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.route-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.route-actions button {
+  background: #fff;
+  color: #2d6cdf;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+.route-actions .edit {
+  color: #e6a700;
+}
+
+.route-actions .delete {
+  color: #e74c3c;
+}
+
+.route-actions button:hover {
+  background: #e6f0ff;
+}
+
+.route-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 220px;
+  background: url('css/BG.JPG') no-repeat center/cover;
+  z-index: -1;
+}

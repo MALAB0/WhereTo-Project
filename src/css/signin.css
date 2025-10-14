@@ -1,182 +1,174 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-/* Base Styles */
-body {
-  background-color: #F5F5F5; /* soft off-white */
-  color: #212121; /* dark gray text */
-  font-family: 'Poppins', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Limelight&family=Poppins:wght@300;400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Kdam Thmor');
+/* Reset */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-/* Header */
-header {
-  background-color: #F9A825; /* yellow */
-  padding: 15px 20px;
-}
+/* Body */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(
+                to right,
+                rgba(109, 109, 109, 0.4),
+                rgba(77, 77, 77, 0.4)
+              ),
+              url("BG.JPG");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #000;
 
-.header-container {
+  height: 100vh;     
   display: flex;
-  justify-content: space-between; /* logo left, icons right */
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Navbar */
+.navbar {
+  flex: 0 0 60px; 
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* allows drop on small screens */
+  padding: 15px 40px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-weight: 700;
+  font-size: 18px;
 }
 
 .logo img {
-  height: 50px;
-  width: auto;
-  margin-left: 20px;
+  width: 70px;
+  height: auto;
 }
 
-.right-icons {
-  display: flex;
-  gap: 35px;
-  padding: 0 20px;
+.extra-logo {
+  width: 80px;
+  height: auto;
 }
 
-.right-icons a {
-  color: #fff;
-  font-size: 25px;
+.nav-links {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 25px;
+}
+
+.nav-links a {
   text-decoration: none;
+  color: #000;
+  font-size: 20px;
+  font-family: kdam Thmor, sans-serif;
 }
 
-.right-icons a:hover {
-  color: #0288D1; /* blue on hover */
+.btn {
+  background: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-family:  kdam Thmor, sans-serif;
 }
 
-/* Responsive Header */
-@media (max-width: 768px) {
-  .header-container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .right-icons {
-    margin-top: 10px;
-  }
+.btn:hover {
+  background: #f0f0f0;
 }
 
-/* Container for logo + form */
+/* Layout */
 .container {
   display: flex;
-  justify-content: space-between; /* logo left, form right */
+  justify-content: space-between;
   align-items: center;
-  margin: 70px auto;
-  padding: 0 50px;
-  max-width: 1200px;
-  gap: 0px; /* space between logo and form */
-  font-family: 'Baloo 2', 'Roboto', Arial, sans-serif;
-  font-weight: bold;
+  padding: 40px 80px;
+  min-height: calc(100vh - 80px); /* full height minus navbar */
 }
 
-/* Logo side */
-.logo-side img {
-  max-width: 800px;
-  height: auto;
-  display: block;
+/* Left side */
+.left {
+  flex: 1;
 }
-
-/* Form Container */
-.form-container {
-  background-color: #ffffff;
-  color: #0288D1; /* blue accents */
-  padding: 20px;
+.main-logo {
+  width: 560px;
+  height: 550px;    
+  max-width: none;   
+  margin-left: 70px;
+  object-fit: contain;
+}
+/* Right side (Sign up card) */
+.card {
+  background: #fff;
+  padding: 20px 30px; 
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px; /* responsive max width */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 550px;
+  min-height: 550px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Heading */
-.form-container h2 {
-  text-align: center;
-  margin: 20px 0 30px;
-  color: #F9A825;
-  font-size: 70px;
-  font-weight: 700;
-  font-family: 'Baloo 2', cursive;
-}
-
-/* Input Group */
-.input-group {
-  margin-bottom: 20px;
-}
-
-.input-group label {
-  display: block;
-  margin-bottom: 6px;
+.card h2 {
+  margin-bottom: 16px;
+  font-size: 22px;
   font-weight: 600;
-  color: #212121;
+  font-family: kdam Thmor, sans-serif;
+  text-align: center;
 }
 
-.input-group input {
-  width: 95%;
+.card label {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 10px 0 5px;
+  display: block;
+}
+
+.card input {
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  margin-bottom: 15px;
   font-size: 14px;
-  font-family: 'Poppins', sans-serif;
-  transition: border 0.3s ease;
-  display: block;
-  margin: 0 auto; /* centers input if width < 100% */
 }
-
-.input-group input:focus {
-  border: 1px solid #0288D1;
-  outline: none;
-}
-
-/* Buttons */
-button {
+.forgot {
   display: block;
+  text-align: right;
+  font-size: 13px;
+  margin-bottom: 20px;
+  text-decoration: none;
+  color: #555;
+}
+.signin-btn {
   width: 100%;
-  margin-top: 15px;
   padding: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  color: #ffffff;
+  background: #004aad; 
+  color: #fff;
   border: none;
   border-radius: 6px;
-  background-color: #F9A825;
+  font-size: 15px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: 0.3s;
 }
 
-button:hover {
-  background-color: #0288D1;
-  transform: translateY(-2px);
+.signin-btn:hover {
+  background: #003580;
 }
 
-button:active {
-  transform: translateY(0);
+.signup-text {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
 }
 
-/* Mobile Form Tweaks */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column; /* stack logo above form */
-    align-items: center;
-    text-align: center;
-  }
-
-  .logo-side {
-    margin-bottom: 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .form-container h2 {
-    font-size: 32px;
-    margin: 20px 0 30px;
-  }
-
-  button {
-    font-size: 14px;
-    padding: 10px;
-  }
+.signup-text a {
+  color: #0073e6;
+  text-decoration: none;
 }

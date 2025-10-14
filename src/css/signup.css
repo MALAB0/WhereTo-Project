@@ -1,193 +1,168 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-body {
+@import url('https://fonts.googleapis.com/css2?family=Limelight&family=Poppins:wght@300;400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Kdam Thmor');
+/* Reset */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body */
+body {
   font-family: 'Poppins', sans-serif;
-  background-color: #F5F5F5;
-  color: #212121;
+  background: linear-gradient(
+                to right,
+                rgba(109, 109, 109, 0.4),
+                rgba(77, 77, 77, 0.4)
+              ),
+              url("BG.JPG");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #000;
+
+  height: 100vh;     
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-header {
-  background-color: #F9A825;
-  padding: 15px 20px;
-}
-
-.header-container {
+/* Navbar */
+.navbar {
+  flex: 0 0 60px; 
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  padding: 15px 40px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-weight: 700;
+  font-size: 18px;
 }
 
 .logo img {
-  height: 50px;
-  width: auto;
-  margin-left: 20px;
+  width: 70px;
+  height: auto;
 }
 
-.right-icons {
-  display: flex;
-  gap: 25px;
-  padding: 0 20px;
+.extra-logo {
+  width: 80px;
+  height: auto;
 }
 
-.right-icons a {
-  color: #fff;
-  font-size: 22px;
+.nav-links {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 25px;
+}
+
+.nav-links a {
   text-decoration: none;
-  transition: color 0.3s ease;
+  color: #000;
+  font-size: 20px;
+  font-family: kdam Thmor, sans-serif;
+  font-weight: 500;
 }
 
-.right-icons a:hover {
-  color: #0288D1;
+.btn {
+  background: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-family:  kdam Thmor, sans-serif;
 }
 
-@media (max-width: 768px) {
-  .header-container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .right-icons {
-    margin-top: 10px;
-  }
+.btn:hover {
+  background: #f0f0f0;
 }
 
+/* Layout */
 .container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 40px;
-  padding: 60px 20px;
+  padding: 40px 80px;
+  min-height: calc(100vh - 80px); /* full height minus navbar */
 }
 
-.logo-side img {
-  max-width: 800px;
-  padding: 30px;
-  height: auto;
-  display: block;
-}
-
-.form-container {
-  background-color: #fff;
-  color: #0288D1;
-  padding: 25px 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 500px;
-  margin: 10px auto;
-}
-
-.form-container h2 {
-  text-align: center;
-  margin: 10px 0 25px;
-  color: #F9A825;
-  font-size: 42px;
-  font-weight: 700;
-  font-family: 'Baloo 2', cursive;
-}
-
-.name-row {
-  display: flex;
-  gap: 45px;
-}
-
-.name-row .input-group {
+/* Left side */
+.left {
   flex: 1;
 }
-
-.input-group {
-  margin-bottom: 20px;
+.main-logo {
+  width: 560px;
+  height: 550px;    
+  max-width: none;   
+  margin-left: 70px;
+  object-fit: contain;
+}
+/* Right side (Sign up card) */
+.card {
+  background: #fff;
+  padding: 20px 30px; 
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  width: 550px;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
 }
 
-.input-group label {
-  display: block;
-  margin-bottom: 6px;
+.card h2 {
+  margin-bottom: 16px;
+  font-size: 50px;
   font-weight: 600;
-  color: #212121;
+  font-family: kdam Thmor, sans-serif;
+  text-align: center;
 }
 
-.input-group input {
+.card label {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 10px 0 5px;
+  display: block;
+}
+
+.card input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  margin-bottom: 15px;
   font-size: 14px;
-  font-family: 'Poppins', sans-serif;
-  transition: border 0.3s ease;
-  display: block;
-  margin: 0 auto;
 }
 
-.input-group input:focus {
-  border-color: #0288D1;
-  outline: none;
-}
-
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: #212121;
-}
-
-button {
-  display: block;
+.signin-btn {
   width: 100%;
   padding: 12px;
-  font-size: 15px;
-  font-weight: 600;
+  background: #004aad; 
+  color: #fff;
   border: none;
   border-radius: 6px;
-  background-color: #F9A825;
-  color: #212121;
+  font-size: 15px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: 0.3s;
 }
 
-button:hover {
-  background-color: #0288D1;
-  color: #fff;
-  transform: translateY(-2px);
+.signin-btn:hover {
+  background: #003580;
 }
 
-.login-link {
-  margin-top: 15px;
+.signup-text {
   text-align: center;
+  margin-top: 15px;
   font-size: 14px;
 }
 
-.login-link a {
-  color: #0288D1;
-  font-weight: 500;
+.signup-text a {
+  color: #0073e6;
   text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.login-link a:hover {
-  color: #F9A825;
-}
-
-@media (max-width: 992px) {
-  .container {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-    padding: 30px 15px;
-  }
-  .form-container {
-    margin: 0 auto;
-    width: 100%;
-    max-width: 90%;
-  }
-  .form-container h2 {
-    font-size: 32px;
-  }
 }

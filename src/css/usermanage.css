@@ -1,0 +1,266 @@
+body {
+  background: url('BG.JPG') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+}
+
+.admin-header {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  border-bottom: 4px solid #000;
+}
+
+.menu-btn {
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  text-align: right;
+  line-height: 1.1;
+}
+
+.user-main {
+  padding: 32px 40px 0 40px;
+  min-height: 100vh;
+  position: relative;
+}
+
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.user-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.user-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.add-user-btn {
+  background: #e6e6e6;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.user-stats {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: linear-gradient(90deg, #2d6cdf 60%, #6fb1fc 100%);
+  color: #fff;
+  border-radius: 8px;
+  padding: 16px 18px;
+  min-width: 120px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.stat-card i {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 26px;
+  opacity: 0.7;
+}
+
+.user-searchbar {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #2d6cdf 60%, #6fb1fc 100%);
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin-bottom: 32px;
+  gap: 16px;
+}
+
+.user-searchbar input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group select {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 15px;
+}
+
+.filter-group i {
+  font-size: 18px;
+  color: #2d6cdf;
+}
+
+.user-main h3 {
+  margin: 0 0 18px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.user-card {
+  background: linear-gradient(90deg, #1a3e7a 60%, #2d6cdf 100%);
+  color: #fff;
+  border-radius: 8px;
+  padding: 18px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.user-card-header i {
+  font-size: 32px;
+}
+
+.user-name {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.user-email {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.user-status {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 12px;
+  border-radius: 12px;
+  background: #e6f0ff;
+  color: #2d6cdf;
+  margin-left: auto;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  display: inline-block;
+}
+
+.user-card-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+.user-card-info i {
+  margin-right: 4px;
+}
+
+.user-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.user-card-actions button {
+  background: #fff;
+  color: #2d6cdf;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+.user-card-actions .edit { color: #e6a700; }
+.user-card-actions .suspend { color: #e67e22; }
+.user-card-actions .delete { color: #e74c3c; }
+
+.user-card-actions button:hover {
+  background: #e6f0ff;
+}
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -220px;
+  width: 220px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+  transition: left 0.3s;
+  z-index: 1000;
+  padding-top: 60px;
+  transition: left 0.3s ease;
+}
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+.sidebar li {
+  margin: 24px 0;
+}
+.sidebar a {
+  color: #2d6cdf;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 8px 24px;
+  display: block;
+}
+.sidebar.active {
+  left: 0;
+}
+/* push content when sidebar is active */
+.sidebar.active ~ .user-main {
+  margin-left: 220px;
+}

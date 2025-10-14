@@ -1,0 +1,144 @@
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Kdam Thmor Pro', sans-serif;
+  background: linear-gradient(90deg, rgba(240,225,200,0.55) 0%, rgba(140,120,105,0.55) 100%),
+              url('BG.JPG') center/cover no-repeat;
+  color: #111;
+  min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  height: 40px;
+}
+
+.extra-logo {
+  height: 30px;
+  opacity: 0.85;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 15px;
+  color: #111;
+}
+
+.divider {
+  width: 1px;
+  height: 18px;
+  background: #111;
+}
+
+.signin-link {
+  font-size: 15px;
+  color: #111;
+  cursor: pointer;
+}
+
+/* Sign up button */
+.signup-btn {
+  background: linear-gradient(90deg,#0e9de6,#6a4ef7);
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 22px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
+/* Hero */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px;
+  min-height: 500px;
+}
+
+.hero-content {
+  max-width: 70%;
+}
+
+.hero h1 {
+  font-family: 'Limelight', cursive;
+  font-size: clamp(32px, 8vw, 76px);
+  line-height: 1;
+  margin-bottom: 20px;
+  text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+}
+
+.hero-sub {
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.btn-outline {
+  background: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.hero-visual {
+  position: relative;
+}
+
+.phil-map {
+  width: 320px;
+  opacity: 0.9;
+}
+
+.pin {
+  position: absolute;
+  width: 80px;
+  right: 30%;
+  bottom: 15%;
+}
+
+/* Features */
+.features {
+  background: #fff;
+  display: flex;
+  gap: 24px;
+  padding: 30px 40px;
+}
+
+.feature {
+  flex: 1;
+}
+
+.feature h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.feature p {
+  font-size: 14px;
+  color: #333;
+}

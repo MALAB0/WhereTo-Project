@@ -3,75 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Where To - Sign Up</title>
-
+  <title>WhereTo - Jeepney Route Finder</title>
+  
   <!-- Google Fonts -->
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Limelight&display=swap" rel="stylesheet">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap" rel="stylesheet">
   <!-- CSS -->
   <link rel="stylesheet" href="css/signup.css">
 </head>
 <body>
 
-  <header>
-    <div class="header-container">
-      <div class="logo">
-        <img src="C:\Users\geron\OneDrive\Documents\WhereTo\WhereTo bg remove.png" alt="WhereTo Logo">
-      </div>
-      <div class="right-icons">
-        <a href="#"><i class="fa-solid fa-bell"></i></a>
-        <a href="#"><i class="fa-solid fa-user"></i></a>
-      </div>
+  <!-- Navbar -->
+  <nav class="navbar">
+  <div class="logo">
+    <img src="css/compass.png" alt="logo">   <!-- first logo -->
+    <img src="css/Logo.PNG" alt="extra icon" class="extra-logo"> <!-- second logo -->
+  </div>
+
+    <div class="nav-links">
+      <a href="startup.html">About</a>
+      <button class="btn" onclick="window.location.href='signup.html'">Get started</button>
+
     </div>
-  </header>
+  </nav>
 
-  <main>
-    <div class="container">
-      <div class="logo-side">
-        <img src="C:\Users\geron\OneDrive\Documents\WhereTo\1-removebg-preview.png" alt="Jeepney Illustration">
-      </div>
+  <!-- Main Layout -->
+  <main class="container">
+    <!-- Left content -->
+    <div class="left">
+      <img src="css/bigwhere2logo.png" alt="main logo" class="main-logo">
+    </div>
 
-      <div class="form-container">
-        <h2>Sign Up</h2>
-        <form>
-          <div class="name-row">
-            <div class="input-group">
-              <label for="fname">First Name</label>
-              <input type="text" id="fname" placeholder="First Name" required>
-            </div>
-            <div class="input-group">
-              <label for="lname">Last Name</label>
-              <input type="text" id="lname" placeholder="Last Name" required>
-            </div>
-          </div>
+    <!-- Right content (Sign in form) -->
+    <div class="card">
+      <h2>Sign Up</h2>
+      <form>
+        <label>Email</label>
+        <input type="email" placeholder="Enter your email" required>
 
-          <div class="input-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="Email" required>
-          </div>
+        <label>Password</label>
+        <input type="password" placeholder="Enter your password" required>
 
-          <div class="input-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Password" required>
-          </div>
+        <button type="submit" class="signin-btn">Sign Up</button>
 
-          <div class="checkbox">
-            <input type="checkbox" id="agree" required>
-            <label for="agree">I agree to the terms</label>
-          </div>
-
-          <button type="submit">Sign Up</button>
-        </form>
-
-        <div class="login-link">
-          Already have an account? <a href="signin.html">Login</a>
-        </div>
-      </div>
+        <p class="signup-text">Already have an account?<a href="signin.html"> Sign In</a></p>
+      </form>
     </div>
   </main>
 
+</body>
+</html>
+  
 </body>
 </html>
