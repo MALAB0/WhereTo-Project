@@ -1,0 +1,187 @@
+/* ===== GENERAL ===== */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: url(BG.JPG);
+  color: #222;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===== HEADER ===== */
+header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.left-icon,
+.logo-img {
+  display: block;
+}
+
+.left-icon {
+  width: 45px;
+  height: auto;
+  margin: 0;
+}
+
+.logo-img {
+  width: 110px;
+  height: auto;
+  margin: 0;
+}
+
+/* ===== NAVIGATION ===== */
+nav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #0a3d62;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+nav a:hover {
+  color: #07415a;
+}
+
+nav .start-btn {
+  background: #0a3d62;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+nav .start-btn:hover {
+  background: #07415a;
+}
+
+/* ===== MAIN SECTION ===== */
+.signup-container {
+  display: flex;
+  flex: 1;
+  height: 100vh;
+  align-items: center;
+  justify-content: space-between;
+  padding: 100px 80px 40px;
+  box-sizing: border-box;
+}
+
+/* ===== LEFT IMAGE ===== */
+.image-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-section img {
+  width: 80%;
+  max-width: 400px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ===== RIGHT FORM BOX ===== */
+.form-section {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.signup-box {
+  background: #ffffff;
+  width: 380px;
+  padding: 40px 35px;
+  border-radius: 15px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+}
+
+h2 {
+  text-align: center;
+  color: #0a3d62;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-top: 12px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1rem;
+}
+
+input:focus {
+  border-color: #0a3d62;
+}
+
+button {
+  width: 100%;
+  margin-top: 25px;
+  padding: 12px;
+  background: #0a3d62;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #07415a;
+}
+
+p {
+  text-align: center;
+  margin-top: 15px;
+  color: #555;
+}
+
+p a {
+  color: #0a3d62;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+p a:hover {
+  text-decoration: underline;
+}

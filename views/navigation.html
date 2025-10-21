@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Navigation | WhereTo</title>
+  <link rel="stylesheet" href="navigation.css" />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="header-left">
+      <img src="compass.PNG" alt="Compass" class="icon" />
+      <img src="Logo.PNG" alt="WhereTo Logo" class="logo" />
+    </div>
+  </header>
+
+  <!-- ===== FIRST BIG BOX: TRIP INFO ===== -->
+  <div class="big-box">
+    <div class="location-info">
+      <h3 id="routeTitle">Loading route...</h3>
+      <p id="routeDetails">Preparing your journey...</p>
+    </div>
+    
+    <div class="small-box">
+      <!-- Loading bar -->
+      <div class="loading-btn">
+        <div class="loading-bar"></div>
+      </div>
+    </div>
+
+    <!-- Next Step Button -->
+    <button id="nextStepBtn" class="next-btn">
+      <span>Next Step</span>
+    </button>
+  </div>
+
+  <!-- ===== SECOND BIG BOX: DIRECTIONS ===== -->
+  <div class="big-box second">
+    <h1>Directions</h1>
+
+    <div class="small-box step">
+      <span>Step 1.</span>
+      <p id="step1">Walk to starting point...</p>
+    </div>
+
+    <div class="small-box step">
+      <span>Step 2.</span>
+      <p id="step2">Board jeepney to destination...</p>
+    </div>
+
+    <div class="small-box step">
+      <span>Step 3.</span>
+      <p id="step3">Transfer if needed...</p>
+    </div>
+
+    <div class="small-box step">
+      <span>Step 4.</span>
+      <p id="step4">Continue journey towards destination...</p>
+    </div>
+
+    <div class="small-box step">
+      <span>Step 5.</span>
+      <p id="step5">Arrive at your destination!</p>
+    </div>
+  </div>
+
+  <!-- ===== THIRD BIG BOX: ROUTE ALERTS ===== -->
+  <div class="big-box third">
+    <h1>Route Alerts</h1>
+
+    <div class="small-box">
+      <span>Route Tip:</span>
+      <p>Expect heavy traffic during rush hours.</p>
+    </div>
+  </div>
+
+    <section class="content-section">
+    <div class="buttons-row">
+      <button class="info-btn" onclick="window.location.href='WT.html'">
+  <img src="map.png" alt="Routes" />
+  <span>Live Map</span>
+   <div class="buttons-row">
+      <button class="info-btn" onclick="window.location.href='destination.html'">
+  <img src="route.png" alt="alter" />
+  <span>Find Alternative</span>
+    </div>
+
+  </section>
+
+  <!-- ===== SCRIPT ===== -->
+  <script>
+    const nextBtn = document.getElementById('nextStepBtn');
+    const loadingBar = document.querySelector('.loading-bar');
+    const steps = document.querySelectorAll('.step');
+    const routeTitle = document.getElementById('routeTitle');
+    const routeDetails = document.getElementById('routeDetails');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const step4 = document.getElementById('step4');
+    const step5 = document.getElementById('step5');
+
+    let currentStep = 0;
+    const totalSteps = steps.length;
+
+    // Function to load route data from localStorage
+    function loadRouteData() {
+      const recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+      const currentSearch = recentSearches[0]; // Get the most recent search
+      
+      console.log('Recent searches:', recentSearches);
+      console.log('Current search:', currentSearch);
+      
+      if (currentSearch) {
+        const fromLocation = currentSearch.from;
+        const toLocation = currentSearch.to;
+        
+        console.log('Loading route:', fromLocation, 'to', toLocation);
+        
+        // Update route title and details
+        routeTitle.textContent = `${fromLocation} → ${toLocation}`;
+        routeDetails.textContent = `Estimated travel time: 45-60 minutes`;
+        
+        // Update step descriptions based on locations
+        step1.textContent = `Walk to ${fromLocation} starting point...`;
+        step2.textContent = `Board jeepney from ${fromLocation} to ${toLocation}...`;
+        step3.textContent = `Transfer at intermediate stop if needed...`;
+        step4.textContent = `Continue journey towards ${toLocation}...`;
+        step5.textContent = `Arrive at your ${toLocation} destination!`;
+      } else {
+        console.log('No search data found, using default route');
+        // Default route if no data found
+        routeTitle.textContent = 'Divisoria → Cubao';
+        routeDetails.textContent = 'Estimated travel time: 45 minutes';
+        step1.textContent = 'Walk to Divisoria Market...';
+        step2.textContent = 'Board jeepney to Cubao...';
+        step3.textContent = 'Transfer if needed...';
+        step4.textContent = 'Continue journey...';
+        step5.textContent = 'Arrive at Cubao...';
+      }
+    }
+
+    // Initialize: Show only first step as active
+    function initializeSteps() {
+      steps.forEach((step, index) => {
+        if (index === 0) {
+          step.classList.add('active');
+        } else {
+          step.classList.add('pending');
+        }
+      });
+    }
+
+    // Initialize on page load
+    loadRouteData();
+    initializeSteps();
+
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < totalSteps) {
+        // Mark current step as completed
+        steps[currentStep].classList.remove('active');
+        steps[currentStep].classList.add('completed');
+
+        // Update loading bar
+        const barWidth = ((currentStep + 1) / totalSteps) * 100;
+        loadingBar.style.width = `${barWidth}%`;
+
+        currentStep++;
+
+        // Activate next step if available
+        if (currentStep < totalSteps) {
+          steps[currentStep].classList.remove('pending');
+          steps[currentStep].classList.add('active');
+        }
+
+        // Update button text and state
+        if (currentStep === totalSteps) {
+          nextBtn.disabled = true;
+          nextBtn.innerHTML = '<span>All Steps Completed</span>';
+          // Auto-navigate to destination page after a short delay
+          setTimeout(() => {
+            window.location.href = 'destination.html';
+          }, 1500);
+        } else {
+          nextBtn.innerHTML = `<span>Next Step (${currentStep + 1}/${totalSteps})</span>`;
+        }
+      }
+    });
+  </script>
+</body>
+</html>

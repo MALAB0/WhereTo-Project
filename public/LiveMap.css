@@ -1,0 +1,96 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+}
+
+.back-btn {
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+Edraline
+.content {
+  padding: 20px;
+  text-align: center;
+}
+
+
+.map_container{
+    width: 100%;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.legend_container {
+  display: flex;
+  justify-content: space-around;
+  background: linear-gradient(to right, #002f87, #00b4d8);
+  color: white;
+  padding: 30px;
+  border-radius: 6px;
+  margin-top: 50px;
+  margin-left: 232px;
+  margin-right: 232px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 70Px ;
+  margin: 40px 0;
+}
+
+.search-btn,
+.report-btn {
+  border: 2px solid;
+  border-radius: 5px;
+  padding: 10px 178px;
+  font-size: 12px;
+  cursor: pointer;
+  background:rgb(194, 194, 194);
+}
+
+.search-btn {
+  border-color:blue;
+  color:black;
+}
+
+.report-btn {
+  border-color: #d93025;
+  color: black;
+}   
+
+.location_container{
+  display: top, right;
+  justify-content: space-around;
+  background: linear-gradient(to right, #002f87, #00b4d8);
+  color: white;
+  padding: 30px;
+  border-radius: 6px;
+  margin-top: 50px;
+  margin-left: 232px;
+  margin-right: 232px;
+}
+

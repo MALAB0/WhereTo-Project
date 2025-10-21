@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | WhereTo</title>
+    <link rel="stylesheet" href="profile.css">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <header>
+        <div class="header-left">
+            <img src="arrow-left.png" alt="Back" class="icon back-icon" onclick="window.history.back()">
+            <span>Profile</span>
+        </div>
+        <div class="header-right">
+            <img src="edit.png" alt="Edit" class="icon edit-icon" onclick="editProfile()">
+        </div>
+    </header>
+
+    <section class="main-content">
+        <!-- User Profile Card -->
+        <div class="profile-card">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <img src="user.png" alt="User Avatar" class="avatar-img">
+                </div>
+                <div class="user-details">
+                    <h2>User</h2>
+                    <p>latciass....</p>
+                </div>
+            </div>
+            <div class="community-rating">
+                <img src="star.png" alt="Star" class="star-icon">
+                <span class="rating">4.8</span>
+                <span class="rating-text">community rating</span>
+            </div>
+            <div class="user-stats">
+                <div class="stat-item">
+                    <img src="route.png" alt="Trips" class="stat-icon">
+                    <span class="stat-number">47</span>
+                    <span class="stat-label">trips taken</span>
+                </div>
+                <div class="stat-item">
+                    <img src="favorites.png" alt="Saved" class="stat-icon">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">saved routes</span>
+                </div>
+                <div class="stat-item">
+                    <img src="report.png" alt="Reports" class="stat-icon">
+                    <span class="stat-number">10</span>
+                    <span class="stat-label">reports made</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preferences Section -->
+        <div class="content-section preferences">
+            <div class="section-header">
+                <img src="settings.png" alt="Settings" class="section-icon">
+                <h2>Preferences</h2>
+            </div>
+            <div class="preference-item">
+                <div class="preference-info">
+                    <span class="preference-title">Push notifications</span>
+                    <span class="preference-desc">receive alerts and updates</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="notifications" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="preference-item">
+                <div class="preference-info">
+                    <span class="preference-title">Location Tracking</span>
+                    <span class="preference-desc">for accurate route guidance</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="location" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="preference-item">
+                <div class="preference-info">
+                    <span class="preference-title">Auto-save Routes</span>
+                    <span class="preference-desc">Automatically save frequently used route</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoSave" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="preference-item">
+                <div class="preference-info">
+                    <span class="preference-title">Offline Mode</span>
+                    <span class="preference-desc">download routes for offline use</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="offline">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Saved Routes Section -->
+        <div class="content-section saved-routes">
+            <div class="section-header">
+                <img src="favorites.png" alt="Saved" class="section-icon">
+                <h2>Saved Routes</h2>
+            </div>
+            <div class="route-item">
+                <div class="route-info">
+                    <img src="pin.png" alt="Location" class="route-icon">
+                    <div class="route-details">
+                        <span class="route-name">Home to Work</span>
+                        <span class="route-path">Divisoria → Cubao</span>
+                        <span class="route-last-used">last used: Today</span>
+                    </div>
+                </div>
+                <div class="route-actions">
+                    <button class="action-btn use-btn" onclick="useRoute('Home to Work')">use</button>
+                    <button class="action-btn delete-btn" onclick="deleteRoute('Home to Work')">delete</button>
+                </div>
+            </div>
+            <div class="route-item">
+                <div class="route-info">
+                    <img src="pin.png" alt="Location" class="route-icon">
+                    <div class="route-details">
+                        <span class="route-name">Shopping</span>
+                        <span class="route-path">Makati → Quezon City</span>
+                        <span class="route-last-used">last used: 2 days ago</span>
+                    </div>
+                </div>
+                <div class="route-actions">
+                    <button class="action-btn use-btn" onclick="useRoute('Shopping')">use</button>
+                    <button class="action-btn delete-btn" onclick="deleteRoute('Shopping')">delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Trips Section -->
+        <div class="content-section recent-trips">
+            <div class="section-header">
+                <img src="check.png" alt="Trips" class="section-icon">
+                <h2>Recent Trips</h2>
+            </div>
+            <div class="trip-item">
+                <div class="trip-checkbox">
+                    <input type="checkbox" class="trip-check">
+                </div>
+                <div class="trip-info">
+                    <span class="trip-route">Divisoria → Cubao</span>
+                    <span class="trip-time">Today, 8:30 am</span>
+                </div>
+                <div class="trip-details">
+                    <span class="trip-fare">P25</span>
+                    <span class="trip-duration">40 mins</span>
+                </div>
+            </div>
+            <div class="trip-item">
+                <div class="trip-checkbox">
+                    <input type="checkbox" class="trip-check">
+                </div>
+                <div class="trip-info">
+                    <span class="trip-route">Makati → Quezon City</span>
+                    <span class="trip-time">Yesterday, 6:15 pm</span>
+                </div>
+                <div class="trip-details">
+                    <span class="trip-fare">P30</span>
+                    <span class="trip-duration">1 hr 10 mins</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="content-section settings">
+            <div class="setting-item" onclick="openNotificationSettings()">
+                <img src="notification.png" alt="Notifications" class="setting-icon">
+                <span>Notification Settings</span>
+                <img src="right-arrow.png" alt="Arrow" class="arrow-icon">
+            </div>
+            <div class="setting-item" onclick="openPrivacySettings()">
+                <img src="shield-3858.png" alt="Privacy" class="setting-icon">
+                <span>Privacy and Security</span>
+                <img src="right-arrow.png" alt="Arrow" class="arrow-icon">
+            </div>
+            <div class="setting-item sign-out" onclick="signOut()">
+                <img src="logout.png" alt="Sign Out" class="setting-icon">
+                <span>Sign Out</span>
+                <img src="right-arrow.png" alt="Arrow" class="arrow-icon">
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Toggle switch functionality
+        const toggles = document.querySelectorAll('.toggle-switch input');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const preference = this.id;
+                const isEnabled = this.checked;
+                
+                // Save preference to localStorage
+                const preferences = JSON.parse(localStorage.getItem('userPreferences') || '{}');
+                preferences[preference] = isEnabled;
+                localStorage.setItem('userPreferences', JSON.stringify(preferences));
+                
+                console.log(`${preference} is now ${isEnabled ? 'enabled' : 'disabled'}`);
+            });
+        });
+
+        // Load saved preferences
+        function loadPreferences() {
+            const preferences = JSON.parse(localStorage.getItem('userPreferences') || '{}');
+            Object.keys(preferences).forEach(key => {
+                const toggle = document.getElementById(key);
+                if (toggle) {
+                    toggle.checked = preferences[key];
+                }
+            });
+        }
+
+        // Route management functions
+        function useRoute(routeName) {
+            console.log(`Using route: ${routeName}`);
+            // Navigate to route with saved data
+            window.location.href = 'route.html';
+        }
+
+        function deleteRoute(routeName) {
+            if (confirm(`Are you sure you want to delete "${routeName}"?`)) {
+                console.log(`Deleting route: ${routeName}`);
+                // Remove from localStorage and update UI
+                const savedRoutes = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+                const updatedRoutes = savedRoutes.filter(route => route.name !== routeName);
+                localStorage.setItem('savedRoutes', JSON.stringify(updatedRoutes));
+                
+                // Remove from DOM
+                event.target.closest('.route-item').remove();
+            }
+        }
+
+        // Settings functions
+        function editProfile() {
+            console.log('Edit profile clicked');
+            // Open profile edit modal or navigate to edit page
+        }
+
+        function openNotificationSettings() {
+            console.log('Opening notification settings');
+            // Navigate to notification settings page
+        }
+
+        function openPrivacySettings() {
+            console.log('Opening privacy settings');
+            // Navigate to privacy settings page
+        }
+
+        function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                // Clear user session
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('userPreferences');
+                
+                // Navigate to sign in page
+                window.location.href = 'signin.html';
+            }
+        }
+
+        // Trip checkbox functionality
+        const tripChecks = document.querySelectorAll('.trip-check');
+        tripChecks.forEach(check => {
+            check.addEventListener('change', function() {
+                const tripItem = this.closest('.trip-item');
+                if (this.checked) {
+                    tripItem.classList.add('selected');
+                } else {
+                    tripItem.classList.remove('selected');
+                }
+            });
+        });
+
+        // Load user data on page load
+        function loadUserData() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (currentUser.email) {
+                // Update user details if available
+                const userDetails = document.querySelector('.user-details h2');
+                if (userDetails) {
+                    userDetails.textContent = currentUser.email.split('@')[0];
+                }
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPreferences();
+            loadUserData();
+        });
+    </script>
+</body>
+</html>

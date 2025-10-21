@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up | WhereTo</title>
+  <link rel="stylesheet" href="signup.css" />
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <img src="compass.PNG" alt="Left Icon" class="left-icon" />
+      <img src="Logo.PNG" alt="WhereTo Jeepney Route Finder Logo" class="logo-img" />
+    </div>
+    <nav>
+      <a href="homepage.html" class="btn">About</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="signup-container">
+    <div class="image-section">
+      <img src="bigwhere2logo.png" alt="Commuting Image" />
+    </div>
+
+    <div class="form-section">
+      <div class="signup-box">
+        <h2>Create Account</h2>
+        <form id="signupForm" action="/signup" method="post">
+          <label>Email</label>
+          <input type="email" name="email" id="signupEmail" placeholder="Enter your email" required />
+
+          <label>Password</label>
+          <input type="password" name="password" id="signupPassword" placeholder="Enter your password" required />
+
+          <label>Confirm Password</label>
+          <input type="password" name="confirm_password" id="confirmPassword" placeholder="Re-enter your password" required />
+
+          <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="/signin">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript for Sign Up -->
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      // Validation
+      if (!email || !password || !confirmPassword) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+      
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters long');
+        return;
+      }
+      
+      // Check if user already exists
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const existingUser = users.find(u => u.email === email);
+      
+      if (existingUser) {
+        alert('An account with this email already exists. Please sign in instead.');
+        return;
+      }
+      
+      // Create new user
+      const newUser = {
+        email: email,
+        password: password,
+        createdAt: new Date().toISOString()
+      };
+      
+      // Add user to localStorage
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
+      
+      alert('Account created successfully! Please sign in.');
+      // Redirect to sign in page
+      window.location.href = '/signin';
+    });
+  </script>
+</body>
+</html>
+

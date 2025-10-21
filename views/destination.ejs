@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WhereTo | Jeepney Route Finder</title>
+  <link rel="stylesheet" href="destination.css" />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="header-left">
+      <img src="compass.PNG" alt="Compass" class="icon" />
+      <img src="Logo.PNG" alt="WhereTo Logo" class="logo" />
+    </div>
+    <div class="header-right">
+      <img src="notification.png" alt="Help" class="icon" />
+      <img src="profile.png" alt="User" class="icon" onclick="window.location.href='profile.html'" />
+    </div>
+  </header>
+
+  <!-- ===== MAIN SECTION (Hero Section) ===== -->
+  <section class="hero">
+    <div class="overlay">
+      <h2>Plan your trip</h2>
+      <div class="trip-form">
+        <div class="input-group">
+          <label for="from">From</label>
+          <input type="text" id="from" placeholder="Enter starting point">
+        </div>
+        <div class="input-group">
+          <label for="to">To</label>
+          <input type="text" id="to" placeholder="Enter destination">
+        </div>
+        <button id="searchBtn" class="search-btn" disabled>Search Routes</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="buttons-row">
+  <button class="info-btn" onclick="window.location.href='LiveMap.html'">
+  <img src="map.png" alt="Routes" />
+  <span>Live Map</span>
+</button>
+
+  <button class="info-btn" onclick="window.location.href='report.html'">
+    <img src="report.png" alt="Report" />
+    <span>Report Issue</span>
+  </button>
+</div>
+
+
+    <div class="big-box">
+      <h1>Recent Searches</h1>
+      <div class="small-box recent-search" data-from="Downtown" data-to="Market">
+        <img src="route.png" alt="Jeep Left" class="small-icon left">
+        <span>Route 1: Downtown to Market</span>
+        <img src="favorites.png" alt="Jeep Right" class="small-icon right">
+      </div>
+
+      <div class="small-box recent-search" data-from="City Hall" data-to="Terminal">
+        <img src="route.png" alt="Jeep Left" class="small-icon left">
+        <span>Route 2: City Hall to Terminal</span>
+        <img src="favorites.png" alt="Jeep Right" class="small-icon right">
+      </div>
+
+      <div class="small-box recent-search" data-from="North Point" data-to="Bay Area">
+        <img src="route.png" alt="Jeep Left" class="small-icon left">
+        <span>Route 3: North Point to Bay Area</span>
+        <img src="favorites.png" alt="Jeep Right" class="small-icon right">
+      </div>
+    </div>
+
+    <div class="big-box second">
+      <h1>Current Alerts</h1>
+      <div class="small-box">
+        <img src="report.png" alt="Jeep Left" class="small-icon left">
+        <span>Route 1 closed due to road work.</span>
+      </div>
+
+      <div class="small-box">
+        <img src="report.png" alt="Jeep Left" class="small-icon left">
+        <span>Bus 101 temporarily not in use.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- JavaScript for Destination Page -->
+  <script>
+    const fromInput = document.getElementById('from');
+    const toInput = document.getElementById('to');
+    const searchBtn = document.getElementById('searchBtn');
+    const recentSearches = document.querySelectorAll('.recent-search');
+
+    // Function to validate inputs and enable/disable search button
+    function validateInputs() {
+      const fromValue = fromInput.value.trim();
+      const toValue = toInput.value.trim();
+      
+      if (fromValue && toValue) {
+        searchBtn.disabled = false;
+        searchBtn.style.opacity = '1';
+        searchBtn.style.cursor = 'pointer';
+      } else {
+        searchBtn.disabled = true;
+        searchBtn.style.opacity = '0.5';
+        searchBtn.style.cursor = 'not-allowed';
+      }
+    }
+
+    // Add event listeners to input fields
+    fromInput.addEventListener('input', validateInputs);
+    toInput.addEventListener('input', validateInputs);
+
+    // Add click functionality to recent searches
+    recentSearches.forEach(search => {
+      search.style.cursor = 'pointer';
+      search.addEventListener('click', function() {
+        const fromValue = this.getAttribute('data-from');
+        const toValue = this.getAttribute('data-to');
+        
+        fromInput.value = fromValue;
+        toInput.value = toValue;
+        
+        // Trigger validation
+        validateInputs();
+        
+        // Add visual feedback
+        this.style.backgroundColor = '#e3f2fd';
+        setTimeout(() => {
+          this.style.backgroundColor = 'white';
+        }, 1000);
+      });
+      
+      // Add hover effects
+      search.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = '#f0f8ff';
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
+      });
+      
+      search.addEventListener('mouseleave', function() {
+        this.style.backgroundColor = 'white';
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+      });
+    });
+
+    // Handle search button click
+    searchBtn.addEventListener('click', function() {
+      if (!this.disabled) {
+        const fromValue = fromInput.value.trim();
+        const toValue = toInput.value.trim();
+        
+        // Store the search in localStorage for recent searches
+        const searches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+        const newSearch = {
+          from: fromValue,
+          to: toValue,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Remove duplicate if exists
+        const filteredSearches = searches.filter(s => 
+          !(s.from === fromValue && s.to === toValue)
+        );
+        
+        // Add new search to the beginning
+        filteredSearches.unshift(newSearch);
+        
+        // Keep only last 10 searches
+        const recentSearches = filteredSearches.slice(0, 10);
+        localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+        
+        // Navigate to route page
+        window.location.href = 'route.html';
+      }
+    });
+
+    // Initialize validation on page load
+    validateInputs();
+  </script>
+</body>
+</html>

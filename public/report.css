@@ -1,0 +1,470 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Header */
+header {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #0a3d62;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-left .icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.header-left .icon:hover {
+    transform: scale(1.1);
+}
+
+.header-left span {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Main Content Section */
+.main-content {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Info Banner */
+.info-banner {
+    background: #0a3d62;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.banner-icon {
+    width: 30px;
+    height: 30px;
+    filter: invert(1);
+}
+
+.banner-text h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.banner-text p {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* Content Sections */
+.content-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.content-section h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #0a3d62;
+}
+
+/* Issue Reporting Section */
+.issue-reporting {
+    background-image:url(BG.JPG)
+}
+
+.issue-options .option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid #e0e0e0;
+}
+
+.issue-options .option:last-child {
+    margin-bottom: 0;
+}
+
+.issue-options .option:hover {
+    background-color: #e6e6e6;
+    transform: translateY(-1px);
+}
+
+.issue-options .option.selected {
+    background-color: #e3f2fd;
+    border-color: #0a3d62;
+    color: #0a3d62;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(10, 61, 98, 0.2);
+}
+
+.option-icon {
+    width: 20px;
+    height: 20px;
+    filter: invert(20%) sepia(80%) saturate(2000%) hue-rotate(190deg) brightness(90%) contrast(90%);
+}
+
+.option.selected .option-icon {
+    filter: invert(20%) sepia(80%) saturate(2000%) hue-rotate(190deg) brightness(90%) contrast(90%);
+}
+
+/* Location Details & Additional Details */
+.content-section label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.content-section input[type="text"],
+.content-section textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.content-section input[type="text"]:focus,
+.content-section textarea:focus {
+    outline: none;
+    border-color: #0a3d62;
+    box-shadow: 0 0 0 2px rgba(10, 61, 98, 0.1);
+}
+
+.content-section textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Add Photo Section */
+.add-photo .photo-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.add-photo .photo-header h2 {
+    margin: 0;
+    color: #0a3d62;
+}
+
+.photo-icon {
+    width: 24px;
+    height: 24px;
+    filter: invert(20%) sepia(80%) saturate(2000%) hue-rotate(190deg) brightness(90%) contrast(90%);
+}
+
+.photo-upload-area {
+    border: 2px dashed #e0e0e0;
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.photo-upload-area:hover {
+    border-color: #0a3d62;
+    background-color: #f0f8ff;
+}
+
+.large-camera-icon {
+    width: 50px;
+    height: 50px;
+    opacity: 0.6;
+    margin-bottom: 10px;
+}
+
+.photo-upload-area p {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.upload-btn {
+    background: none;
+    border: none;
+    color: #ffc107;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.upload-btn:hover {
+    color: #e0a800;
+}
+
+.uploaded-photo {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* Submit Report Button */
+.submit-report-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 20px;
+    background: #0a3d62;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.submit-report-btn:hover {
+    background: #0a3d62;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.submit-report-btn:active {
+    transform: translateY(0);
+}
+
+.submit-report-btn .submit-icon {
+    width: 20px;
+    height: 20px;
+    filter: invert(1);
+}
+
+/* Recent Reports Section */
+.recent-reports h2 {
+    color: #0a3d62;
+}
+
+.report-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.report-item:last-child {
+    margin-bottom: 0;
+}
+
+.report-item:hover {
+    background-color: #e6e6e6;
+    transform: translateY(-1px);
+}
+
+.report-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.report-info p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status.active {
+    background-color: #28a745;
+}
+
+.status.reviewing {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.status.resolved {
+    background-color: #6c757d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header {
+        padding: 12px 15px;
+    }
+
+    .header-left span {
+        font-size: 1rem;
+    }
+
+    .main-content {
+        padding: 15px;
+    }
+
+    .info-banner {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .banner-icon {
+        width: 25px;
+        height: 25px;
+    }
+
+    .banner-text h3 {
+        font-size: 0.95rem;
+    }
+
+    .banner-text p {
+        font-size: 0.8rem;
+    }
+
+    .content-section {
+        padding: 15px;
+    }
+
+    .content-section h2 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .issue-options .option {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .content-section label {
+        font-size: 0.85rem;
+    }
+
+    .content-section input[type="text"],
+    .content-section textarea {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .photo-upload-area {
+        padding: 20px 15px;
+    }
+
+    .large-camera-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .photo-upload-area p {
+        font-size: 0.85rem;
+    }
+
+    .upload-btn {
+        font-size: 0.9rem;
+    }
+
+    .submit-report-btn {
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
+
+    .report-info h3 {
+        font-size: 0.95rem;
+    }
+
+    .report-info p {
+        font-size: 0.75rem;
+    }
+
+    .status {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 10px;
+    }
+
+    .content-section {
+        padding: 12px;
+    }
+
+    .issue-options .option {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .content-section input[type="text"],
+    .content-section textarea {
+        font-size: 0.85rem;
+        padding: 6px;
+    }
+
+    .photo-upload-area {
+        padding: 15px 10px;
+    }
+
+    .large-camera-icon {
+        width: 35px;
+        height: 35px;
+    }
+
+    .submit-report-btn {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+}

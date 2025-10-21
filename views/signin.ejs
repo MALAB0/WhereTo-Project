@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign In | WhereTo</title>
+  <link rel="stylesheet" href="/signin.css" >
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+     <div class="header-left">
+    <img src="compass.PNG" alt="Left Icon" class="left-icon" />
+    <img src="Logo.PNG" alt="WhereTo Jeepney Route Finder Logo" class="logo-img" />
+  </div>
+    <nav>
+      <a href="about.html" class="btn">About</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="signin-container">
+    <div class="image-section">
+      <img src="bigwhere2logo.png" alt="Commuting Image" />
+    </div>
+
+    <div class="form-section">
+      <div class="signin-box">
+        <h2>Sign In</h2>
+        <form id="signinForm" action="/signin" method="post">
+          <label>Email</label>
+          <input type="email" name="email" id="signinEmail" placeholder="Enter your email" required />
+          
+          <label>Password</label>
+          <input type="password" name="password" id="signinPassword" placeholder="Enter your password" required />
+
+          <button type="submit">Sign In</button>
+        </form>
+        <p>Don't have an account? <a href="/signup">Sign up</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript for Sign In -->
+  <script>
+    document.getElementById('signinForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('signinEmail').value;
+      const password = document.getElementById('signinPassword').value;
+      
+      // Simple validation
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      // Check if user exists in localStorage (simple demo)
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.email === email && u.password === password);
+      
+      if (user) {
+        // Store current user session
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        alert('Sign in successful!');
+        // Redirect to destination page
+        window.location.href = '/destination';
+      } else {
+        alert('Invalid email or password. Please try again or sign up.');
+      }
+    });
+  </script>
+</body>
+</html>
