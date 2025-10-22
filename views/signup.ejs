@@ -42,55 +42,31 @@
       </div>
     </div>
   </div>
-
   <!-- JavaScript for Sign Up -->
   <script>
     document.getElementById('signupForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const email = document.getElementById('signupEmail').value;
+      const email = document.getElementById('signupEmail').value.trim();
       const password = document.getElementById('signupPassword').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
       
-      // Validation
       if (!email || !password || !confirmPassword) {
+        e.preventDefault();
         alert('Please fill in all fields');
         return;
       }
-      
+
       if (password !== confirmPassword) {
+        e.preventDefault();
         alert('Passwords do not match');
         return;
       }
-      
+
       if (password.length < 6) {
+        e.preventDefault();
         alert('Password must be at least 6 characters long');
         return;
       }
-      
-      // Check if user already exists
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const existingUser = users.find(u => u.email === email);
-      
-      if (existingUser) {
-        alert('An account with this email already exists. Please sign in instead.');
-        return;
-      }
-      
-      // Create new user
-      const newUser = {
-        email: email,
-        password: password,
-        createdAt: new Date().toISOString()
-      };
-      
-      // Add user to localStorage
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-      
-      alert('Account created successfully! Please sign in.');
-      // Redirect to sign in page
-      window.location.href = '/signin';
+
     });
   </script>
 </body>
