@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-mongoose.connect("mongodb://localhost:27017/loginusers")
+mongoose.connect("mongodb://127.0.0.1:27017/loginusers")
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => {
     console.error("MongoDB connection error:", err);

@@ -14,7 +14,7 @@
     </div>
     <div class="header-right">
       <img src="notification.png" alt="Help" class="icon" />
-      <img src="profile.png" alt="User" class="icon" onclick="window.location.href='profile.html'" />
+      <img src="profile.png" alt="User" class="icon" onclick="window.location.href='/profile'" />
     </div>
   </header>
 
@@ -37,12 +37,12 @@
   </section>
 
   <div class="buttons-row">
-  <button class="info-btn" onclick="window.location.href='LiveMap.html'">
+  <button class="info-btn" onclick="window.location.href='/LiveMap'">
   <img src="map.png" alt="Routes" />
   <span>Live Map</span>
 </button>
 
-  <button class="info-btn" onclick="window.location.href='report.html'">
+  <button class="info-btn" onclick="window.location.href='/report'">
     <img src="report.png" alt="Report" />
     <span>Report Issue</span>
   </button>
@@ -172,7 +172,7 @@
         localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
         
         // Navigate to route page
-        window.location.href = 'route.html';
+        window.location.href = '/route';
       }
     });
 

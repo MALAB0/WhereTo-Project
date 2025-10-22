@@ -76,11 +76,11 @@
 
     <section class="content-section">
     <div class="buttons-row">
-      <button class="info-btn" onclick="window.location.href='WT.html'">
+      <button class="info-btn" onclick="window.location.href='/LiveMap'">
   <img src="map.png" alt="Routes" />
   <span>Live Map</span>
    <div class="buttons-row">
-      <button class="info-btn" onclick="window.location.href='destination.html'">
+      <button class="info-btn" onclick="window.location.href='/destination'">
   <img src="route.png" alt="alter" />
   <span>Find Alternative</span>
     </div>
@@ -179,7 +179,7 @@
           nextBtn.innerHTML = '<span>All Steps Completed</span>';
           // Auto-navigate to destination page after a short delay
           setTimeout(() => {
-            window.location.href = 'destination.html';
+            window.location.href = '/destination';
           }, 1500);
         } else {
           nextBtn.innerHTML = `<span>Next Step (${currentStep + 1}/${totalSteps})</span>`;
