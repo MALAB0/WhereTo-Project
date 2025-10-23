@@ -23,8 +23,34 @@ app.get("/nav", (req, res) => {res.render("navigation");});
 app.get("/route", (req, res) => {res.render("route");});
 app.get("/profile", (req, res) => {res.render("profile");});
 
-app.post("/signup", async (req, res) => {
-  console.log("POST /signup hit", req.body);
+app.get('/api/reports', async (req, res) => {
+  try {
+    const reports = await Report.find({});
+    res.json(reports);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch reports' });
+  }
+});
+
+// ...existing code...
+app.get("/livemap", (req, res) => { res.render("LiveMap"); });
+
+app.get('/api/location', async (req, res) => {
+  try {
+    // Replace with: fetch your external location API, database, etc.
+    res.json({
+      lat: 16.0346255,
+      lng: 120.3355079,
+      zoom: 13
+    });
+  } catch (err) {
+    console.error('Location API error', err);
+    res.status(500).json({ error: 'Failed to get location' });
+  }
+});
+// ...existing code...
+
+app.post("/signup", async (req, res) => {console.log("POST /signup hit", req.body);
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -74,6 +100,7 @@ app.post('/signin', async (req, res) => {
     return res.status(500).send('Server error');
   }
 });
+
 
 // start server
 const PORT = 8000;

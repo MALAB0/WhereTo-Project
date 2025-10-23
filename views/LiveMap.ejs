@@ -1,42 +1,75 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="LiveMap.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-        
-    </head>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="LiveMap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  </head>
 
-    <body>
-       <header class="top-bar">
-    <button class="back-btn" onclick="history.back()">←</button>
-    <h2>Live Map</h2>
-  </header>
-        <div class="map_container">
+  <body>
+    <header class="top-bar">
+      <button class="back-btn" onclick="history.back()">←</button>
+      <h2>Live Map</h2>
+    </header>
 
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1917.297108856073!2d120.33550789482291!3d16.034625527770302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33915d56ad32b305%3A0x1b74411960f5054a!2sDagupan%20City%2C%20Pangasinan!5e0!3m2!1sen!2sph!4v1759959709347!5m2!1sen!2sph" width="1000" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
+    <div class="map_container">
+      <!-- iframe starts empty; src will be set from LOCATION_API -->
+      <iframe id="mapFrame" width="100%" height="70vh" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
 
-        <div class="legend_container">
-          <div class="legend-item"<span class="red dot"</span>Your location</div>
-          <div class="legend-item"<span class="Blue dot"</span>Terminal</div>
-          <div class="legend-item"<span class="Yellow dot"</span>Your location</div>
-          <div class="legend-item"<span class="dark green dot"</span>Your location</div>
-        </div>
+    <div class="legend_container">
+      <div class="legend-item"><span class="red dot"></span>Your location</div>
+      <div class="legend-item"><span class="blue dot"></span>Terminal</div>
+      <div class="legend-item"><span class="yellow dot"></span>Point A</div>
+      <div class="legend-item"><span class="dark-green dot"></span>Point B</div>
+    </div>
 
-        <div class="buttons">
-            <button class="search-btn">
-                <i class="fa fa-search"></i> SEARCH ROUTE
-            </button>
-            <!-- REPORT ISSUE -->
-            <button class="report-btn">
-                <i class="fa fa-exclamation-triangle"></i> REPORT ISSUE
-            </button>
-        </div>
+    <div class="buttons">
+      <button class="search-btn"><i class="fa fa-search"></i> SEARCH ROUTE</button>
+      <button class="report-btn"><i class="fa fa-exclamation-triangle"></i> REPORT ISSUE</button>
+    </div>
 
-        <div class="location_container">
-          <div class="legend-item"<span class="green"</span>Live location</div>
-        </div>
-    </body>   
-</html>        
-        
+    <div class="location_container">
+      <div class="legend-item"><span class="green dot"></span>Live location</div>
+    </div>
+
+    <script>
+      // Change this to your location API (can be absolute URL)
+      const LOCATION_API = '/api/location';
+
+      const iframe = document.getElementById('mapFrame');
+
+      async function loadMap() {
+        try {
+          const res = await fetch(LOCATION_API);
+          if (!res.ok) throw new Error('Location API returned ' + res.status);
+          const data = await res.json();
+
+          // Accept either { lat, lng [, zoom] } or { place } or { embedUrl }
+          const { lat, lng, zoom = 13, place, embedUrl } = data;
+
+          let src;
+          if (embedUrl) {
+            // If your API already returns a full embed URL, use it
+            src = embedUrl;
+          } else if (lat != null && lng != null) {
+            // Use a simple embed without API key
+            src = `https://www.google.com/maps?q=${lat},${lng}&z=${zoom}&output=embed`;
+          } else if (place) {
+            src = `https://www.google.com/maps?q=${encodeURIComponent(place)}&z=${zoom}&output=embed`;
+          } else {
+            throw new Error('Invalid location response');
+          }
+
+          iframe.src = src;
+        } catch (err) {
+          console.error('Failed to load location:', err);
+          // fallback map (original Dagupan City)
+          iframe.src = 'https://www.google.com/maps?q=Dagupan%20City%2C%20Pangasinan&output=embed';
+        }
+      }
+
+      loadMap();
+    </script>
+  </body>
+</html>
