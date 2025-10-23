@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - WhereTo</title>
+  <link rel="stylesheet" href="routemanage.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+  <header class="admin-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn">&#9776;</button>
+      <div class="logo">Where<br>To<img src="compass.png" alt="logo" style="height:20px;vertical-align:middle;"></div>
+    </div>
+    <div class="header-right">
+      <div class="notification-bell">
+        <i class="fa-solid fa-bell"></i>
+        <div class="bell-dropdown" id="bellDropdown">
+          <a href="aprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+          <a href="#" onclick="changePassword(event)"><i class="fa-solid fa-key"></i> Change Password</a>
+          <a href="#" onclick="adminLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="Logo.PNG" alt="WhereTo Logo" style="width:100px;margin:20px auto;display:block;">
+    </div>
+    <ul>
+      <li><a href="admin.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="routemanage.html" class="active"><i class="fa-solid fa-route"></i> Routes</a></li>
+      <li><a href="commuters.html"><i class="fa-solid fa-users"></i> Commuters</a></li>
+      <li><a href="reportadmin.html"><i class="fa-solid fa-flag"></i> Reports</a></li>
+      <li><a href="aprofile.html"><i class="fa-solid fa-user"></i> User Management</a></li>
+    </ul>
+  </div>
+
+<main class="routes-main">
+  <div class="routes-header">
+    <div>
+      <h2>Routes</h2>
+      <p>Manage route information and details</p>
+    </div>
+    <button id="addRouteBtn" class="add-route-btn">+Add routes</button>
+  </div>
+
+  <div class="routes-grid" id="routesGrid"></div>
+
+  <!-- Modal for adding/editing route -->
+  <div id="addRouteModal" class="add-route-modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3 id="modalTitle">Add New Route</h3>
+      <form id="addRouteForm">
+        <label for="newRouteName">Route Name:</label>
+        <input type="text" id="newRouteName" required>
+
+        <label for="newRouteStart">Start Point:</label>
+        <input type="text" id="newRouteStart" required>
+
+        <label for="newRouteEnd">End Point:</label>
+        <input type="text" id="newRouteEnd" required>
+
+        <label for="newRouteStatus">Status:</label>
+        <select id="newRouteStatus" required>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="suspended">Suspended</option>
+        </select>
+
+        <button type="submit" id="submitRouteBtn">Add Route</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+    <div class="routes-grid">
+      <div class="route-card">
+        <div class="route-title">
+          <span>Bus route 101</span>
+          <span class="route-status active">active</span>
+        </div>
+        <div class="route-desc">Divisoria &rarr; Cubao</div>
+        <div class="route-riders">892 daily riders</div>
+        <div class="route-actions">
+          <button><i class="fa-solid fa-eye"></i> view</button>
+          <button class="edit"><i class="fa-solid fa-pen"></i> edit</button>
+          <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
+        </div>
+      </div>
+      <div class="route-card">
+        <div class="route-title">
+          <span>Bus route 101</span>
+          <span class="route-status maintenance">maintenance</span>
+        </div>
+        <div class="route-desc">Divisoria &rarr; Cubao</div>
+        <div class="route-riders">892 daily riders</div>
+        <div class="route-actions">
+          <button><i class="fa-solid fa-eye"></i> view</button>
+          <button class="edit"><i class="fa-solid fa-pen"></i> edit</button>
+          <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
+        </div>
+      </div>
+    </div>
+    <div class="route-bg"></div>
+  </main>
+  <script src="routemanage.js"></script>
+</body>
+</html>

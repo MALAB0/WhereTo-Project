@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - WhereTo</title>
+  <link rel="stylesheet" href="aprofile.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+  <header class="admin-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn">&#9776;</button>
+      <div class="logo">Where<br>To<img src="compass.png" alt="logo" style="height:20px;vertical-align:middle;"></div>
+    </div>
+    <div class="header-right">
+      <div class="notification-bell">
+        <i class="fa-solid fa-bell"></i>
+        <div class="bell-dropdown" id="bellDropdown">
+          <a href="aprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+          <a href="#" onclick="changePassword(event)"><i class="fa-solid fa-key"></i> Change Password</a>
+          <a href="#" onclick="adminLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="Logo.PNG" alt="WhereTo Logo" style="width:100px;margin:20px auto;display:block;">
+    </div>
+    <ul>
+      <li><a href="admin.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="routemanage.html"><i class="fa-solid fa-route"></i> Routes</a></li>
+      <li><a href="commuters.html"><i class="fa-solid fa-users"></i> Commuters</a></li>
+      <li><a href="reportadmin.html"><i class="fa-solid fa-flag"></i> Reports</a></li>
+      <li><a href="aprofile.html" class="active"><i class="	fa-solid fa-user"></i> User Management</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <h2>Admin Profile</h2>
+    <p>Manage your admin account</p>
+
+    <div class="profile-container">
+      <div class="profile-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile Icon">
+        <div class="profile-info">
+          <h2>Administrator</h2>
+          <p>admin@lolalalo</p>
+          <span class="role">administrator</span>
+        </div>
+      </div>
+      <button class="signout-btn" onclick="signOut()">Sign Out</button>
+    </div>
+    
+ <div class="profile-container2">
+  <div class="profile-header2">
+    <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile Icon">
+    <div class="profile-info2">
+      <h2>Administrator</h2>
+      <p>admin@hatdog</p>
+      <span class="role">administrator</span>
+    </div>
+  </div>
+
+  <button class="signout-btn2" onclick="signOut()">Sign Out</button>
+</div>
+
+      <div class="background-image"></div>
+    </div>
+  </div>
+
+  <script src="aprofile.js"></script>
+</body>
+</html>

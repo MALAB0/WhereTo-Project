@@ -1,0 +1,510 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: url('BG.JPG') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+}
+
+.admin-header {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  border-bottom: 4px solid #000;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.menu-btn {
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  text-align: left;
+  line-height: 1.1;
+}
+
+/* Notification Bell */
+.notification-bell {
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-bell > i {
+  font-size: 22px;
+  color: #2d6cdf;
+  transition: color 0.2s;
+}
+
+.notification-bell > i:hover {
+  color: #1a4a9d;
+}
+
+.bell-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 10px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.notification-bell:hover .bell-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.bell-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.bell-dropdown a:last-child {
+  border-bottom: none;
+}
+
+.bell-dropdown a:hover {
+  background: #f5f7fb;
+}
+
+.bell-dropdown a i {
+  color: #2d6cdf;
+  width: 18px;
+}
+
+.admin-main {
+  padding: 24px;
+  transition: margin-left 0.3s ease; /* smooth shift when sidebar opens */
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px; /* hidden by default */
+  width: 250px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+  transition: left 0.3s ease;
+  z-index: 1000;
+  padding-top: 20px;
+}
+
+.sidebar-logo {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.sidebar.active {
+  left: 0; /* slide in */
+}
+
+/* when sidebar opens, push main content to the right */
+.sidebar.active ~ .admin-main {
+  margin-left: 250px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  margin: 24px 0;
+}
+
+.sidebar a {
+  color: #2d6cdf;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.sidebar a i {
+  width: 20px;
+  font-size: 18px;
+}
+
+.sidebar a:hover {
+  background: #e6f0ff;
+}
+
+.sidebar a.active {
+  background: #2d6cdf;
+  color: white;
+}
+
+/* Header layout */
+.routes-header {
+  display: flex;
+  justify-content: space-between; /* title left, button right */
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+/* Button styling */
+.add-route-btn {
+  background: #e6e6e6;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  top: -5px; /* move slightly up */
+}
+
+.routes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.routes-header h2 {
+  margin: 20px 0 0 30px; /* 10px down, 20px right */
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.routes-header p {
+  margin: 6px 0 0 30px; /* slightly below h2, 20px right */
+  font-size: 14px;
+  color: #333;
+}
+
+
+.add-route-btn {
+  background: #5d5b5b; /* grey */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.add-route-btn:hover {
+  background: #8c8c8c; /* darker grey on hover */
+}
+
+
+.routes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.route-card {
+  background: #f0f4ff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.route-card h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.route-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.route-card-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.route-card-actions button {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.route-card-actions .edit {
+  background: #f0ad4e;
+  color: #fff;
+}
+
+.route-card-actions .delete {
+  background: #d9534f;
+  color: #fff;
+}
+
+.route-card-actions button:hover {
+  opacity: 0.9;
+}
+
+/* Modal overlay */
+.add-route-modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal content */
+.add-route-modal .modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  width: 350px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+/* Close button */
+.add-route-modal .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Form styles */
+.add-route-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.add-route-modal input,
+.add-route-modal select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.add-route-modal button[type="submit"] {
+  background: #2d6cdf;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.add-route-modal button[type="submit"]:hover {
+  background: #1a4a9d;
+}
+
+
+/* --- Dashboard sections (unchanged) --- */
+.dashboard-overview h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.dashboard-overview p {
+  margin: 0 0 18px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.dashboard-overview,
+.recent-reports {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* --- Route Page --- */
+.route-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  margin-top: 20px;
+  margin-left: 30px;
+}
+
+.route-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.route-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.add-route-btn {
+  background: #e6e6e6;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 30px;
+}
+
+.routes-grid {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.route-card {
+  background: linear-gradient(90deg, #2d6cdf 60%, #6fb1fc 100%);
+  color: #fff;
+  border-radius: 8px;
+  padding: 22px 20px;
+  min-width: 320px;
+  max-width: 340px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-left: 30px;
+}
+
+.route-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.route-status {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 12px;
+  border-radius: 12px;
+  background: #fff;
+  color: #2d6cdf;
+  text-transform: lowercase;
+  margin-left: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  display: inline-block;
+}
+
+.route-status.active {
+  color: #2d6cdf;
+  background: #e6f0ff;
+}
+
+.route-status.maintenance {
+  color: #e6a700;
+  background: #fffbe6;
+}
+
+.route-desc {
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.route-riders {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.route-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.route-actions button {
+  background: #fff;
+  color: #2d6cdf;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+.route-actions .edit {
+  color: #e6a700;
+}
+
+.route-actions .delete {
+  color: #e74c3c;
+}
+
+.route-actions button:hover {
+  background: #e6f0ff;
+}
+
+.route-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 220px;
+  background: url('css/BG.JPG') no-repeat center/cover;
+  z-index: -1;
+}

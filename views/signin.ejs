@@ -13,7 +13,7 @@
     <img src="Logo.PNG" alt="WhereTo Jeepney Route Finder Logo" class="logo-img" />
   </div>
     <nav>
-      <a href="about.html" class="btn">About</a>
+      <a href="/about" class="btn">About</a>
     </nav>
   </header>
 
@@ -34,14 +34,15 @@
           <button type="submit">Sign In</button>
         </form>
         <p>Don't have an account? <a href="/signup">Sign up</a></p>
+
       </div>
     </div>
   </div>
 
   <!-- JavaScript for Sign In -->
   <script>
-    document.getElementById('signinForm').addEventListener('submit', function(e) {
-
+    document.getElementById('signinForm').addEventListener('submit', async function(e) {
+      
       const email = document.getElementById('signinEmail').value.trim();
       const password = document.getElementById('signinPassword').value;
 
@@ -50,6 +51,38 @@
         alert('Please fill in all fields');
         return;
       }
+      // ...existing code...
+try {
+    // Send POST request to server
+    const response = await fetch('/signin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (response.ok) {
+      // Store current user session
+      const user = { email, password }; // Or get user data from response
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      
+      // Get username from email for routing
+      const username = email.toLowerCase().split('@')[0];
+      
+      // Redirect based on username
+      if (username.includes('admin')) {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/destination';
+      }
+    } else {
+      alert('Invalid email or password. Please try again or sign up.');
+    }
+  } catch (err) {
+    console.error('Sign in error:', err);
+    alert('An error occurred during sign in. Please try again.');
+  }
 
     });
   </script>

@@ -13,7 +13,7 @@
       <img src="Logo.PNG" alt="WhereTo Jeepney Route Finder Logo" class="logo-img" />
     </div>
     <nav>
-      <a href="/homepage" class="btn">About</a>
+      <a href="about.html" class="btn">About</a>
     </nav>
   </header>
 
@@ -26,7 +26,7 @@
     <div class="form-section">
       <div class="signup-box">
         <h2>Create Account</h2>
-        <form id="signupForm" action="/signup" method="post">
+        <form id="signupForm">
           <label>Email</label>
           <input type="email" name="email" id="signupEmail" placeholder="Enter your email" required />
 
@@ -38,13 +38,15 @@
 
           <button type="submit">Sign Up</button>
         </form>
-        <p>Already have an account? <a href="/signin">Sign in</a></p>
+        <p>Already have an account? <a href="signin.html">Sign in</a></p>
       </div>
     </div>
   </div>
+
   <!-- JavaScript for Sign Up -->
-<script>
+  <script>
     document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
       
       const email = document.getElementById('signupEmail').value;
       const password = document.getElementById('signupPassword').value;
@@ -89,7 +91,7 @@
       alert('Account created successfully!');
       // After sign up, redirect: if the username (before @) contains "admin", go to dashboard
       const username = email.toLowerCase().split('@')[0];
-      const target = username.includes('admin') ? '/admin' : '/destination';
+      const target = username.includes('admin') ? 'admin.html' : 'destination.html';
       window.location.href = target;
     });
   </script>

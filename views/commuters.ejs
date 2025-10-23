@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - WhereTo</title>
+  <link rel="stylesheet" href="commuters.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+  <header class="admin-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn">&#9776;</button>
+      <div class="logo">Where<br>To<img src="compass.png" alt="logo" style="height:20px;vertical-align:middle;"></div>
+    </div>
+    <div class="header-right">
+      <div class="notification-bell">
+        <i class="fa-solid fa-bell"></i>
+        <div class="bell-dropdown" id="bellDropdown">
+          <a href="aprofile.html"><i class="fa-solid fa-user"></i> Profile</a>
+          <a href="#" onclick="changePassword(event)"><i class="fa-solid fa-key"></i> Change Password</a>
+          <a href="#" onclick="adminLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="Logo.PNG" alt="WhereTo Logo" style="width:100px;margin:20px auto;display:block;">
+    </div>
+    <ul>
+      <li><a href="admin.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="routemanage.html"><i class="fa-solid fa-route"></i> Routes</a></li>
+      <li><a href="commuters.html" class="active"><i class="fa-solid fa-users"></i> Commuters</a></li>
+      <li><a href="reportadmin.html"><i class="fa-solid fa-flag"></i> Reports</a></li>
+      <li><a href="aprofile.html"><i class="fa-solid fa-user"></i> User Management</a></li>
+    </ul>
+  </div>
+  <main class="user-main">
+<div class="user-header">
+  <div>
+    <h2>Commuters</h2>
+    <p>Manage user accounts and permissions</p>
+  </div>
+  <button id="addUserBtn" class="add-user-btn">+Add users</button>
+</div>
+
+
+<!-- Modal for adding user -->
+<div id="addUserModal" class="add-user-modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h3>Add New User</h3>
+    <form id="addUserForm">
+      <label for="newUserName">Name:</label>
+      <input type="text" id="newUserName" required>
+
+      <label for="newUserEmail">Email:</label>
+      <input type="email" id="newUserEmail" required>
+
+      <label for="newUserStatus">Status:</label>
+      <select id="newUserStatus" required>
+        <option value="active">Active</option>
+        <option value="suspended">Suspended</option>
+        <option value="inactive">Inactive</option>
+      </select>
+
+      <label for="newUserRole">Role:</label>
+      <select id="newUserRole" required>
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <button type="submit">Add User</button>
+    </form>
+  </div>
+</div>
+
+
+    <div class="user-stats">
+      <div class="stat-card"><span>Total Users</span><span class="stat-value">6</span><i class="fa-solid fa-users"></i></div>
+      <div class="stat-card"><span>Active</span><span class="stat-value">4</span><i class="fa-solid fa-user-check"></i></div>
+      <div class="stat-card"><span>Suspended</span><span class="stat-value">1</span><i class="fa-solid fa-user-xmark"></i></div>
+      <div class="stat-card"><span>Inactive</span><span class="stat-value">1</span><i class="fa-solid fa-clock"></i></div>
+      <div class="stat-card"><span>Admins</span><span class="stat-value">1</span><i class="fa-solid fa-user-shield"></i></div>
+    </div>
+    <div class="user-searchbar">
+      <input type="text" placeholder="Search users by name or email...">
+      <div class="filter-group">
+        <select>
+          <option>All status</option>
+          <option>Active</option>
+          <option>Suspended</option>
+          <option>Inactive</option>
+        </select>
+        <i class="fa-solid fa-filter"></i>
+      </div>
+    </div>
+    <h3>Users (1)</h3>
+    <div class="user-grid">
+  <!-- User 1 -->
+  <div class="user-card">
+    <div class="user-card-header">
+      <i class="fa-solid fa-user-circle"></i>
+      <div>
+        <div class="user-name">Maria Santos</div>
+        <div class="user-email">maria.santos@email.com</div>
+      </div>
+      <span class="user-status active">active</span>
+    </div>
+    <div class="user-card-info">
+      <div><i class="fa-solid fa-calendar"></i> Joined 2024-01-15</div>
+      <div><i class="fa-solid fa-clock"></i> 2 hours ago</div>
+      <div><i class="fa-solid fa-route"></i> 156 trips</div>
+      <div><i class="fa-solid fa-user"></i> user</div>
+    </div>
+    <div class="user-card-actions">
+      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
+      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
+    </div>
+  </div>
+
+  
+
+  <!-- User 2 -->
+  <div class="user-card">
+    <div class="user-card-header">
+      <i class="fa-solid fa-user-circle"></i>
+      <div>
+        <div class="user-name">Juan Dela Cruz</div>
+        <div class="user-email">juan.delacruz@email.com</div>
+      </div>
+      <span class="user-status active">active</span>
+    </div>
+    <div class="user-card-info">
+      <div><i class="fa-solid fa-calendar"></i> Joined 2023-09-20</div>
+      <div><i class="fa-solid fa-clock"></i> 5 hours ago</div>
+      <div><i class="fa-solid fa-route"></i> 210 trips</div>
+      <div><i class="fa-solid fa-user"></i> user</div>
+    </div>
+    <div class="user-card-actions">
+      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
+      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
+    </div>
+  </div>
+
+  <!-- User 3 -->
+  <div class="user-card">
+    <div class="user-card-header">
+      <i class="fa-solid fa-user-circle"></i>
+      <div>
+        <div class="user-name">Angela Reyes</div>
+        <div class="user-email">angela.reyes@email.com</div>
+      </div>
+      <span class="user-status suspended">suspended</span>
+    </div>
+    <div class="user-card-info">
+      <div><i class="fa-solid fa-calendar"></i> Joined 2024-03-10</div>
+      <div><i class="fa-solid fa-clock"></i> 1 week ago</div>
+      <div><i class="fa-solid fa-route"></i> 98 trips</div>
+      <div><i class="fa-solid fa-user"></i> user</div>
+    </div>
+    <div class="user-card-actions">
+      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
+      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
+    </div>
+  </div>
+
+  <!-- User 4 -->
+  <div class="user-card">
+    <div class="user-card-header">
+      <i class="fa-solid fa-user-circle"></i>
+      <div>
+        <div class="user-name">Kevin Tan</div>
+        <div class="user-email">kevin.tan@email.com</div>
+      </div>
+      <span class="user-status inactive">inactive</span>
+    </div>
+    <div class="user-card-info">
+      <div><i class="fa-solid fa-calendar"></i> Joined 2023-05-05</div>
+      <div><i class="fa-solid fa-clock"></i> 3 months ago</div>
+      <div><i class="fa-solid fa-route"></i> 45 trips</div>
+      <div><i class="fa-solid fa-user"></i> user</div>
+    </div>
+    <div class="user-card-actions">
+      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
+      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
+    </div>
+  </div>
+
+  <!-- User 5 -->
+  <div class="user-card">
+    <div class="user-card-header">
+      <i class="fa-solid fa-user-circle"></i>
+      <div>
+        <div class="user-name">Lara Mendoza</div>
+        <div class="user-email">lara.mendoza@email.com</div>
+      </div>
+      <span class="user-status active">active</span>
+    </div>
+    <div class="user-card-info">
+      <div><i class="fa-solid fa-calendar"></i> Joined 2022-12-22</div>
+      <div><i class="fa-solid fa-clock"></i> 1 day ago</div>
+      <div><i class="fa-solid fa-route"></i> 320 trips</div>
+      <div><i class="fa-solid fa-user-shield"></i> admin</div>
+    </div>
+    <div class="user-card-actions">
+      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
+      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
+    </div>
+  </div>
+
+  <!-- User 6 -->
+  <div class="user-card">
+    <div class="user-card-header">
+      <i class="fa-solid fa-user-circle"></i>
+      <div>
+        <div class="user-name">Daniel Cruz</div>
+        <div class="user-email">daniel.cruz@email.com</div>
+      </div>
+      <span class="user-status active">active</span>
+    </div>
+    <div class="user-card-info">
+      <div><i class="fa-solid fa-calendar"></i> Joined 2024-07-18</div>
+      <div><i class="fa-solid fa-clock"></i> 5 minutes ago</div>
+      <div><i class="fa-solid fa-route"></i> 27 trips</div>
+      <div><i class="fa-solid fa-user"></i> user</div>
+    </div>
+    <div class="user-card-actions">
+      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
+      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
+    </div>
+  </div>
+</div>
+
+  </main>
+  <script src="commuters.js"></script>
+</body>
+</html>

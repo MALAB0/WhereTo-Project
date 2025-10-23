@@ -16,12 +16,26 @@ app.use(express.static(path.join(process.cwd(), "public")));
 // routes
 app.get("/signin", (req, res) => {res.render("signin");});
 app.get("/signup", (req, res) => {res.render("signup");});
+app.get("/about", (req, res) => {res.render("about");});
+
+app.get("/homepage", (req, res) => {res.render("homepage");});
 app.get("/destination", (req, res) => {res.render("destination");});
-app.get("/report", (req, res) => {res.render("report");});
 app.get("/livemap", (req, res) => {res.render("LiveMap");});
+app.get("/report", (req, res) => {res.render("report");});
 app.get("/nav", (req, res) => {res.render("navigation");});
+app.get("/nav1", (req, res) => {res.render("nav");});
 app.get("/route", (req, res) => {res.render("route");});
 app.get("/profile", (req, res) => {res.render("profile");});
+app.get("/prof2", (req, res) => {res.render("profile2");});
+
+app.get("/admin", (req, res) => {res.render("admin");});
+app.get("/commuters", (req, res) => {res.render("commuters");});
+app.get("/aprof", (req, res) => {res.render("aprofile");});
+app.get("/reportadmin", (req, res) => {res.render("reportadmin");});
+app.get("/routem", (req, res) => {res.render("routemanage");});
+app.get("/userm", (req, res) => {res.render("usermanage");});
+app.get("/step1", (req, res) => {res.render("step1");});
+
 
 app.get('/api/reports', async (req, res) => {
   try {

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WhereTo | Jeepney Route Finder</title>
+  <link rel="stylesheet" href="route.css" />
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="header-left">
+      <img src="compass.PNG" alt="Compass" class="icon" />
+      <img src="Logo.PNG" alt="WhereTo Logo" class="logo" />
+    </div>
+    <div class="header-right">
+      <img src="favorites.png" alt="Favorites" class="icon" />
+      <img src="pin.png" alt="Pin" class="icon" />
+    </div>
+  </header>
+
+  <!-- ===== ROUTE SUMMARY ===== -->
+  <div class="big-box">
+    <h1 id="routeTitle">Loading route...</h1>
+    <p id="routeTime">Preparing your journey...</p>
+    
+    <div class="nav-box">
+      <button class="nav-btn" onclick="window.location.href='navigation.html'">
+        <i class="fa-solid fa-location-arrow"></i>
+        <span>Start Navigation</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== DIRECTIONS ===== -->
+  <div class="big-box second">
+    <h1>Directions</h1>
+
+    <div class="step-box">
+      <img src="route.png" alt="Step Icon" class="step-icon">
+      <div class="step-text">
+        <span class="step-title">Step 1</span>
+        <p id="step1">Walk to starting point...</p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <img src="route.png" alt="Step Icon" class="step-icon">
+      <div class="step-text">
+        <span class="step-title">Step 2</span>
+        <p id="step2">Board jeepney to destination...</p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <img src="route.png" alt="Step Icon" class="step-icon">
+      <div class="step-text">
+        <span class="step-title">Step 3</span>
+        <p id="step3">Transfer if needed...</p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <img src="route.png" alt="Step Icon" class="step-icon">
+      <div class="step-text">
+        <span class="step-title">Step 4</span>
+        <p id="step4">Continue journey...</p>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <img src="route.png" alt="Step Icon" class="step-icon">
+      <div class="step-text">
+        <span class="step-title">Step 5</span>
+        <p id="step5">Arrive at destination...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ROUTE ALERTS ===== -->
+  <div class="big-box third">
+    <h1>Route Alerts</h1>
+    <div class="step-box">
+      <img src="route.png" alt="Alert Icon" class="step-icon">
+      <div class="step-text">
+        <span class="step-title">Route Tip</span>
+        <p>Traffic may increase during rush hours...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ACTION BUTTONS ===== -->
+  <section class="content-section">
+    <div class="buttons-row">
+      <button class="info-btn" onclick="window.location.href='WT.html'">
+        <img src="map.png" alt="Map Icon" />
+        <span>Live Map</span>
+      </button>
+      <button class="info-btn" onclick="window.location.href='destination.html'">
+        <img src="route.png" alt="Alternative Icon" />
+        <span>Find Alternative</span>
+      </button>
+    </div>
+  </section>
+
+  <script src="https://kit.fontawesome.com/a2e0f6e6b4.js" crossorigin="anonymous"></script>
+  <script>
+    const routeTitle = document.getElementById('routeTitle');
+    const routeTime = document.getElementById('routeTime');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const step4 = document.getElementById('step4');
+    const step5 = document.getElementById('step5');
+
+    function loadRouteData() {
+      const recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+      const currentSearch = recentSearches[0];
+      if (currentSearch) {
+        const fromLocation = currentSearch.from;
+        const toLocation = currentSearch.to;
+        routeTitle.textContent = `${fromLocation} → ${toLocation}`;
+        routeTime.textContent = 'Estimated travel time: 45-60 minutes';
+        step1.textContent = `Walk to ${fromLocation} starting point...`;
+        step2.textContent = `Board jeepney from ${fromLocation} to ${toLocation}...`;
+        step3.textContent = 'Transfer at intermediate stop if needed...';
+        step4.textContent = `Continue journey towards ${toLocation}...`;
+        step5.textContent = `Arrive at ${toLocation} destination...`;
+      } else {
+        routeTitle.textContent = 'Divisoria → Cubao';
+        routeTime.textContent = 'Estimated travel time: 45 minutes';
+      }
+    }
+    loadRouteData();
+  </script>
+</body>
+</html>

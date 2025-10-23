@@ -5,7 +5,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/loginusers")
     console.error("MongoDB connection error:", err);
     process.exit(1);
   });
-
+  
 const SigninSchema = new mongoose.Schema({
   email: {type: String,equired: true},
   password: {type: String,required: true}

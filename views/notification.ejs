@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings | WhereTo</title>
+  <link rel="stylesheet" href="notification.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <header class="nt-header">
+    <button class="back-btn" aria-label="Go Back" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+    <h1>Settings</h1>
+    <div style="width:36px"></div>
+  </header>
+
+  <main class="nt-main">
+    <!-- Preferences -->
+    <section class="prefs-card">
+      <div class="prefs-header">
+        <i class="fa-solid fa-gear"></i>
+        <h2>Notification Preferences</h2>
+      </div>
+      <div class="prefs-list">
+        <div class="pref-row">
+          <div class="pref-text">
+            <span class="pref-title">Route Changes</span>
+            <span class="pref-desc">Get notified when routes are modified</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="pref-routeChanges" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="pref-row">
+          <div class="pref-text">
+            <span class="pref-title">Service Delays</span>
+            <span class="pref-desc">Alerts for traffic and delays</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="pref-serviceDelays" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="pref-row">
+          <div class="pref-text">
+            <span class="pref-title">Fare Updates</span>
+            <span class="pref-desc">Changes to fare rates</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="pref-fareUpdates" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="pref-row">
+          <div class="pref-text">
+            <span class="pref-title">Maintenance Updates</span>
+            <span class="pref-desc">Scheduled maintenance notices</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="pref-maintenanceUpdates" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Helpful Tools -->
+    <section class="helpful-section">
+      <div class="helpful-header">
+        <i class="fa-solid fa-circle-info"></i>
+        <h2>Helpful Tools</h2>
+      </div>
+      <div class="helpful-list">
+        <button class="help-btn"><i class="fa-solid fa-map-location-dot"></i> Nearby Terminals</button>
+        <button class="help-btn"><i class="fa-solid fa-clock-rotate-left"></i> View Travel History</button>
+        <button class="help-btn"><i class="fa-solid fa-bell-slash"></i> Manage Alerts</button>
+        <button class="help-btn"><i class="fa-solid fa-user-shield"></i> Privacy & Permissions</button>
+      </div>
+    </section>
+
+    <!-- Bottom Actions -->
+    <section class="nt-actions">
+      <button id="planTripBtn" class="btn plan"><i class="fa-solid fa-route"></i> Plan Trip</button>
+      <button id="reportIssueBtn" class="btn report"><i class="fa-solid fa-triangle-exclamation"></i> Report Issue</button>
+    </section>
+  </main>
+
+  <script src="notification.js"></script>
+</body>
+</html>

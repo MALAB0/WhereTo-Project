@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - WhereTo</title>
+  <link rel="stylesheet" href="admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="admin-header">
+    <div class="header-left">
+      <button class="menu-btn" id="menuBtn">&#9776;</button>
+      <div class="logo">Where<br>To<img src="compass.png" alt="logo" style="height:20px;vertical-align:middle;"></div>
+    </div>
+    <div class="header-right">
+      <div class="notification-bell">
+        <i class="fa-solid fa-bell"></i>
+        <div class="bell-dropdown" id="bellDropdown">
+          <a href="/aprof"><i class="fa-solid fa-user"></i> Profile</a>
+          <a href="#" onclick="changePassword(event)"><i class="fa-solid fa-key"></i> Change Password</a>
+          <a href="#" onclick="adminLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="Logo.PNG" alt="WhereTo Logo" style="width:100px;margin:20px auto;display:block;">
+    </div>
+    <ul>
+      <li><a href="/admin" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="/routem"><i class="fa-solid fa-route"></i> Routes</a></li>
+      <li><a href="/commuters"><i class="fa-solid fa-users"></i> Commuters</a></li>
+      <li><a href="/reportadmin"><i class="fa-solid fa-flag"></i> Reports</a></li>
+      <li><a href="/aprofile"><i class="fa-solid fa-user"></i> User Management</a></li>
+    </ul>
+  </div>
+
+  <main class="admin-main">
+    <section class="dashboard-overview">
+      <h2>Admin Dashboard</h2>
+      <p>Overview of WhereTo</p>
+      <div class="stats-grid">
+        <div class="stat-card users">
+          <div class="stat-title">Total Users</div>
+          <div class="stat-value">15,427</div>
+          <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        </div>
+        <div class="stat-card routes">
+          <div class="stat-title">Active Routes</div>
+          <div class="stat-value">342</div>
+          <div class="stat-icon"><i class="fa-solid fa-route"></i></div>
+        </div>
+        <div class="stat-card reports">
+          <div class="stat-title">Pending Reports</div>
+          <div class="stat-value">23</div>
+          <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        </div>
+        <div class="stat-card trips">
+          <div class="stat-title">Daily Trips</div>
+          <div class="stat-value">8,434</div>
+          <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Most Used Routes Chart -->
+  <section class="most-used-routes">
+  <h2>Most Used Routes</h2>
+  <div class="chart-container">
+    <canvas id="mostUsedRoutesChart"></canvas>
+  </div>
+</section>
+
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>
