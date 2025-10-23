@@ -23,7 +23,6 @@ app.get("/destination", (req, res) => {res.render("destination");});
 app.get("/livemap", (req, res) => {res.render("LiveMap");});
 app.get("/report", (req, res) => {res.render("report");});
 app.get("/nav", (req, res) => {res.render("navigation");});
-app.get("/nav1", (req, res) => {res.render("nav");});
 app.get("/route", (req, res) => {res.render("route");});
 app.get("/profile", (req, res) => {res.render("profile");});
 app.get("/prof2", (req, res) => {res.render("profile2");});
@@ -34,8 +33,6 @@ app.get("/aprof", (req, res) => {res.render("aprofile");});
 app.get("/reportadmin", (req, res) => {res.render("reportadmin");});
 app.get("/routem", (req, res) => {res.render("routemanage");});
 app.get("/userm", (req, res) => {res.render("usermanage");});
-app.get("/step1", (req, res) => {res.render("step1");});
-
 
 app.get('/api/reports', async (req, res) => {
   try {
@@ -108,7 +105,15 @@ app.post('/signin', async (req, res) => {
     }
 
     console.log('User signed in:', user.email);
-    return res.redirect('/destination');
+    
+    // Check if user is admin based on email
+    const username = email.toLowerCase().split('@')[0];
+    if (username.includes('admin')) {
+      return res.redirect('/admin');
+    } else {
+      return res.redirect('/destination');
+    }
+
   } catch (err) {
     console.error('Signin error:', err);
     return res.status(500).send('Server error');
