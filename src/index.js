@@ -12,6 +12,7 @@ app.use(express.urlencoded({extended: false}));
 // set view engine
 app.set("view engine", "ejs");
 app.use(express.static(path.join(process.cwd(), "public")));
+app.use(express.static(path.join(process.cwd(), "src")));
 
 // routes
 app.get("/signin", (req, res) => {res.render("signin");});
