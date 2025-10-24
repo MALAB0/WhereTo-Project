@@ -7,7 +7,7 @@
 }
 
 body {
-  background: #f4f7f9;
+  background: #f8ebdd;
   color: #333;
 }
 
@@ -16,8 +16,9 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
-  background-color: #0a3d62;
+  padding: 15px 40px;
+  background-color: #fafafa;
+  border-bottom: 4px solid #0a3d62;
   color: white;
 }
 

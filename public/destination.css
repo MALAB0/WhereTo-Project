@@ -13,7 +13,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 50px;
+  padding: 0px 40px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: fixed;
   top: 0;
@@ -25,16 +25,16 @@ header {
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0px;
 }
 
 .logo {
-  width: 130px;
+  width: 100px;
   height: auto;
 }
 
 .logo-icon {
-  width: 26px;
+  width: 50px;
   height: auto;
 }
 
@@ -104,7 +104,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 80px;
+  margin-top: 70px;
   position: relative;
 }
 
