@@ -22,6 +22,7 @@ app.get("/homepage", (req, res) => {res.render("homepage");});
 app.get("/destination", (req, res) => {res.render("destination");});
 app.get("/livemap", (req, res) => {res.render("LiveMap");});
 app.get("/report", (req, res) => {res.render("report");});
+app.get("/notification", (req, res) => {res.render("notification");});
 app.get("/nav", (req, res) => {res.render("navigation");});
 app.get("/route", (req, res) => {res.render("route");});
 app.get("/profile", (req, res) => {res.render("profile");});

@@ -13,42 +13,89 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 50px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 12px 50px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
 }
 
+/* Left Section */
 .header-left {
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.icon {
-  width: 40px;
-  height: auto;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.icon:hover {
-  transform: scale(1.1);
-  opacity: 0.8;
+  gap: 10px;
 }
 
 .logo {
-  width: 120px;
+  width: 130px;
   height: auto;
 }
+
+.logo-icon {
+  width: 26px;
+  height: auto;
+}
+
+/* Right Section */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Individual Icon Container */
+.nav-icon {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  background: #f6f9fc;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.nav-icon:hover {
+  transform: translateY(-3px);
+  background: #e8f3ff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Icon Images */
+.nav-icon img {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.2s ease;
+}
+
+.nav-icon:hover img {
+  transform: scale(1.15);
+}
+
+.nav-icon[title] {
+  position: relative;
+}
+
+.nav-icon[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0a3d62;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0.9;
+}
+
 
 /* ===== HERO SECTION ===== */
 .hero {
@@ -160,8 +207,8 @@ header {
 }
 
 .info-btn img {
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
 }
 
 .big-box {
@@ -203,7 +250,7 @@ header {
 
 
 .small-icon {
-  width: 35px;
+  width: 20px;
   height: auto;
 }
 
