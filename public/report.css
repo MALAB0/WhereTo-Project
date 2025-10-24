@@ -11,10 +11,11 @@ body {
 header {
     display: flex;
     align-items: center;
-    padding: 15px 20px;
-    background-color: #0a3d62;
-    color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 21px 20px;
+    background-color: #ffffff;
+    color: rgb(221, 113, 51);
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     position: sticky;
     top: 0;
     z-index: 1000;

@@ -1,6 +1,6 @@
 body {
   font-family: 'Poppins', sans-serif;
-  background: #f5f7fb;
+  background: #f8ebdd;
   margin: 0;
   color: #222;
 }
@@ -13,7 +13,8 @@ body {
   align-items: center;
   justify-content: space-between;
   background: #ffffff;
-  border-bottom: 4px solid #0a3d62;
+  border-bottom: 1px solid #ccc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 20px 18px;
   z-index: 10;
 }

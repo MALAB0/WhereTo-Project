@@ -22,8 +22,8 @@ body {
   align-items: center;
   justify-content: space-between;
   background: #ffffff;
-  border-bottom: 4px solid #0a3d62;
-  padding: 14px 18px;
+  border-bottom: 1px solid #ccc;
+  padding: 0px 40px;
   z-index: 10;
 }
 

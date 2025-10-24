@@ -23,12 +23,13 @@ body {
 }
 
 .top-bar {
+  position: sticky;
   display: flex;
   align-items: center;
-  padding: 10px 15px;
+  padding: 21px 15px;
   background-color: #fff;
   border-bottom: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds subtle drop shadow */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Adds subtle drop shadow */
 }
 
 .back-btn {
