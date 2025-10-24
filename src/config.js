@@ -7,7 +7,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/loginusers")
   });
   
 const SigninSchema = new mongoose.Schema({
-  email: {type: String,equired: true},
+  email: {type: String,required: true},
   password: {type: String,required: true}
 });
 
@@ -16,8 +16,8 @@ const reportSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const collection = mongoose.model("Users", SigninSchema);
-const Rcollection = mongoose.model("Reports", reportSchema);
+const collection = mongoose.model("users", SigninSchema);
+const Rcollection = mongoose.model("reports", reportSchema);
 
 console.log("User model ready ->", collection.collection.name);
 console.log("Report model ready ->", Rcollection.collection.name);
