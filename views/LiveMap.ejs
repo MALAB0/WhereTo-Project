@@ -40,34 +40,30 @@
       const iframe = document.getElementById('mapFrame');
 
       async function loadMap() {
-        try {
-          const res = await fetch(LOCATION_API);
-          if (!res.ok) throw new Error('Location API returned ' + res.status);
-          const data = await res.json();
+  try {
+    const res = await fetch(LOCATION_API);
+    if (!res.ok) throw new Error('Location API returned ' + res.status);
+    const data = await res.json();
 
-          // Accept either { lat, lng [, zoom] } or { place } or { embedUrl }
-          const { lat, lng, zoom = 13, place, embedUrl } = data;
+    const { lat, lng, zoom = 5, embedUrl } = data;
 
-          let src;
-          if (embedUrl) {
-            // If your API already returns a full embed URL, use it
-            src = embedUrl;
-          } else if (lat != null && lng != null) {
-            // Use a simple embed without API key
-            src = `https://www.google.com/maps?q=${lat},${lng}&z=${zoom}&output=embed`;
-          } else if (place) {
-            src = `https://www.google.com/maps?q=${encodeURIComponent(place)}&z=${zoom}&output=embed`;
-          } else {
-            throw new Error('Invalid location response');
-          }
+    let src;
+    if (embedUrl) {
+      src = embedUrl;
+    } else if (lat != null && lng != null) {
+      // MapTiler Hybrid map format
+      src = `https://api.maptiler.com/maps/hybrid/?key=7gC1ycjhdrekilmBwtUi#${zoom}/${lat}/${lng}`;
+    } else {
+      throw new Error('Invalid location response');
+    }
 
-          iframe.src = src;
-        } catch (err) {
-          console.error('Failed to load location:', err);
-          // fallback map (original Dagupan City)
-          iframe.src = 'https://www.google.com/maps?q=Dagupan%20City%2C%20Pangasinan&output=embed';
-        }
-      }
+    iframe.src = src;
+  } catch (err) {
+    console.error('Failed to load location:', err);
+    // fallback to a default MapTiler view
+    iframe.src = 'https://api.maptiler.com/maps/hybrid/?key=7gC1ycjhdrekilmBwtUi#5.0/13.40503/120.59931';
+  }
+}
 
       loadMap();
     </script>

@@ -41,8 +41,7 @@
 
   <!-- JavaScript for Sign In -->
  <script>
-    document.getElementById('signinForm').addEventListener('submit', async function(e) {
-      e.preventDefault
+    document.getElementById('signinForm').addEventListener('submit', function(e) {
       
       const email = document.getElementById('signinEmail').value.trim();
       const password = document.getElementById('signinPassword').value;
