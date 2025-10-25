@@ -32,6 +32,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+        // Close sidebar when clicking outside of it
+    document.addEventListener('click', function (event) {
+    const isClickInsideSidebar = sidebar.contains(event.target);
+    const isClickOnMenuBtn = menuBtn.contains(event.target);
+
+    if (!isClickInsideSidebar && !isClickOnMenuBtn) {
+      sidebar.classList.remove('active');
+    }
+  });
+
   }
 
   // --- Initialization: load saved or keep defaults ---

@@ -9,7 +9,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-// set view engine
 app.set("view engine", "ejs");
 app.use(express.static(path.join(process.cwd(), "public")));
 app.use(express.static(path.join(process.cwd(), "src")));
@@ -35,6 +34,7 @@ app.get("/aprof", (req, res) => {res.render("aprofile");});
 app.get("/reportadmin", (req, res) => {res.render("reportadmin");});
 app.get("/routem", (req, res) => {res.render("routemanage");});
 app.get("/userm", (req, res) => {res.render("usermanage");});
+app.get("/cpass", (req, res) => {res.render("changepass");});
 
 app.get('/api/reports', async (req, res) => {
   try {
@@ -45,7 +45,6 @@ app.get('/api/reports', async (req, res) => {
   }
 });
 
-// ...existing code...
 app.get("/livemap", (req, res) => { res.render("LiveMap"); });
 
 app.get('/api/location', async (req, res) => {
@@ -61,7 +60,26 @@ app.get('/api/location', async (req, res) => {
     res.status(500).json({ error: 'Failed to get location' });
   }
 });
-// ...existing code...
+
+app.post('/api/savedroutes', async (req, res) => {
+  try {
+    const data = new SavedRoute(req.body);
+    await data.save();
+    res.json({ message: "✅ Saved route added!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/trips', async (req, res) => {
+  try {
+    const data = new Trip(req.body);
+    await data.save();
+    res.json({ message: "✅ Trip added!" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 app.post("/signup", async (req, res) => {console.log("POST /signup hit", req.body);
   const { email, password } = req.body;
@@ -121,7 +139,6 @@ app.post('/signin', async (req, res) => {
     return res.status(500).send('Server error');
   }
 });
-
 
 // start server
 const PORT = 8000;

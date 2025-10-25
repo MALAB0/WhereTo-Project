@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="changepass.css" />
+<head>
+  <meta charset="UTF-8" />
+  <title>Change Password</title>
+</head>
+<body>
+  <h2>Change Password</h2>
+  <form id="changePasswordForm">
+    <label>Email</label>
+    <input type="email" id="email" required />
+
+    <label>Current Password</label>
+    <input type="password" id="currentPassword" required />
+
+    <label>New Password</label>
+    <input type="password" id="newPassword" required />
+
+    <label>Confirm New Password</label>
+    <input type="password" id="confirmNewPassword" required />
+
+    <button type="submit">Change Password</button>
+  </form>
+
+  <script>
+    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const userIndex = users.findIndex(u => u.email === email && u.password === currentPassword);
+
+      if (userIndex === -1) {
+        alert('Incorrect email or current password');
+        return;
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        alert('New passwords do not match');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        alert('New password must be at least 6 characters');
+        return;
+      }
+
+      users[userIndex].password = newPassword;
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Password changed successfully!');
+    });
+  </script>
+</body>
+</html>
