@@ -2,48 +2,10 @@
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #f0f2f5;
-    background: #f8ebdd;
     margin: 0;
     padding: 0;
     color: #333;
 }
-.back-btn {
-  background: transparent;
-  border: none;
-  font-size: 22px;
-  color: #0a3d62;
-  cursor: pointer;
-}
-
-.profile-header {
-  position: sticky;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  border-bottom: 1px solid #ccc;
-  padding: 0px 40px;
-  z-index: 10;
-}
-
-.profile-header h1 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #0a3d62;
-  margin: 0;
-  text-align: center;
-  flex: 1;
-}
-
-.back-btn {
-  background: transparent;
-  border: none;
-  font-size: 22px;
-  color: #0a3d62;
-  cursor: pointer;
-}
-
 
 /* Header */
 header {
@@ -124,12 +86,12 @@ header {
 
 /* Profile Card */
 .profile-card {
-    background:linear-gradient(to right, #00534c, #002f87,#00b4d8);
+    background-color: #0a3d62;
     color: white;
     padding: 25px;
     border-radius: 15px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
@@ -254,7 +216,7 @@ header {
 
 /* Preferences Section */
 .preferences {
-    background:#ffffff;
+    background-image: url(BG.JPG);
 }
 
 .preference-item {
@@ -262,7 +224,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .preference-item:last-child {
