@@ -5,6 +5,7 @@ body {
   margin: 0;
 }
 
+/* Header */
 .admin-header {
   background: #fff;
   display: flex;
@@ -103,15 +104,16 @@ body {
   width: 18px;
 }
 
+/* Sidebar */
 .admin-main {
   padding: 24px;
-  transition: margin-left 0.3s ease; /* smooth shift when sidebar opens */
+  transition: margin-left 0.3s ease;
 }
 
 .sidebar {
   position: fixed;
   top: 0;
-  left: -250px; /* hidden by default */
+  left: -250px;
   width: 250px;
   height: 100%;
   background: #fff;
@@ -129,12 +131,7 @@ body {
 }
 
 .sidebar.active {
-  left: 0; /* slide in */
-}
-
-/* when sidebar opens, push main content to the right */
-.sidebar.active ~ .admin-main {
-  margin-left: 250px;
+  left: 0;
 }
 
 .sidebar ul {
@@ -177,46 +174,16 @@ body {
 /* Header layout */
 .routes-header {
   display: flex;
-  justify-content: space-between; /* title left, button right */
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 32px;
+  margin-left: 32px;
+  margin-right: 32px;
 }
 
 /* Button styling */
 .add-route-btn {
-  background: #e6e6e6;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 18px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  position: relative;
-  top: -5px; /* move slightly up */
-}
-
-.routes-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.routes-header h2 {
-  margin: 20px 0 0 30px; /* 10px down, 20px right */
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.routes-header p {
-  margin: 6px 0 0 30px; /* slightly below h2, 20px right */
-  font-size: 14px;
-  color: #333;
-}
-
-
-.add-route-btn {
-  background: #5d5b5b; /* grey */
+  background: #5d5b5b;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -227,203 +194,28 @@ body {
 }
 
 .add-route-btn:hover {
-  background: #8c8c8c; /* darker grey on hover */
+  background: #8c8c8c;
 }
 
-
+/* Routes Grid */
 .routes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 0 30px 40px 30px;
 }
 
-.route-card {
-  background: #f0f4ff;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.route-card h4 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.route-card p {
-  margin: 0;
-  font-size: 14px;
-  color: #333;
-}
-
-.route-card-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.route-card-actions button {
-  border: none;
-  border-radius: 6px;
-  padding: 4px 10px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.route-card-actions .edit {
-  background: #f0ad4e;
-  color: #fff;
-}
-
-.route-card-actions .delete {
-  background: #d9534f;
-  color: #fff;
-}
-
-.route-card-actions button:hover {
-  opacity: 0.9;
-}
-
-/* Modal overlay */
-.add-route-modal {
-  display: none;
-  position: fixed;
-  z-index: 2000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
-  justify-content: center;
-  align-items: center;
-}
-
-/* Modal content */
-.add-route-modal .modal-content {
-  background: #fff;
-  border-radius: 8px;
-  padding: 24px;
-  width: 350px;
-  max-width: 90%;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  position: relative;
-}
-
-/* Close button */
-.add-route-modal .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-/* Form styles */
-.add-route-modal form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.add-route-modal input,
-.add-route-modal select {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-.add-route-modal button[type="submit"] {
-  background: #2d6cdf;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 8px;
-}
-
-.add-route-modal button[type="submit"]:hover {
-  background: #1a4a9d;
-}
-
-
-/* --- Dashboard sections (unchanged) --- */
-.dashboard-overview h2 {
-  margin: 0 0 4px 0;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.dashboard-overview p {
-  margin: 0 0 18px 0;
-  font-size: 14px;
-  color: #333;
-}
-
-.dashboard-overview,
-.recent-reports {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-/* --- Route Page --- */
-.route-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
-  margin-top: 20px;
-  margin-left: 30px;
-}
-
-.route-header h2 {
-  margin: 0 0 4px 0;
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.route-header p {
-  margin: 0;
-  font-size: 14px;
-  color: #333;
-}
-
-.add-route-btn {
-  background: #e6e6e6;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 18px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-right: 30px;
-}
-
-.routes-grid {
-  display: flex;
-  gap: 32px;
-  margin-bottom: 40px;
-}
-
+/* Route Cards */
 .route-card {
   background: linear-gradient(90deg, #2d6cdf 60%, #6fb1fc 100%);
   color: #fff;
   border-radius: 8px;
   padding: 22px 20px;
-  min-width: 320px;
-  max-width: 340px;
+  min-width: 260px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-left: 30px;
 }
 
 .route-title {
@@ -447,14 +239,20 @@ body {
   display: inline-block;
 }
 
-.route-status.active {
-  color: #2d6cdf;
-  background: #e6f0ff;
+/* Updated Admin Statuses */
+.route-status.operational {
+  color: #28a745;
+  background: #e6ffed;
 }
 
 .route-status.maintenance {
   color: #e6a700;
   background: #fffbe6;
+}
+
+.route-status.suspended {
+  color: #e74c3c;
+  background: #ffe6e6;
 }
 
 .route-desc {
@@ -499,12 +297,105 @@ body {
   background: #e6f0ff;
 }
 
-.route-bg {
-  position: absolute;
+/* Modals (Centered) */
+.add-route-modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
   left: 0;
-  right: 0;
-  bottom: 0;
-  height: 220px;
-  background: url('css/BG.JPG') no-repeat center/cover;
-  z-index: -1;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.add-route-modal .modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  width: 420px;
+  max-width: 95%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  position: relative;
+  color: #333;
+  text-align: left;
+  margin: auto;
+}
+
+/* Close buttons */
+.add-route-modal .close-btn,
+.add-route-modal .close-steps-btn,
+.add-route-modal .close-view-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Form Layout */
+.add-route-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.add-route-modal input,
+.add-route-modal select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Steps Inputs Layout */
+.steps-inputs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.steps-inputs label {
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.steps-inputs input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Save Button */
+#saveRouteBtn {
+  background: #2d6cdf;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+#saveRouteBtn:hover {
+  background: #1a4a9d;
+}
+
+/* View Modal */
+#routeViewContent p {
+  margin: 6px 0;
+  color: #333;
+}
+#routeViewContent h4 {
+  margin: 8px 0 6px 0;
+  color: #333;
+}
+#routeViewContent ul {
+  padding-left: 18px;
+  color: #333;
+}
+#routeViewContent li {
+  margin-bottom: 6px;
 }

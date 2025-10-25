@@ -1,7 +1,18 @@
 // Toggle Sidebar
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('active');
-}
+
+    document.addEventListener('click', function (event) {
+    const sidebar = document.getElementById('sidebar');
+    const menuBtn = document.getElementById('menuBtn');
+    if (!sidebar || !sidebar.classList.contains('active')) return;
+
+    const clickedInsideSidebar = sidebar.contains(event.target);
+    const clickedMenuBtn = menuBtn && menuBtn.contains(event.target);
+
+    if (!clickedInsideSidebar && !clickedMenuBtn) {
+      sidebar.classList.remove('active');
+    }
+  });
+
 
 // Sign Out Button
 function signOut() {
