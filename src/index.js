@@ -9,6 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
+// set view engine
 app.set("view engine", "ejs");
 app.use(express.static(path.join(process.cwd(), "public")));
 app.use(express.static(path.join(process.cwd(), "src")));
@@ -45,6 +46,7 @@ app.get('/api/reports', async (req, res) => {
   }
 });
 
+// ...existing code...
 app.get("/livemap", (req, res) => { res.render("LiveMap"); });
 
 app.get('/api/location', async (req, res) => {
@@ -60,26 +62,7 @@ app.get('/api/location', async (req, res) => {
     res.status(500).json({ error: 'Failed to get location' });
   }
 });
-
-app.post('/api/savedroutes', async (req, res) => {
-  try {
-    const data = new SavedRoute(req.body);
-    await data.save();
-    res.json({ message: "✅ Saved route added!" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.post('/api/trips', async (req, res) => {
-  try {
-    const data = new Trip(req.body);
-    await data.save();
-    res.json({ message: "✅ Trip added!" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// ...existing code...
 
 app.post("/signup", async (req, res) => {console.log("POST /signup hit", req.body);
   const { email, password } = req.body;
@@ -139,6 +122,64 @@ app.post('/signin', async (req, res) => {
     return res.status(500).send('Server error');
   }
 });
+
+// ... (rest of your index.js remains the same)
+
+// New route for change password page (GET)
+app.get("/changepassword", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/signin");  // Redirect if not logged in
+  }
+  res.render("changepassword");
+});
+
+// New POST route for changing password (updated to match your endpoint and body)
+app.post("/change-password", async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "Not logged in" });
+  }
+
+  const { email, currentPassword, newPassword } = req.body;
+
+  if (!email || !currentPassword || !newPassword) {
+    return res.status(400).json({ message: "Please fill in all fields" });
+  }
+
+  // Security check: Ensure the email matches the session user
+  if (email !== req.session.user) {
+    return res.status(403).json({ message: "Email does not match logged-in user" });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({ message: "New password must be at least 6 characters long" });
+  }
+
+  try {
+    const user = await collection.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verify current password
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    // Hash new password and update
+    const hash = await bcrypt.hash(newPassword, 10);
+    await collection.updateOne({ email }, { $set: { password: hash } });
+
+    console.log('Password changed for:', email);
+    return res.status(200).json({ message: "Password changed successfully" });
+  } catch (err) {
+    console.error('Change password error:', err);
+    return res.status(500).json({ message: "Server error. Please try again." });
+  }
+});
+
+// ... (rest of your index.js remains the same)
+
 
 // start server
 const PORT = 8000;

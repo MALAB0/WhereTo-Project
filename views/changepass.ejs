@@ -1,30 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="changepass.css" />
 <head>
   <meta charset="UTF-8" />
-  <title>Change Password</title>
+  <title>Change Password | WhereTo</title>
+  <link rel="stylesheet" href="signup.css" />  <!-- Reuse your signup.css for styling -->
 </head>
 <body>
-  <h2>Change Password</h2>
-  <form id="changePasswordForm">
-    <label>Email</label>
-    <input type="email" id="email" required />
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <img src="compass.PNG" alt="Left Icon" class="left-icon" />
+      <img src="Logo.PNG" alt="WhereTo Jeepney Route Finder Logo" class="logo-img" />
+    </div>
+  </header>
 
-    <label>Current Password</label>
-    <input type="password" id="currentPassword" required />
+  <!-- MAIN CONTENT -->
+  <div class="signup-container">
+    <div class="image-section">
+      <img src="bigwhere2logo.png" alt="Commuting Image" />
+    </div>
 
-    <label>New Password</label>
-    <input type="password" id="newPassword" required />
+    <div class="form-section">
+      <div class="signup-box">
+        <h2>Change Password</h2>
+        <form id="changePasswordForm">
+            <label>Email</label>
+            <input type="email" name="email" id="signupEmail" placeholder="Enter your email" required />
 
-    <label>Confirm New Password</label>
-    <input type="password" id="confirmNewPassword" required />
+            <label>Current Password</label>
+           <input type="email" name="currentPassword" id="currentPassword" placeholder="Enter current password" required />
 
-    <button type="submit">Change Password</button>
-  </form>
+            <label>New Password</label>
+            <input type="password" name="newpassword" id="newPassword" placeholder="Enter new password" required />
+
+            <label>Confirm New Password</label>
+            <input type="password" name="confirm_password" id="confirmNewPassword" placeholder="Re-enter your password" required />
+          
+          <p><button type="button" id="back-btn" aria-label="Go back to previous page">Change password</button></p>
+
+        </form>
+        <p><an class="back-btn" onclick="history.back()">Cancel</a></p>
+      </div>
+    </div>
+  </div>
 
   <script>
-    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+
+    document.getElementById('back-btn').addEventListener('click', function() {
+    if (history.length > 1) history.back();
+    else window.location.href = '/re';
+    });
+
+    document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const email = document.getElementById('email').value;
@@ -32,11 +59,8 @@
       const newPassword = document.getElementById('newPassword').value;
       const confirmNewPassword = document.getElementById('confirmNewPassword').value;
 
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const userIndex = users.findIndex(u => u.email === email && u.password === currentPassword);
-
-      if (userIndex === -1) {
-        alert('Incorrect email or current password');
+      if (!email || !currentPassword || !newPassword || !confirmNewPassword) {
+        alert('Please fill in all fields');
         return;
       }
 
@@ -50,9 +74,24 @@
         return;
       }
 
-      users[userIndex].password = newPassword;
-      localStorage.setItem('users', JSON.stringify(users));
-      alert('Password changed successfully!');
+      try {
+        const res = await fetch('/change-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, currentPassword, newPassword })
+        });
+
+        if (res.ok) {
+          alert('Password changed successfully');
+          window.location.href = '/dashboard';
+        } else {
+          const err = await res.json();
+          alert(err.message || 'Could not change password');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Network error');
+      }
     });
   </script>
 </body>
