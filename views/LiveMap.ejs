@@ -2,6 +2,8 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhereTo | Live map</title>
+    <link rel="icon" href="/WTFavicon.png " type="image/png">
     <link rel="stylesheet" href="LiveMap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   </head>
@@ -33,39 +35,66 @@
       <div class="legend-item"><span class="green dot"></span>Live location</div>
     </div>
 
-    <script>
-      // Change this to your location API (can be absolute URL)
-      const LOCATION_API = '/api/location';
+    <script>const map = L.map('map').setView([lat, lng], zoom);
+L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi', {
+  attribution: '© MapTiler © OpenStreetMap contributors'
+}).addTo(map);
+L.marker([lat, lng]).addTo(map).bindPopup('Your Location');</script>
 
-      const iframe = document.getElementById('mapFrame');
+<script>
 
-      async function loadMap() {
-  try {
-    const res = await fetch(LOCATION_API);
-    if (!res.ok) throw new Error('Location API returned ' + res.status);
-    const data = await res.json();
+  
+  // No need for LOCATION_API anymore; we'll use GPS directly
+  // const LOCATION_API = '/api/location';  // Commented out
 
-    const { lat, lng, zoom = 5, embedUrl } = data;
+  const iframe = document.getElementById('mapFrame');
 
-    let src;
-    if (embedUrl) {
-      src = embedUrl;
-    } else if (lat != null && lng != null) {
-      // MapTiler Hybrid map format
-      src = `https://api.maptiler.com/maps/hybrid/?key=7gC1ycjhdrekilmBwtUi#${zoom}/${lat}/${lng}`;
-    } else {
-      throw new Error('Invalid location response');
+  async function loadMap() {
+    // Check if Geolocation is supported
+    if (!navigator.geolocation) {
+      console.error('Geolocation is not supported by this browser.');
+      // Fallback to default MapTiler view
+      iframe.src = 'https://api.maptiler.com/maps/hybrid/?key=7gC1ycjhdrekilmBwtUi#5.0/13.40503/120.59931';
+      return;
     }
 
-    iframe.src = src;
-  } catch (err) {
-    console.error('Failed to load location:', err);
-    // fallback to a default MapTiler view
-    iframe.src = 'https://api.maptiler.com/maps/hybrid/?key=7gC1ycjhdrekilmBwtUi#5.0/13.40503/120.59931';
-  }
-}
+    // Request user's current position
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // Success: Extract lat/lng from GPS data
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const zoom = 15;  // Default zoom; adjust as needed for closer view
+        const accuracy = position.coords.accuracy;  // Optional: Log or display accuracy
 
-      loadMap();
-    </script>
+        console.log(`GPS Location: Lat ${lat}, Lng ${lng}, Accuracy: ${accuracy} meters`);
+
+        // Build MapTiler URL with GPS coordinates
+        const src = `https://api.maptiler.com/maps/hybrid/?key=7gC1ycjhdrekilmBwtUi#${zoom}/${lat}/${lng}`;
+        iframe.src = src;
+
+        // Optional: Add markers or overlays (requires a full map library, not just iframe)
+        // For example, if you switch to Leaflet, you could add a marker here.
+      },
+      (error) => {
+        // Error handling
+        console.error('GPS Error:', error.message);
+        // Fallback to default MapTiler view
+        iframe.src = 'https://api.maptiler.com/maps/hybrid/?key=7gC1ycjhdrekilmBwtUi#5.0/13.40503/120.59931';
+      },
+      {
+        enableHighAccuracy: true,  // Use GPS for better accuracy
+        timeout: 10000,            // 10-second timeout
+        maximumAge: 60000          // Accept cached location up to 1 minute old
+      }
+    );
+  }
+
+  // Call loadMap on page load
+  loadMap();
+
+  // Optional: For a "live" map, update location periodically (e.g., every 30 seconds)
+  // setInterval(loadMap, 30000);
+</script>
   </body>
 </html>
