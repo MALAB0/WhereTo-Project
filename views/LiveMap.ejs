@@ -32,9 +32,10 @@
   margin-right: auto;
   border: 2px solid #222;
   border-radius: 5px; /* Added to match iframe border-radius */
-  overflow: hidden;" ></div>
+  overflow: hidden;" 
+  
+  ></div>
 
-    <!-- Rest of your content remains the same -->
     <div class="legend_container">
       <div class="legend-item"><span class="red dot"></span>Your location</div>
       <div class="legend-item"><span class="blue dot"></span>Terminal</div>
@@ -75,24 +76,27 @@
             const zoom = 16;
             const accuracy = position.coords.accuracy;
 
+
+            const orangeIcon = L.icon({
+              iconUrl: 'WTPin.PNG',  // Replace with your image URL/path
+              iconSize: [41, 41],  // Size of the icon (width, height in pixels)
+              iconAnchor: [19, 41],  // Point of the icon that corresponds to the marker's location (bottom center for pin effect)
+              popupAnchor: [1, -34]  // Position of the popup relative to the icon
+            });
             console.log(`GPS Location: Lat ${lat}, Lng ${lng}, Accuracy: ${accuracy} meters`);
 
             // Initialize Leaflet map centered on GPS location
             map = L.map('map').setView([lat, lng], zoom);
-            L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi', {
-              attribution: '© MapTiler © OpenStreetMap contributors'
-            }).addTo(map);
+            L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi', {}).addTo(map);
 
             // Add a pin (marker) at your location
-            L.marker([lat, lng]).addTo(map).bindPopup('Your Location').openPopup();  // Pin with popup
+            L.marker([lat, lng], {icon: orangeIcon}).addTo(map).bindPopup('Your Location').openPopup();  // Pin with popup
           },
           (error) => {
             console.error('GPS Error:', error.message);
             // Fallback: Initialize map at default location
             map = L.map('map').setView([13.40503, 120.59931], 5);
-            L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi', {
-              attribution: '© MapTiler © OpenStreetMap contributors'
-            }).addTo(map);
+            L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi', {}).addTo(map);
           },
           {
             enableHighAccuracy: true,
