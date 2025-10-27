@@ -123,8 +123,6 @@ app.post('/signin', async (req, res) => {
   }
 });
 
-// ... (rest of your index.js remains the same)
-
 // New route for change password page (GET)
 app.get("/changepassword", (req, res) => {
   if (!req.session.user) {
@@ -177,9 +175,6 @@ app.post("/change-password", async (req, res) => {
     return res.status(500).json({ message: "Server error. Please try again." });
   }
 });
-
-// ... (rest of your index.js remains the same)
-
 
 // start server
 const PORT = 8000;
