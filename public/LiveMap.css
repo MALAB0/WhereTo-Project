@@ -31,6 +31,7 @@ body {
   background-color: #fff;
   border-bottom: 1px solid #ccc;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Adds subtle drop shadow */
+  z-index: 1100;
 }
 
 .back-btn {
