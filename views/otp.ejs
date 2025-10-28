@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WhereTo | Sign In</title>
+  <link rel="icon" href="/WTFavicon.png" type="image/png">
+  <link rel="stylesheet" href="/otp.css" >
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+     <div class="header-left">
+    <img src="compass.PNG" alt="Left Icon" class="left-icon" />
+    <img src="Logo.PNG" alt="WhereTo Jeepney Route Finder Logo" class="logo-img" />
+  </div>
+    <nav>
+      <a href="/about" class="btn">About</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="otp-container">
+      <div class="otp-box">
+        <h2>Enter OTP</h2>
+        <form id="otpForm">     
+          <label>We have sent a verigication code to your registered Email</label>
+          <div class="otp-form">                        
+          <input type="number">
+          <input type="number"  disabled>
+          <input type="number"  disabled>
+          <input type="number"  disabled>          
+          </div>
+          <button type="submit">Verify OTP</button>
+        </form>
+        <p>Didn't recieve an email? <a href="/signup">Resend</a> </p>
+        <p><a href="/signup">Cancel</a> </p>
+      </div>
+  </div>
+
+ <script src="otp.js"> </script>
+</body>
+</html>

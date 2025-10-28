@@ -1,25 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // --- Sidebar toggle ---
+  // Sidebar toggle
   const menuBtn = document.getElementById('menuBtn');
   const sidebar = document.getElementById('sidebar');
   if (menuBtn && sidebar) {
-    menuBtn.addEventListener('click', function () {
-      sidebar.classList.toggle('active');
+    menuBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+    document.addEventListener('click', (event) => {
+      if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
+        sidebar.classList.remove('active');
+      }
     });
-
-      // Close sidebar when clicking outside of it
-  document.addEventListener('click', function (event) {
-    const isClickInsideSidebar = sidebar.contains(event.target);
-    const isClickOnMenuBtn = menuBtn.contains(event.target);
-
-    if (!isClickInsideSidebar && !isClickOnMenuBtn) {
-      sidebar.classList.remove('active');
-    }
-  });
-
   }
 
-  // Utility: show/hide 'No user found' message
+  // Utility: Show/hide 'No user found' message
   function updateNoResults() {
     const grid = document.querySelector('.user-grid');
     if (!grid) return;
@@ -32,55 +24,42 @@ document.addEventListener('DOMContentLoaded', function () {
       noEl.style.fontWeight = '600';
       grid.parentNode.insertBefore(noEl, grid.nextSibling);
     }
-    const anyVisible = Array.from(document.querySelectorAll('.user-card')).some(card => card.style.display !== 'none');
+    const anyVisible = [...document.querySelectorAll('.user-card')].some(card => card.style.display !== 'none');
     noEl.style.display = anyVisible ? 'none' : '';
   }
 
-  // --- Sign Out button ---
+  // Sign Out button
   const signOutBtn = document.getElementById('signOutBtn');
   if (signOutBtn) {
-    signOutBtn.addEventListener('click', function () {
+    signOutBtn.addEventListener('click', () => {
       alert('Signed out successfully!');
       window.location.href = 'login.html';
     });
   }
 
-  // --- View button ---
-  document.querySelectorAll('.user-card-actions .view').forEach(btn => {
-    btn.addEventListener('click', function () {
-      alert('Viewing user details...');
-    });
-  });
-
-  // --- Edit button ---
-  document.querySelectorAll('.user-card-actions .edit').forEach(btn => {
-    btn.addEventListener('click', function () {
-      alert('Editing user...');
-    });
-  });
-
-  // --- Suspend button ---
-  document.querySelectorAll('.user-card-actions .suspend').forEach(btn => {
-    btn.addEventListener('click', function () {
-      alert('User suspended!');
-    });
-  });
-
-  // --- Delete button ---
-  document.querySelectorAll('.user-card-actions .delete').forEach(btn => {
-    btn.addEventListener('click', function () {
+  // User card actions
+  document.querySelectorAll('.user-card-actions .view').forEach(btn =>
+    btn.addEventListener('click', () => alert('Viewing user details...'))
+  );
+  document.querySelectorAll('.user-card-actions .edit').forEach(btn =>
+    btn.addEventListener('click', () => alert('Editing user...'))
+  );
+  document.querySelectorAll('.user-card-actions .suspend').forEach(btn =>
+    btn.addEventListener('click', () => alert('User suspended!'))
+  );
+  document.querySelectorAll('.user-card-actions .delete').forEach(btn =>
+    btn.addEventListener('click', () => {
       if (confirm('Are you sure you want to delete this user?')) {
         alert('User deleted!');
-        // Optional: Remove user card from DOM
-        // btn.closest('.user-card').remove();
+        btn.closest('.user-card').remove();
       }
-    });
-  });
+    })
+  );
 
-  // --- Search functionality ---
+  // Search functionality
   const searchInput = document.querySelector('.user-searchbar input');
   if (searchInput) {
-    searchInput.addEventListener('input', function () {
+    searchInput.addEventListener('input', () => {
       const query = searchInput.value.toLowerCase();
       document.querySelectorAll('.user-card').forEach(card => {
         const name = card.querySelector('.user-name').textContent.toLowerCase();
@@ -91,10 +70,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // --- Filter by status ---
+  // Filter by status
   const statusSelect = document.querySelector('.filter-group select');
   if (statusSelect) {
-    statusSelect.addEventListener('change', function () {
+    statusSelect.addEventListener('change', () => {
       const selected = statusSelect.value.toLowerCase();
       document.querySelectorAll('.user-card').forEach(card => {
         const status = card.querySelector('.user-status').textContent.toLowerCase();
