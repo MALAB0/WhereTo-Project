@@ -28,6 +28,9 @@
       <div class="signup-box">
         <h2>Create Account</h2>
         <form id="signupForm" action="/signup" method="post">
+          <label>Username</label>
+          <input type="text" name="username" id="signupUsername" placeholder="Enter your username" required />
+
           <label>Email</label>
           <input type="email" name="email" id="signupEmail" placeholder="Enter your email" required />
 
@@ -46,50 +49,51 @@
   <!-- JavaScript for Sign Up -->
 <script>
   document.getElementById('signupForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  const email = document.getElementById('signupEmail').value;
-  const password = document.getElementById('signupPassword').value;
-  const confirmPassword = document.getElementById('confirmPassword').value;
+    const username = document.getElementById('signupUsername').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
-  const users = JSON.parse(localStorage.getItem('users') || '[]');
-  users.push({ email, password }); // ideally hash the password
-  localStorage.setItem('users', JSON.stringify(users));
-
-  if (!email || !password || !confirmPassword) {
-    alert('Please fill in all fields');
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    alert('Passwords do not match');
-    return;
-  }
-
-  if (password.length < 6) {
-    alert('Password must be at least 6 characters long');
-    return;
-  }
-
-  try {
-    const res = await fetch('/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-
-    if (res.ok) {
-      alert('Account created successfully! Please sign in.');
-      window.location.href = '/signin';
-    } else {
-      const error = await res.text();
-      alert(error);
+    // Basic validations
+    if (!username || !email || !password || !confirmPassword) {
+      alert('Please fill in all fields');
+      return;
     }
-  } catch (err) {
-    console.error('Signup error:', err);
-    alert('Something went wrong. Please try again.');
-  }
-});
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters long');
+      return;
+    }
+
+    // For demo: store in localStorage (optional, but update to include username)
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    users.push({ username, email, password });  // Added username here
+    localStorage.setItem('users', JSON.stringify(users));
+
+    try {
+      const res = await fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })  // Added username to payload
+      });
+
+      if (res.ok) {
+        alert('Account created successfully! Please sign in.');
+        window.location.href = '/signin';
+      } else {
+        const error = await res.text();
+        alert(error);
+      }
+    } catch (err) {
+      console.error('Signup error:', err);
+      alert('Something went wrong. Please try again.');
+    }
+  });
 </script>
 </body>
 </html>

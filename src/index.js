@@ -98,17 +98,20 @@ app.delete('/api/routes/:id', async (req, res) => {
 
 app.post("/signup", async (req, res) => {
   console.log("POST /signup hit", req.body);
-  const { email, password } = req.body;
-  if (!email || !password) {
-    console.warn("Missing email or password");
-    return res.status(400).send("Missing email or password");
+  const { username, email, password } = req.body;  // Added username
+  if (!username || !email || !password) {  // Updated validation
+    console.warn("Missing username, email, or password");
+    return res.status(400).send("Missing username, email, or password");
   }
   try {
-    const existing = await collection.findOne({ email });
-    if (existing) return res.status(400).send("User already exists");
+    // Check for existing user by email OR username
+    const existing = await collection.findOne({ $or: [{ email }, { username }] });
+    if (existing) {
+      return res.status(400).send("User with this email or username already exists");
+    }
     const hash = await bcrypt.hash(password, 10);
-    const created = await collection.create({ email, password: hash });
-    console.log("Created user:", created.email);
+    const created = await collection.create({ username, email, password: hash });  // Added username
+    console.log("Created user:", created.username, created.email);
     return res.status(201).redirect("/signin");
   } catch (err) {
     console.error("Error inserting user:", err);

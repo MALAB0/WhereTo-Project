@@ -7,8 +7,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/loginusers', {  // Replace with your
   .catch(err => console.error('MongoDB connection error:', err));
   
 const SigninSchema = new mongoose.Schema({
-  email: {type: String,required: true},
-  password: {type: String,required: true}
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },  // Added unique for email too, if not already
+  password: { type: String, required: true }
 });
 
 const reportSchema = new mongoose.Schema({
