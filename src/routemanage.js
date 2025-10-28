@@ -180,10 +180,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (routeViewModal && e.target === routeViewModal) routeViewModal.style.display = 'none';
   });
 
-  // Next step button
+  // Next step button (FIXED: Preserve id and steps when editing)
   if (nextStepBtn) {
     nextStepBtn.addEventListener('click', () => {
+      // Merge new values into tempRouteData without overwriting id/steps
       tempRouteData = {
+        ...tempRouteData,  // Preserve existing id and steps
         name: document.getElementById('newRouteName')?.value || '',
         start: document.getElementById('newRouteStart')?.value || '',
         end: document.getElementById('newRouteEnd')?.value || '',
@@ -211,6 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
       try {
         let response;
         if (editingRoute && tempRouteData.id) {
+          // Update existing
           response = await fetch(`/api/routes/${tempRouteData.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -219,8 +222,11 @@ document.addEventListener('DOMContentLoaded', function () {
           if (response.ok) {
             const updated = await response.json();
             updateRouteCard(editingRoute, updated);
+          } else {
+            console.error('PUT failed:', response.status, await response.text());
           }
         } else {
+          // Create new
           response = await fetch('/api/routes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -229,6 +235,8 @@ document.addEventListener('DOMContentLoaded', function () {
           if (response.ok) {
             const newRoute = await response.json();
             createRouteCard(newRoute);
+          } else {
+            console.error('POST failed:', response.status, await response.text());
           }
         }
       } catch (err) {
