@@ -32,12 +32,23 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
+// New schema for routes
+const routeSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  status: { type: String, required: true },
+  start: { type: String, required: true },
+  end: { type: String, required: true },
+  steps: [{ type: String }],
+  createdAt: { type: Date, default: Date.now }
+});
 
 const collection = mongoose.model("users", SigninSchema);
 const Rcollection = mongoose.model("reports", reportSchema);
+const Route = mongoose.model("routes", routeSchema);
 
 console.log("User model ready ->", collection.collection.name);
 console.log("Report model ready ->", Rcollection.collection.name);
+console.log("Route model ready ->", Route.collection.name);
 
 export default collection;
-export { Rcollection };
+export { Rcollection, Route };

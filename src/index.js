@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import bcrypt from "bcrypt";
-import collection from "./config.js";
+import collection, { Rcollection, Route } from "./config.js";  // Import Route
 import { name } from "ejs";
 
 const app = express();
@@ -41,7 +41,7 @@ app.get("/changepassword", (req, res) => {
 
 app.get('/api/reports', async (req, res) => {
   try {
-    const reports = await Report.find({});
+    const reports = await Rcollection.find({});
     res.json(reports);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch reports' });
@@ -54,6 +54,45 @@ app.get('/api/location', async (req, res) => {
   } catch (err) {
     console.error('Location API error', err);
     res.status(500).json({ error: 'Failed to get location' });
+  }
+});
+
+// New API endpoints for routes
+app.get('/api/routes', async (req, res) => {
+  try {
+    const routes = await Route.find({});
+    res.json(routes);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch routes' });
+  }
+});
+
+app.post('/api/routes', async (req, res) => {
+  try {
+    const newRoute = new Route(req.body);
+    await newRoute.save();
+    res.status(201).json(newRoute);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to save route' });
+  }
+});
+
+app.put('/api/routes/:id', async (req, res) => {
+  try {
+    const updatedRoute = await Route.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedRoute) return res.status(404).json({ error: 'Route not found' });
+    res.json(updatedRoute);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update route' });
+  }
+});
+
+app.delete('/api/routes/:id', async (req, res) => {
+  try {
+    await Route.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Route deleted' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete route' });
   }
 });
 
