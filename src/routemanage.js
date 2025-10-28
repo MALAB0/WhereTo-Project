@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('Script loaded and DOMContentLoaded fired');  // Debug: Confirm script runs
-
-  // Define ALL DOM elements first (fixed order issue)
+  // Define DOM elements
   const menuBtn = document.getElementById('menuBtn');
   const sidebar = document.getElementById('sidebar');
   const addRouteBtn = document.getElementById('addRouteBtn');
@@ -11,62 +9,68 @@ document.addEventListener('DOMContentLoaded', function () {
   const nextStepBtn = document.getElementById('nextStepBtn');
   const routeStepsModal = document.getElementById('routeStepsModal');
   const routeStepsForm = document.getElementById('routeStepsForm');
-  const saveRouteBtn = document.getElementById('saveRouteBtn');
   const routeViewModal = document.getElementById('routeViewModal');
   const routeViewContent = document.getElementById('routeViewContent');
   const routesGrid = document.getElementById('routesGrid');
-
-  // Now define derived elements
-  const closeBtn = addRouteModal ? addRouteModal.querySelector('.close-btn') : null;
-  const closeStepsBtn = routeStepsModal ? routeStepsModal.querySelector('.close-steps-btn') : null;
-  const closeViewBtn = routeViewModal ? routeViewModal.querySelector('.close-view-btn') : null;
-
-  console.log('addRouteBtn element:', addRouteBtn);  // Debug: Check if button is found
-  console.log('sidebar element:', sidebar);  // Debug: Check sidebar
-  console.log('sidebar classList:', sidebar ? sidebar.classList : 'null');  // Debug: Check if sidebar is active
+  const closeBtn = addRouteModal?.querySelector('.close-btn');
+  const closeStepsBtn = routeStepsModal?.querySelector('.close-steps-btn');
+  const closeViewBtn = routeViewModal?.querySelector('.close-view-btn');
 
   let editingRoute = null;
   let tempRouteData = {};
 
-  // Sidebar toggle (with null check)
-  if (menuBtn && sidebar) {
-    menuBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-      console.log('Sidebar toggled, active?', sidebar.classList.contains('active'));  // Debug
-    });
-    // Close sidebar when clicking outside of it
-    document.addEventListener('click', function (event) {
-      const isClickInsideSidebar = sidebar.contains(event.target);
-      const isClickOnMenuBtn = menuBtn.contains(event.target);
+  // Helper functions
+  function escapeHtml(str = '') {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
-      if (!isClickInsideSidebar && !isClickOnMenuBtn) {
+  function updateRouteCard(card, data) {
+    if (!card) return;
+    card.querySelector('.route-title span').textContent = data.name;
+    const statusSpan = card.querySelector('.route-title .route-status');
+    if (statusSpan) {
+      statusSpan.textContent = data.status;
+      statusSpan.className = 'route-status ' + data.status.toLowerCase();
+    }
+    card.querySelector('.route-desc').textContent = `${data.start} → ${data.end}`;
+    card.querySelector('.route-riders').textContent = (data.steps?.length) ? data.steps.length + ' steps' : '0 steps';
+    card.dataset.steps = JSON.stringify(data.steps || []);
+  }
+
+  // Sidebar toggle
+  if (menuBtn && sidebar) {
+    menuBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+    document.addEventListener('click', (event) => {
+      if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
         sidebar.classList.remove('active');
-        console.log('Sidebar closed via outside click');  // Debug
       }
     });
   }
 
-  // Fetch routes from API and render (with error handling)
+  // Fetch and render routes
   async function initRoutes() {
     try {
-      console.log('Fetching routes...');  // Debug
       const response = await fetch('/api/routes');
       if (!response.ok) throw new Error('Failed to fetch routes');
       const routes = await response.json();
-      console.log('Routes fetched:', routes);  // Debug
-      if (routesGrid) routesGrid.innerHTML = '';  // Clear grid
-      routes.forEach(r => createRouteCard(r));
+      if (routesGrid) routesGrid.innerHTML = '';
+      routes.forEach(createRouteCard);
     } catch (err) {
       console.error('Failed to load routes:', err);
     }
   }
 
-  // Create route card from data
+  // Create route card
   function createRouteCard(data) {
     if (!routesGrid) return;
     const newCard = document.createElement('div');
     newCard.className = 'route-card';
-    newCard.dataset.id = data._id;  // Store MongoDB _id
+    newCard.dataset.id = data._id;
     newCard.dataset.steps = JSON.stringify(data.steps || []);
     newCard.innerHTML = `
       <div class="route-title">
@@ -74,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <span class="route-status ${data.status.toLowerCase()}">${escapeHtml(data.status)}</span>
       </div>
       <div class="route-desc">${escapeHtml(data.start)} → ${escapeHtml(data.end)}</div>
-      <div class="route-riders">${(data.steps && data.steps.length) ? data.steps.length + ' steps' : '0 steps'}</div>
+      <div class="route-riders">${(data.steps?.length) ? data.steps.length + ' steps' : '0 steps'}</div>
       <div class="route-actions">
         <button class="view"><i class="fa-solid fa-eye"></i> view</button>
         <button class="edit"><i class="fa-solid fa-pen"></i> edit</button>
@@ -85,21 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
     attachCardEvents(newCard);
   }
 
-  // Update existing card
-  function updateRouteCard(card, data) {
-    if (!card) return;
-    card.querySelector('.route-title span').textContent = data.name;
-    const statusSpan = card.querySelector('.route-title .route-status');
-    if (statusSpan) {
-      statusSpan.textContent = data.status;
-      statusSpan.className = 'route-status ' + data.status.toLowerCase();
-    }
-    card.querySelector('.route-desc').textContent = `${data.start} → ${data.end}`;
-    card.querySelector('.route-riders').textContent = (data.steps && data.steps.length) ? data.steps.length + ' steps' : '0 steps';
-    card.dataset.steps = JSON.stringify(data.steps || []);
-  }
-
-  // Attach events to card buttons (with null checks)
+  // Attach events to card buttons
   function attachCardEvents(card) {
     if (!card) return;
     const editBtn = card.querySelector('.edit');
@@ -114,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const status = card.querySelector('.route-title .route-status')?.textContent || '';
         const desc = card.querySelector('.route-desc')?.textContent || '';
         const [start, end] = desc.split(' → ');
-        const steps = card.dataset.steps ? JSON.parse(card.dataset.steps) : [];
+        const steps = JSON.parse(card.dataset.steps || '[]');
 
         document.getElementById('newRouteName').value = name;
         document.getElementById('newRouteStart').value = start || '';
@@ -131,8 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
       deleteBtn.addEventListener('click', async () => {
         if (confirm('Delete this route?')) {
           try {
-            const id = card.dataset.id;
-            const response = await fetch(`/api/routes/${id}`, { method: 'DELETE' });
+            const response = await fetch(`/api/routes/${card.dataset.id}`, { method: 'DELETE' });
             if (response.ok) card.remove();
             else console.error('Failed to delete route');
           } catch (err) {
@@ -148,9 +137,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const status = card.querySelector('.route-title .route-status')?.textContent || '';
         const desc = card.querySelector('.route-desc')?.textContent || '';
         const [start, end] = desc.split(' → ');
-        const steps = card.dataset.steps ? JSON.parse(card.dataset.steps) : [];
+        const steps = JSON.parse(card.dataset.steps || '[]');
 
-        let stepsList = steps.length ? steps.slice(0,5).map((s, i) => `<li>${escapeHtml(s)}</li>`).join('') : '<li>No steps added</li>';
+        const stepsList = steps.length ? steps.slice(0, 5).map(s => `<li>${escapeHtml(s)}</li>`).join('') : '<li>No steps added</li>';
 
         if (routeViewContent) {
           routeViewContent.innerHTML = `
@@ -167,37 +156,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Helpers
-  function escapeHtml(str = '') {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
   // Initialize routes
   initRoutes();
 
-  // Modal events (with null checks)
+  // Modal events
   if (addRouteBtn) {
-    // Force clickability (temporary CSS override)
-    addRouteBtn.style.pointerEvents = 'auto';
-    addRouteBtn.style.zIndex = '1000';
-    addRouteBtn.style.position = 'relative';  // Ensure it's not overlapped
-
-    console.log('Attaching click listener to addRouteBtn');  // Debug
-    addRouteBtn.addEventListener('click', (e) => {
-      console.log('addRouteBtn clicked!', e);  // Debug: This should log on click
+    addRouteBtn.addEventListener('click', () => {
       if (modalTitle) modalTitle.textContent = "Add New Route";
       if (addRouteForm) addRouteForm.reset();
       tempRouteData = {};
       editingRoute = null;
       if (addRouteModal) addRouteModal.style.display = 'flex';
     });
-  } else {
-    console.error('addRouteBtn not found!');  // Debug: If this logs, the button ID is wrong
   }
 
   if (closeBtn) closeBtn.addEventListener('click', () => { if (addRouteModal) addRouteModal.style.display = 'none'; });
@@ -210,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (routeViewModal && e.target === routeViewModal) routeViewModal.style.display = 'none';
   });
 
-  // Next button: go to steps modal (with null checks)
+  // Next step button
   if (nextStepBtn) {
     nextStepBtn.addEventListener('click', () => {
       tempRouteData = {
@@ -220,33 +190,27 @@ document.addEventListener('DOMContentLoaded', function () {
         status: document.getElementById('newRouteStatus')?.value || ''
       };
       if (addRouteModal) addRouteModal.style.display = 'none';
-      // Prefill steps if editing
-      const oldSteps = (tempRouteData.steps && tempRouteData.steps) || (editingRoute ? JSON.parse(editingRoute.dataset.steps || '[]') : []);
-      ['step1','step2','step3','step4','step5'].forEach((id, i) => {
+      const oldSteps = tempRouteData.steps || (editingRoute ? JSON.parse(editingRoute.dataset.steps || '[]') : []);
+      ['step1', 'step2', 'step3', 'step4', 'step5'].forEach((id, i) => {
         const el = document.getElementById(id);
-        if (el) el.value = (oldSteps && oldSteps[i]) ? oldSteps[i] : '';
+        if (el) el.value = oldSteps[i] || '';
       });
       if (routeStepsModal) routeStepsModal.style.display = 'flex';
     });
   }
 
-  // Save route from steps modal (with null checks and API call)
+  // Save route form
   if (routeStepsForm) {
     routeStepsForm.addEventListener('submit', async e => {
       e.preventDefault();
-      const steps = [
-        document.getElementById('step1')?.value.trim() || '',
-        document.getElementById('step2')?.value.trim() || '',
-        document.getElementById('step3')?.value.trim() || '',
-        document.getElementById('step4')?.value.trim() || '',
-        document.getElementById('step5')?.value.trim() || ''
-      ].filter(s => s);  // Remove empty steps
+      const steps = ['step1', 'step2', 'step3', 'step4', 'step5']
+        .map(id => document.getElementById(id)?.value.trim() || '')
+        .filter(s => s);
       tempRouteData.steps = steps;
 
       try {
         let response;
         if (editingRoute && tempRouteData.id) {
-          // Update existing
           response = await fetch(`/api/routes/${tempRouteData.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -257,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function () {
             updateRouteCard(editingRoute, updated);
           }
         } else {
-          // Create new
           response = await fetch('/api/routes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
