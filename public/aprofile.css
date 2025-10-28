@@ -6,12 +6,15 @@ body {
 }
 
 .admin-header {
+  position: sticky;
+  top: 0;
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 8px 20px;
   border-bottom: 4px solid #000;
+  z-index: 1100;
 }
 
 .header-left {

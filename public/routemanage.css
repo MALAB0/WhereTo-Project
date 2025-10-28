@@ -7,6 +7,8 @@ body {
 
 /* Header */
 .admin-header {
+  position: sticky;
+  top: 0;
   background: #fff;
   display: flex;
   align-items: center;
@@ -173,6 +175,7 @@ body {
 
 /* Header layout */
 .routes-header {
+
   display: flex;
   justify-content: space-between;
   align-items: center;
