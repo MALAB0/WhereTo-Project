@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>WhereTo | Sign Up</title>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    
   <link rel="icon" href="/WTFavicon.PNG" type="image/png">
   <link rel="stylesheet" href="signup.css" />
 </head>
@@ -47,54 +50,71 @@
     </div>
   </div>
   <!-- JavaScript for Sign Up -->
-<script>
-  document.getElementById('signupForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+  <script>
+    // Define showToast using Toastify
+    function showToast(message, type = 'info') {
+      let bgColor = 'blue';  // Default for info
+      if (type === 'success') bgColor = 'green';
+      if (type === 'error') bgColor = 'red';
 
-    const username = document.getElementById('signupUsername').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-
-    // Basic validations
-    if (!username || !email || !password || !confirmPassword) {
-      alert('Please fill in all fields');
-      return;
-    }
-    if (password !== confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
-    if (password.length < 6) {
-      alert('Password must be at least 6 characters long');
-      return;
+      Toastify({
+        text: message,
+        duration: 5000,  // Auto-dismiss after 5 seconds
+        gravity: "top",  // Top of screen
+        position: "right",  // Right side
+        backgroundColor: bgColor,
+        close: true  // Add a close button
+      }).showToast();
     }
 
-    // For demo: store in localStorage (optional, but update to include username)
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    users.push({ username, email, password });  // Added username here
-    localStorage.setItem('users', JSON.stringify(users));
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
 
-    try {
-      const res = await fetch('/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password })  // Added username to payload
-      });
+      const username = document.getElementById('signupUsername').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
 
-      if (res.ok) {
-        alert('Account created successfully! Please sign in.');
-        window.location.href = '/signin';
-      } else {
-        const error = await res.text();
-        alert(error);
+      // Basic validations (now using toasts)
+      if (!username || !email || !password || !confirmPassword) {
+        showToast('Please fill in all fields', 'error');
+        return;
       }
-    } catch (err) {
-      console.error('Signup error:', err);
-      alert('Something went wrong. Please try again.');
-    }
-  });
-</script>
+      if (password !== confirmPassword) {
+        showToast('Passwords do not match', 'error');
+        return;
+      }
+      if (password.length < 6) {
+        showToast('Password must be at least 6 characters long', 'error');
+        return;
+      }
+
+      // For demo: store in localStorage (optional, but update to include username)
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      users.push({ username, email, password });  // Added username here
+      localStorage.setItem('users', JSON.stringify(users));
+
+      try {
+        const res = await fetch('/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })  // Added username to payload
+        });
+
+        if (res.ok) {
+          showToast('Account created successfully! Please sign in.', 'success');
+          setTimeout(() => window.location.href = '/signin', 2000);  // Delay redirect for toast visibility
+        } else {
+          const error = await res.text();
+          showToast(error, 'error');
+        }
+      } catch (err) {
+        console.error('Signup error:', err);
+        showToast('Something went wrong. Please try again.', 'error');
+      }
+    });
+  </script>
+  
 </body>
 </html>
 

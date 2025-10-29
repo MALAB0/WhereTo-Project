@@ -5,6 +5,10 @@
   <title>WhereTo | Sign in</title>
   <link rel="icon" href="/WTFavicon.png" type="image/png">
   <link rel="stylesheet" href="/signin.css" >
+  
+  <!-- Toastify Library for notifications -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
   <!-- HEADER -->
@@ -42,13 +46,30 @@
 
   <!-- JavaScript for Sign In -->
  <script>
+    // Define showToast using Toastify
+    function showToast(message, type = 'info') {
+      let bgColor = 'blue';  // Default for info
+      if (type === 'success') bgColor = 'green';
+      if (type === 'error') bgColor = 'red';
+
+      Toastify({
+        text: message,
+        duration: 5000,  // Auto-dismiss after 5 seconds
+        gravity: "top",  // Top of screen
+        position: "right",  // Right side
+        backgroundColor: bgColor,
+        close: true  // Add a close button
+      }).showToast();
+    }
+
     document.getElementById('signinForm').addEventListener('submit', function(e) {
+      e.preventDefault();  // Added to prevent form submission
       
       const email = document.getElementById('signinEmail').value.trim();
       const password = document.getElementById('signinPassword').value;
 
       if (!email || !password) {
-        alert('Please fill in all fields');
+        showToast('Please fill in all fields', 'error');
         return;
       }
 
@@ -71,11 +92,11 @@
             window.location.href = '/destination';
           }
         } else {
-          alert('Invalid email or password. Please try again or sign up.');
+          showToast('Invalid email or password. Please try again or sign up.', 'error');
         }
       } catch (err) {
         console.error('Sign in error:', err);
-        alert('An error occurred during sign in. Please try again.');
+        showToast('An error occurred during sign in. Please try again.', 'error');
       }
     });
 </script>

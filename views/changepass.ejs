@@ -51,7 +51,7 @@
 
     document.getElementById('back-btn').addEventListener('click', function() {
     if (history.length > 1) history.back();
-    else window.location.href = '/re';
+    else return;
     });
 
     document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
