@@ -39,12 +39,13 @@ app.get("/changepassword", (req, res) => {
   res.render("changepassword");
 });
 
-app.get('/api/reports', async (req, res) => {
+app.post('/api/reports', async (req, res) => {
   try {
-    const reports = await Rcollection.find({});
-    res.json(reports);
+    const newReport = new Rcollection(req.body);
+    await newReport.save();
+    res.status(201).json(newReport);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch reports' });
+    res.status(500).json({ error: 'Failed to save report' });
   }
 });
 

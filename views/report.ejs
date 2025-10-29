@@ -142,13 +142,14 @@
             }
         });
 
-        // Form submission
+
+        // Form submission (updated to save to DB via API)
         const submitBtn = document.getElementById('submitBtn');
         const locationInput = document.getElementById('location');
         const affectedRouteInput = document.getElementById('affected-route');
         const descriptionInput = document.getElementById('description');
 
-        submitBtn.addEventListener('click', () => {
+        submitBtn.addEventListener('click', async () => {
             const reportData = {
                 issueType: selectedIssue,
                 location: locationInput.value,
@@ -163,25 +164,39 @@
                 return;
             }
 
-            // Save to localStorage
-            const reports = JSON.parse(localStorage.getItem('userReports') || '[]');
-            reports.unshift(reportData);
-            localStorage.setItem('userReports', JSON.stringify(JSON.stringify(reports)));
+            try {
+                const response = await fetch('/api/reports', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reportData)
+                });
 
-            // Show success message
-            alert('Report submitted successfully!');
-            
-            // Reset form
-            locationInput.value = '';
-            affectedRouteInput.value = '';
-            descriptionInput.value = '';
-            photoInput.value = '';
-            photoUploadArea.innerHTML = `
-                <img src="camera-large.png" alt="Camera" class="large-camera-icon">
-                <p>Take a photo to help document the issue</p>
-                <button class="upload-btn" id="uploadBtn">Upload Photo</button>
-            `;
+                if (response.ok) {
+                    alert('Report submitted successfully!');
+                    
+                    // Reset form
+                    locationInput.value = '';
+                    affectedRouteInput.value = '';
+                    descriptionInput.value = '';
+                    photoInput.value = '';
+                    photoUploadArea.innerHTML = `
+                        <img src="camera.png" alt="Camera" class="large-camera-icon">
+                        <p>Take a photo to help document the issue</p>
+                        <button class="upload-btn" id="uploadBtn">Upload Photo</button>
+                    `;
+                    // Re-attach upload button event (since innerHTML replaces it)
+                    document.getElementById('uploadBtn').addEventListener('click', () => {
+                        photoInput.click();
+                    });
+                } else {
+                    alert('Failed to submit report. Please try again.');
+                }
+            } catch (err) {
+                console.error('Error submitting report:', err);
+                alert('Error submitting report. Please check your connection.');
+            }
         });
     </script>
+
 </body>
 </html>

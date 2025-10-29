@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f0f2f5;
+    background-color: #f8ebdd;
     margin: 0;
     padding: 0;
     color: #333;
@@ -100,7 +100,7 @@ header {
 
 /* Issue Reporting Section */
 .issue-reporting {
-    background-image:url(BG.JPG)
+    background-color: #df2d008c;
 }
 
 .issue-options .option {

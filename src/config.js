@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 mongoose.connect('mongodb://127.0.0.1:27017/loginusers', {  // Replace with your MongoDB URI
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -9,12 +8,16 @@ mongoose.connect('mongodb://127.0.0.1:27017/loginusers', {  // Replace with your
 const SigninSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },  // Added unique for email too, if not already
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now }
 });
 
 const reportSchema = new mongoose.Schema({
-  reports:{ type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
+  issueType: { type: String, required: true },
+  location: { type: String, required: true },
+  affectedRoute: { type: String },
+  description: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now }
 });
 
 const userSchema = new mongoose.Schema({
