@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "nodemon src/index.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   "homepage": "https://github.com/MALAB0/WhereTo-Project#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "env": "^0.0.2",
@@ -27,16 +28,10 @@
     "mongoose": "^8.19.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "toastify-js": "^1.12.0",
-    "cors": "^2.8.5",
-    "socket.io": "^4.7.1"
-
+    "socket.io": "^4.7.1",
+    "toastify-js": "^1.12.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
   }
-  
-
-
-
 }
