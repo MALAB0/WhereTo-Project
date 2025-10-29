@@ -135,11 +135,6 @@ body {
   left: 0; /* slide in */
 }
 
-/* when sidebar opens, push main content to the right */
-.sidebar.active ~ .admin-main {
-  margin-left: 250px;
-}
-
 .sidebar ul {
   list-style: none;
   padding: 0;
@@ -161,6 +156,7 @@ body {
   gap: 12px;
   border-radius: 5px;
   transition: background 0.2s;
+  
 }
 
 .sidebar a i {
@@ -203,27 +199,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-/* Modal content */
-.add-user-modal .modal-content {
-  background: #fff;
-  border-radius: 8px;
-  padding: 24px;
-  width: 350px;
-  max-width: 90%;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  position: relative;
-}
-
-/* Close button */
-.add-user-modal .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 24px;
-  cursor: pointer;
-}
-
 /* Form styles */
 .user-header {
   display: flex;
@@ -477,8 +452,4 @@ body {
 }
 .sidebar.active {
   left: 0;
-}
-/* push content when sidebar is active */
-.sidebar.active ~ .user-main {
-  margin-left: 220px;
 }

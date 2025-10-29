@@ -135,11 +135,6 @@ body {
   left: 0; /* slide in */
 }
 
-/* when sidebar opens, push main content to the right */
-.sidebar.active ~ .admin-main {
-  margin-left: 250px;
-}
-
 .sidebar ul {
   list-style: none;
   padding: 0;

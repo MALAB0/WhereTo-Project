@@ -43,37 +43,6 @@
     <h2>Commuters</h2>
     <p>Manage user accounts and permissions</p>
 
-<!-- Modal for adding user -->
-<div id="addUserModal" class="add-user-modal">
-  <div class="modal-content">
-    <span class="close-btn">&times;</span>
-    <h3>Add New User</h3>
-    <form id="addUserForm">
-      <label for="newUserName">Name:</label>
-      <input type="text" id="newUserName" required>
-
-      <label for="newUserEmail">Email:</label>
-      <input type="email" id="newUserEmail" required>
-
-      <label for="newUserStatus">Status:</label>
-      <select id="newUserStatus" required>
-        <option value="active">Active</option>
-        <option value="suspended">Suspended</option>
-        <option value="inactive">Inactive</option>
-      </select>
-
-      <label for="newUserRole">Role:</label>
-      <select id="newUserRole" required>
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>
-
-      <button type="submit">Add User</button>
-    </form>
-  </div>
-</div>
-
-
     <div class="user-stats">
       <div class="stat-card"><span>Total Users</span><span class="stat-value">6</span><i class="fa-solid fa-users"></i></div>
       <div class="stat-card"><span>Active</span><span class="stat-value">4</span><i class="fa-solid fa-user-check"></i></div>
