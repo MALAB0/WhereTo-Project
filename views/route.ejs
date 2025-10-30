@@ -1,3 +1,4 @@
+<!-- route.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,127 +20,72 @@
     </div>
   </header>
 
-
+  <!-- Main Route Display -->
+  <% if (error) { %>
     <div class="big-box">
-      <h1 id="routeTitle">Loading route...</h1>
-      <p id="routeTime">Preparing your journey...</p>
-      <div class="small-box">
-      <button class="nav-btn" onclick="window.location.href='/nav'">
-        <span>Start Navigation</span>
-  </button>
-      </div>
+      <h1>Error</h1>
+      <p><%= error %></p>
     </div>
-
-
-    <div class="big-box second">
-      <h1>Directions</h1>
-
-      <div class="small-box">
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Step 1.</span>
-        <p id="step1">Walk to starting point...</p>
-      </div>
-
+  <% } else if (routes && routes.length > 0) { %>
+    <% routes.forEach((route, index) => { %>
+      <div class="big-box">
+        <h1 id="routeTitle"><%= route.name %> (<%= route.status %>)</h1>
+        <p id="routeTime">Route from <%= from %> to <%= to %> - Estimated travel time: 45-60 minutes</p>
         <div class="small-box">
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Step 2.</span>
-        <p id="step2">Board jeepney to destination...</p>
+          <button class="nav-btn" onclick="window.location.href='/nav'">
+            <span>Start Navigation</span>
+          </button>
+        </div>
       </div>
-    
-        <div class="small-box">
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Step 3.</span>
-        <p id="step3">Transfer if needed...</p>
+
+      <div class="big-box second">
+        <h1>Directions for <%= route.name %></h1>
+        <% if (route.steps && route.steps.length > 0) { %>
+          <% route.steps.forEach((step, stepIndex) => { %>
+            <div class="small-box">
+              <img src="route.png" alt="Jeep Left" class="small-icon left">
+              <span>Step <%= stepIndex + 1 %>.</span>
+              <p><%= step %></p>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="small-box">
+            <p>No detailed steps available for this route.</p>
+          </div>
+        <% } %>
       </div>
-    
-        <div class="small-box">
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Step 4.</span>
-        <p id="step4">Continue journey...</p>
-      </div>
-    
-        <div class="small-box">
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Step 5.</span>
-        <p id="step5">Arrive at destination...</p>
-      </div>
-    
-    
+    <% }); %>
+  <% } else { %>
+    <div class="big-box">
+      <h1>No Routes Found</h1>
+      <p>No routes available from <%= from %> to <%= to %>. Please try a different search or check back later.</p>
     </div>
+  <% } %>
 
-    <div class="big-box third">
-      <h1>Route Alerts</h1>
+  <!-- Route Alerts (kept as is, or customize) -->
+  <div class="big-box third">
+    <h1>Route Alerts</h1>
+    <div class="small-box">
+      <img src="route.png" alt="Jeep Left" class="small-icon left">
+      <span>Route tip</span>
+      <p>During rush hours...</p>
+    </div>
+  </div>
 
-      <div class="small-box">
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Route tip</span>
-        <p>during rush hours...</p>
-      </div>
-    </div> 
-
-      <!-- ===== WHITE CONTENT AREA ===== -->
+  <!-- ===== WHITE CONTENT AREA ===== -->
   <section class="content-section">
     <div class="buttons-row">
       <button class="info-btn" onclick="window.location.href='/LiveMap'">
-  <img src="map.png" alt="Routes" />
-  <span>Live Map</span>
-   <div class="buttons-row">
+        <img src="map.png" alt="Routes" />
+        <span>Live Map</span>
+      </button>
       <button class="info-btn" onclick="window.location.href='/destination'">
-  <img src="route.png" alt="alter" />
-  <span>Find Alternative</span>
+        <img src="route.png" alt="Alter" />
+        <span>Find Alternative</span>
+      </button>
     </div>
-
   </section>
 
-  <!-- JavaScript for Route Page -->
-  <script>
-    const routeTitle = document.getElementById('routeTitle');
-    const routeTime = document.getElementById('routeTime');
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const step3 = document.getElementById('step3');
-    const step4 = document.getElementById('step4');
-    const step5 = document.getElementById('step5');
-
-    // Function to load route data from localStorage
-    function loadRouteData() {
-      const recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
-      const currentSearch = recentSearches[0]; // Get the most recent search
-      
-      console.log('Recent searches:', recentSearches);
-      console.log('Current search:', currentSearch);
-      
-      if (currentSearch) {
-        const fromLocation = currentSearch.from;
-        const toLocation = currentSearch.to;
-        
-        console.log('Loading route:', fromLocation, 'to', toLocation);
-        
-        // Update route title and time
-        routeTitle.textContent = `${fromLocation} → ${toLocation}`;
-        routeTime.textContent = 'Estimated travel time: 45-60 minutes';
-        
-        // Update step descriptions based on locations
-        step1.textContent = `Walk to ${fromLocation} starting point...`;
-        step2.textContent = `Board jeepney from ${fromLocation} to ${toLocation}...`;
-        step3.textContent = `Transfer at intermediate stop if needed...`;
-        step4.textContent = `Continue journey towards ${toLocation}...`;
-        step5.textContent = `Arrive at ${toLocation} destination...`;
-      } else {
-        console.log('No search data found, using default route');
-        // Default route if no data found
-        routeTitle.textContent = 'Divisoria → Cubao';
-        routeTime.textContent = 'Estimated travel time: 45 minutes';
-        step1.textContent = 'Walk to Divisoria Market...';
-        step2.textContent = 'Board jeepney to Cubao...';
-        step3.textContent = 'Transfer if needed...';
-        step4.textContent = 'Continue journey...';
-        step5.textContent = 'Arrive at Cubao...';
-      }
-    }
-
-    // Initialize on page load
-    loadRouteData();
-  </script>
+  <!-- No client-side script needed anymore, as data is server-rendered -->
 </body>
 </html>

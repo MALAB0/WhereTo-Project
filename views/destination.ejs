@@ -148,100 +148,84 @@
 
   </section>
 
-  <!-- JavaScript for Destination Page -->
-  <script>
-    const fromInput = document.getElementById('from');
-    const toInput = document.getElementById('to');
-    const searchBtn = document.getElementById('searchBtn');
-    const recentSearches = document.querySelectorAll('.recent-search');
+  <!-- destination.ejs (only the script section is updated) -->
+<!-- ... (rest of the file remains the same) ... -->
 
-    // Function to validate inputs and enable/disable search button
-    function validateInputs() {
+<!-- JavaScript for Destination Page -->
+<script>
+  const fromInput = document.getElementById('from');
+  const toInput = document.getElementById('to');
+  const searchBtn = document.getElementById('searchBtn');
+  const recentSearches = document.querySelectorAll('.recent-search');
+
+  // Function to validate inputs and enable/disable search button
+  function validateInputs() {
+    const fromValue = fromInput.value.trim();
+    const toValue = toInput.value.trim();
+    
+    if (fromValue && toValue) {
+      searchBtn.disabled = false;
+      searchBtn.style.opacity = '1';
+      searchBtn.style.cursor = 'pointer';
+    } else {
+      searchBtn.disabled = true;
+      searchBtn.style.opacity = '0.5';
+      searchBtn.style.cursor = 'not-allowed';
+    }
+  }
+
+  // Add event listeners to input fields
+  fromInput.addEventListener('input', validateInputs);
+  toInput.addEventListener('input', validateInputs);
+
+  // Add click functionality to recent searches
+  recentSearches.forEach(search => {
+    search.style.cursor = 'pointer';
+    search.addEventListener('click', function() {
+      const fromValue = this.getAttribute('data-from');
+      const toValue = this.getAttribute('data-to');
+      
+      fromInput.value = fromValue;
+      toInput.value = toValue;
+      
+      // Trigger validation
+      validateInputs();
+      
+      // Add visual feedback
+      this.style.backgroundColor = '#e3f2fd';
+      setTimeout(() => {
+        this.style.backgroundColor = 'white';
+      }, 1000);
+    });
+    
+    // Add hover effects
+    search.addEventListener('mouseenter', function() {
+      this.style.backgroundColor = '#f0f8ff';
+      this.style.transform = 'translateY(-2px)';
+      this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
+    });
+    
+    search.addEventListener('mouseleave', function() {
+      this.style.backgroundColor = 'white';
+      this.style.transform = 'translateY(0)';
+      this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+    });
+  });
+
+  // Handle search button click
+  searchBtn.addEventListener('click', function() {
+    if (!this.disabled) {
       const fromValue = fromInput.value.trim();
       const toValue = toInput.value.trim();
       
-      if (fromValue && toValue) {
-        searchBtn.disabled = false;
-        searchBtn.style.opacity = '1';
-        searchBtn.style.cursor = 'pointer';
-      } else {
-        searchBtn.disabled = true;
-        searchBtn.style.opacity = '0.5';
-        searchBtn.style.cursor = 'not-allowed';
-      }
+      // Redirect to /route with query params (no localStorage needed)
+      window.location.href = `/route?from=${encodeURIComponent(fromValue)}&to=${encodeURIComponent(toValue)}`;
     }
+  });
 
-    // Add event listeners to input fields
-    fromInput.addEventListener('input', validateInputs);
-    toInput.addEventListener('input', validateInputs);
-
-    // Add click functionality to recent searches
-    recentSearches.forEach(search => {
-      search.style.cursor = 'pointer';
-      search.addEventListener('click', function() {
-        const fromValue = this.getAttribute('data-from');
-        const toValue = this.getAttribute('data-to');
-        
-        fromInput.value = fromValue;
-        toInput.value = toValue;
-        
-        // Trigger validation
-        validateInputs();
-        
-        // Add visual feedback
-        this.style.backgroundColor = '#e3f2fd';
-        setTimeout(() => {
-          this.style.backgroundColor = 'white';
-        }, 1000);
-      });
-      
-      // Add hover effects
-      search.addEventListener('mouseenter', function() {
-        this.style.backgroundColor = '#f0f8ff';
-        this.style.transform = 'translateY(-2px)';
-        this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
-      });
-      
-      search.addEventListener('mouseleave', function() {
-        this.style.backgroundColor = 'white';
-        this.style.transform = 'translateY(0)';
-        this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-      });
-    });
-
-    // Handle search button click
-    searchBtn.addEventListener('click', function() {
-      if (!this.disabled) {
-        const fromValue = fromInput.value.trim();
-        const toValue = toInput.value.trim();
-        
-        // Store the search in localStorage for recent searches
-        const searches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
-        const newSearch = {
-          from: fromValue,
-          to: toValue,
-          timestamp: new Date().toISOString()
-        };
-        
-        // Remove duplicate if exists
-        const filteredSearches = searches.filter(s => 
-          !(s.from === fromValue && s.to === toValue)
-        );
-        
-        // Add new search to the beginning
-        filteredSearches.unshift(newSearch);
-        
-        // Keep only last 10 searches
-        const recentSearches = filteredSearches.slice(0, 10);
-        localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
-        
-        // Navigate to route page
-        window.location.href = '/route';
-      }
-    });
-
-    // Initialize validation on page load
-    validateInputs();
-  </script>
+  // Initialize validation on page load
+  validateInputs();
+</script>
+<!-- ... (rest of the file remains the same) ... -->
 </body>
 </html>

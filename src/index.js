@@ -24,7 +24,6 @@ app.get("/livemap", (req, res) => res.render("LiveMap"));
 app.get("/report", (req, res) => res.render("report"));
 app.get("/notification", (req, res) => res.render("notification"));
 app.get("/nav", (req, res) => res.render("navigation"));
-app.get("/route", (req, res) => res.render("route"));
 app.get("/profile", (req, res) => res.render("profile"));
 app.get("/prof2", (req, res) => res.render("profile2"));
 app.get("/admin", (req, res) => res.render("admin"));
@@ -34,6 +33,25 @@ app.get("/reportadmin", (req, res) => res.render("reportadmin"));
 app.get("/routem", (req, res) => res.render("routemanage"));
 app.get("/userm", (req, res) => res.render("usermanage"));
 app.get("/cpass", (req, res) => res.render("changepass"));
+app.get("/route", async (req, res) => {
+  try {
+    const { from, to } = req.query;
+    
+    if (!from || !to) {
+      // If no params, render with no data (fallback)
+      return res.render("route", { routes: [], from: null, to: null, error: "Please provide a starting point and destination." });
+    }
+    
+    // Query MongoDB for routes matching start and end
+    const routes = await Route.find({ start: from, end: to });
+    
+    // Render the route.ejs template with fetched data
+    res.render("route", { routes, from, to, error: null });
+  } catch (err) {
+    console.error("Error fetching routes:", err);
+    res.status(500).render("route", { routes: [], from: null, to: null, error: "Failed to load routes. Please try again." });
+  }
+});
 app.get("/changepassword", (req, res) => {
   if (!req.session.user) return res.redirect("/signin");
   res.render("changepassword");
