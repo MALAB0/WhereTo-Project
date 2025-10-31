@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f8ebdd;
+    background-color: #f0f2f5;
     margin: 0;
     padding: 0;
     color: #333;
@@ -12,9 +12,10 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px 20px;
+    background-color: rgb(255, 255, 255);
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -102,6 +103,7 @@ header {
     margin-bottom: 20px;
 }
 
+/* ✅ UPDATED AVATAR STYLE */
 .user-avatar {
     width: 60px;
     height: 60px;
@@ -111,11 +113,25 @@ header {
     align-items: center;
     justify-content: center;
     border: 3px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden; /* ensures image fits circle */
 }
 
+/* ✅ Updated avatar image style */
 .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* fills circle without stretching */
+    border-radius: 50%;
+    display: block;
+    filter: none; /* keeps original colors */
+    mix-blend-mode: normal; /* prevents blending */
+}
+
+/* Optional: if you use a default icon image (like a placeholder) */
+.avatar-img.default-icon {
     width: 40px;
     height: 40px;
+    object-fit: contain;
     filter: invert(1);
 }
 
@@ -141,20 +157,25 @@ header {
 .star-icon {
     width: 20px;
     height: 20px;
-    filter: invert(1);
-    margin-bottom: 5px;
+    filter: none; 
+    margin-bottom: 0;
+    margin-top: -15px; 
+    vertical-align: middle;
 }
 
 .rating {
     display: block;
     font-size: 1.2rem;
     font-weight: 700;
+    margin-top: -6px; 
 }
 
 .rating-text {
     font-size: 0.7rem;
     opacity: 0.8;
+    margin-top: -5px;
 }
+
 
 .user-stats {
     display: flex;
@@ -216,7 +237,7 @@ header {
 
 /* Preferences Section */
 .preferences {
-    background-color: #cfcfcf;
+    background-image: url(BG.JPG);
 }
 
 .preference-item {
@@ -332,7 +353,6 @@ input:checked + .slider:before {
 .route-icon {
     width: 20px;
     height: 20px;
-
 }
 
 .route-details {
@@ -391,7 +411,7 @@ input:checked + .slider:before {
 
 /* Recent Trips Section */
 .recent-trips {
-    background:#0a3d62
+    background: #0a3d62;
 }
 
 .recent-trips .section-header {
@@ -542,8 +562,9 @@ input:checked + .slider:before {
     }
 
     .avatar-img {
-        width: 30px;
-        height: 30px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .user-details h2 {

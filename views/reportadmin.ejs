@@ -2,29 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>WhereTo | User Reports</title>
-  <link rel="icon" href="/AWTFavicon.PNG" type="image/png">
+  <title>WhereTo | Admin Reports</title>
+  <link rel="icon" href="/AWTFavicon.png" type="image/png">
   <link rel="stylesheet" href="reportadmin.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+
   <header class="admin-header">
     <div class="header-left">
       <button class="menu-btn" id="menuBtn">&#9776;</button>
-      <div class="logo">Where<br>To<img src="compass.png" alt="logo" style="height:20px;vertical-align:middle;"></div>
+      <div class="logo">Where<br>To
+        <img src="compass.png" alt="logo" style="height:20px;vertical-align:middle;">
+      </div>
     </div>
     <div class="header-right">
-      <div class="notification-bell">
+      <div class="notification-bell" id="notificationBell">
         <i class="fa-solid fa-bell"></i>
-        <div class="bell-dropdown" id="bellDropdown">
+        <div class="dropdown-content" id="bellDropdown">
           <a href="/aprof"><i class="fa-solid fa-user"></i> Profile</a>
-          <a href="/cpass" onclick="changePassword(event)"><i class="fa-solid fa-key"></i> Change Password</a>
-          <a href="/signin" onclick="adminLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+          <a href="#" onclick="changePassword(event)"><i class="fa-solid fa-key"></i> Change Password</a>
+          <a href="#" onclick="adminLogout(event)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
         </div>
       </div>
     </div>
   </header>
+
+
   <div class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <img src="Logo.PNG" alt="WhereTo Logo" style="width:100px;margin:20px auto;display:block;">
@@ -38,59 +43,66 @@
     </ul>
   </div>
 
-<section class="recent-reports">
-      <h3>Recent Reports</h3>
-      <div class="reports-container">
-        <div class="report-card">
-          <div class="report-header">
-            <span class="report-title">Bus 101 route modified</span>
-            <span class="report-status pending">pending</span>
-          </div>
-          <div class="report-desc">
-            Bus 101 route changed to construction<br>
-            EDSA – Ortigas
-          </div>
-          <div class="report-actions">
-            <button class="view">view</button>
-            <button class="verify">verify</button>
-            <button class="reject">reject</button>
-          </div>
-          <div class="report-time">15 mins ago</div>
-        </div>
-        <div class="report-card">
-          <div class="report-header">
-            <span class="report-title">Bus 101 route modified</span>
-            <span class="report-status verified">verified</span>
-          </div>
-          <div class="report-desc">
-            Bus 101 route changed to construction<br>
-            EDSA – Ortigas
-          </div>
-          <div class="report-actions">
-            <button class="view">view</button>
-          </div>
-          <div class="report-time">15 mins ago</div>
-        </div>
-        <div class="report-card">
-          <div class="report-header">
-            <span class="report-title">Bus 101 route modified</span>
-            <span class="report-status maintenance">maintenance</span>
-          </div>
-          <div class="report-desc">
-            Bus 101 route changed to construction<br>
-            EDSA – Ortigas
-          </div>
-          <div class="report-actions">
-            <button class="view">view</button>
-            <button class="edit">edit</button>
-            <button class="delete">delete</button>
-          </div>
-          <div class="report-time">15 mins ago</div>
-        </div>
-      </div>
-    </section>
 
-      </main>
+  <main class="admin-main">
+    <section class="reports-section">
+      <h2>User Reports</h2>
+
+      <div class="filter-container">
+        <label for="statusFilter">Filter:</label>
+        <select id="statusFilter">
+          <option value="all">All Reports</option>
+          <option value="pending">Pending</option>
+          <option value="verified">Verified</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <table class="reports-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Report</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="reportTableBody">
+          <tr data-status="pending">
+            <td>Juan Dela Cruz</td>
+            <td>Bus 101 route changed due to construction at EDSA-Ortigas</td>
+            <td><span class="status pending">Pending</span></td>
+            <td>
+              <button class="verify">Verify</button>
+              <button class="reject">Reject</button>
+            </td>
+          </tr>
+          <tr data-status="verified">
+            <td>Maria Santos</td>
+            <td>Jeepney stop relocated near SM Dagupan</td>
+            <td><span class="status verified">Verified</span></td>
+            <td><button class="view">View</button></td>
+          </tr>
+          <tr data-status="rejected">
+            <td>Carlos Reyes</td>
+            <td>Taxi overcharging at downtown terminal</td>
+            <td><span class="status rejected">Rejected</span></td>
+            <td><button class="view">View</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <div id="viewModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Report Details</h3>
+      <p id="reportDetails"></p>
+    </div>
+  </div>
+
   <script src="reportadmin.js"></script>
 </body>
 </html>
+

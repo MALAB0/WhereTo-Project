@@ -1,3 +1,4 @@
+profile2.css
 /* General Styles */
 body {
     font-family: 'Poppins', sans-serif;
@@ -12,9 +13,10 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px 20px;
+    background-color: rgb(255, 255, 255);
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -38,14 +40,43 @@ header {
 }
 
 .icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
     transition: transform 0.2s ease;
 }
 
 .icon:hover {
     transform: scale(1.1);
+}
+
+/* Edit Profile Button */
+.edit-profile-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #0a3d62;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(10, 61, 98, 0.2);
+}
+
+.edit-profile-btn:hover {
+    background-color: #072e4a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(10, 61, 98, 0.3);
+}
+
+.edit-profile-btn .edit-icon {
+    width: 16px;
+    height: 16px;
+    filter: invert(1);
 }
 
 /* Main Content */
@@ -73,6 +104,7 @@ header {
     margin-bottom: 20px;
 }
 
+/* Avatar Circle (kept same size and fixed image fill + color) */
 .user-avatar {
     width: 60px;
     height: 60px;
@@ -82,12 +114,24 @@ header {
     align-items: center;
     justify-content: center;
     border: 3px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden; /* ensures circular clipping */
+    cursor: pointer;
 }
 
+/* Avatar Image - fills circle and keeps original colors */
 .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* fills circle perfectly without stretching */
+    border-radius: 50%;
+    display: block;
+}
+
+/* Optional: If you still use a default icon instead of an uploaded image */
+.avatar-img.default-icon {
+    filter: invert(1);
     width: 40px;
     height: 40px;
-    filter: invert(1);
 }
 
 .user-details h2 {
@@ -175,9 +219,10 @@ header {
 }
 
 .section-icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
+
 .section-header h2 {
     margin: 0;
     font-size: 1.1rem;
@@ -303,7 +348,6 @@ input:checked + .slider:before {
 .route-icon {
     width: 20px;
     height: 20px;
-
 }
 
 .route-details {
@@ -362,7 +406,7 @@ input:checked + .slider:before {
 
 /* Recent Trips Section */
 .recent-trips {
-    background:#0a3d62
+    background: #0a3d62;
 }
 
 .recent-trips .section-header {
@@ -469,8 +513,8 @@ input:checked + .slider:before {
 }
 
 .setting-icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     filter: invert(20%) sepia(80%) saturate(2000%) hue-rotate(190deg) brightness(90%) contrast(90%);
 }
 
@@ -513,8 +557,9 @@ input:checked + .slider:before {
     }
 
     .avatar-img {
-        width: 30px;
-        height: 30px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .user-details h2 {
