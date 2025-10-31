@@ -5,6 +5,13 @@
   <title>WhereTo | Jeepney Route Finder</title>
   <link rel="icon" href="/WTFavicon.png" type="image/png">
   <link rel="stylesheet" href="destination.css" />
+  <style>
+    /* Additional styles for recent searches container */
+    #recentSearchesContainer {
+      max-height: 180px; /* Adjust based on 3 small-box heights; assuming each is ~60px */
+      overflow-y: auto;
+    }
+  </style>
 </head>
 <body>
 <!-- ===== HEADER ===== -->
@@ -63,22 +70,8 @@
 
     <div class="big-box">
       <h1>Recent Searches</h1>
-      <div class="small-box recent-search" data-from="Downtown" data-to="Market">
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Route 1: Downtown to Market</span>
-        <img src="favorites.png" alt="Jeep Right" class="small-icon right">
-      </div>
-
-      <div class="small-box recent-search" data-from="City Hall" data-to="Terminal">
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Route 2: City Hall to Terminal</span>
-        <img src="favorites.png" alt="Jeep Right" class="small-icon right">
-      </div>
-
-      <div class="small-box recent-search" data-from="North Point" data-to="Bay Area">
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Route 3: North Point to Bay Area</span>
-        <img src="favorites.png" alt="Jeep Right" class="small-icon right">
+      <div id="recentSearchesContainer">
+        <!-- Recent searches will be populated here dynamically -->
       </div>
     </div>
 
@@ -156,7 +149,79 @@
   const fromInput = document.getElementById('from');
   const toInput = document.getElementById('to');
   const searchBtn = document.getElementById('searchBtn');
-  const recentSearches = document.querySelectorAll('.recent-search');
+  const recentSearchesContainer = document.getElementById('recentSearchesContainer');
+
+  const RECENT_SEARCHES_KEY = 'recentSearches';
+  const MAX_RECENT_SEARCHES = 10; // Increased to allow more storage, but display will be scrollable
+
+  // Function to get recent searches from localStorage
+  function getRecentSearches() {
+    try {
+      return JSON.parse(localStorage.getItem(RECENT_SEARCHES_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // Function to save recent searches to localStorage
+  function saveRecentSearches(searches) {
+    try {
+      localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(searches));
+    } catch (e) {}
+  }
+
+  // Function to add a new search
+  function addRecentSearch(from, to) {
+    const searches = getRecentSearches();
+    // Remove if already exists
+    const filtered = searches.filter(s => !(s.from === from && s.to === to));
+    // Add to front
+    filtered.unshift({ from, to });
+    // Limit to MAX_RECENT_SEARCHES
+    const limited = filtered.slice(0, MAX_RECENT_SEARCHES);
+    saveRecentSearches(limited);
+    renderRecentSearches();
+  }
+
+  // Function to render recent searches
+  function renderRecentSearches() {
+    const searches = getRecentSearches();
+    recentSearchesContainer.innerHTML = '';
+    searches.forEach((search, index) => {
+      const div = document.createElement('div');
+      div.className = 'small-box recent-search';
+      div.setAttribute('data-from', search.from);
+      div.setAttribute('data-to', search.to);
+      div.innerHTML = `
+        <img src="route.png" alt="Jeep Left" class="small-icon left">
+        <span>Route ${index + 1}: ${search.from} to ${search.to}</span>
+        <img src="favorites.png" alt="Jeep Right" class="small-icon right">
+      `;
+      div.style.cursor = 'pointer';
+      div.addEventListener('click', function() {
+        fromInput.value = search.from;
+        toInput.value = search.to;
+        validateInputs();
+        // Visual feedback
+        this.style.backgroundColor = '#e3f2fd';
+        setTimeout(() => {
+          this.style.backgroundColor = 'white';
+        }, 1000);
+      });
+      // Hover effects
+      div.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = '#f0f8ff';
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
+      });
+      div.addEventListener('mouseleave', function() {
+        this.style.backgroundColor = 'white';
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+      });
+      recentSearchesContainer.appendChild(div);
+    });
+  }
 
   // Function to validate inputs and enable/disable search button
   function validateInputs() {
@@ -178,54 +243,23 @@
   fromInput.addEventListener('input', validateInputs);
   toInput.addEventListener('input', validateInputs);
 
-  // Add click functionality to recent searches
-  recentSearches.forEach(search => {
-    search.style.cursor = 'pointer';
-    search.addEventListener('click', function() {
-      const fromValue = this.getAttribute('data-from');
-      const toValue = this.getAttribute('data-to');
-      
-      fromInput.value = fromValue;
-      toInput.value = toValue;
-      
-      // Trigger validation
-      validateInputs();
-      
-      // Add visual feedback
-      this.style.backgroundColor = '#e3f2fd';
-      setTimeout(() => {
-        this.style.backgroundColor = 'white';
-      }, 1000);
-    });
-    
-    // Add hover effects
-    search.addEventListener('mouseenter', function() {
-      this.style.backgroundColor = '#f0f8ff';
-      this.style.transform = 'translateY(-2px)';
-      this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
-    });
-    
-    search.addEventListener('mouseleave', function() {
-      this.style.backgroundColor = 'white';
-      this.style.transform = 'translateY(0)';
-      this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-    });
-  });
-
   // Handle search button click
   searchBtn.addEventListener('click', function() {
     if (!this.disabled) {
       const fromValue = fromInput.value.trim();
       const toValue = toInput.value.trim();
       
-      // Redirect to /route with query params (no localStorage needed)
+      // Add to recent searches
+      addRecentSearch(fromValue, toValue);
+      
+      // Redirect to /route with query params
       window.location.href = `/route?from=${encodeURIComponent(fromValue)}&to=${encodeURIComponent(toValue)}`;
     }
   });
 
-  // Initialize validation on page load
+  // Initialize validation and render recent searches on page load
   validateInputs();
+  renderRecentSearches();
 </script>
-<!-- ... (rest of the file remains the same) ... -->
 </body>
 </html>

@@ -1,8 +1,11 @@
-import express from "express";
-import path from "path";
-import bcrypt from "bcrypt";
-import collection, { Rcollection, Route } from "./config.js";  // Import Route
-import { name } from "ejs";
+   import express from "express";
+   import session from "express-session";
+   import nodemailer from "nodemailer";
+   import dotenv from 'dotenv';  // Add this
+   import path from "path";
+   import bcrypt from "bcrypt";
+   import collection, { Rcollection, Route } from "./config.js";
+   dotenv.config();
 
 const app = express();
 
@@ -13,10 +16,50 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(process.cwd(), "public")));
 app.use(express.static(path.join(process.cwd(), "src")));
 
-// Routes
+// Session middleware (added for OTP)
+app.use(session({
+  secret: 'your-secret-key',  // Change to a secure key in production
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 10 * 60 * 1000 }  // 10 minutes
+}));
+
+// Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: process.env.EMAIL_SECURE === 'true',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+// Function to generate 4-digit OTP
+function generateOTP() {
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
+app.get('/test-email', async (req, res) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: 'your-test-email@gmail.com',  // Replace with your email
+      subject: 'Test OTP',
+      text: 'Test OTP: 1234'
+    });
+    res.send('Email sent successfully!');
+  } catch (err) {
+    console.error('Test email error:', err);
+    res.send('Email failed: ' + err.message);
+  }
+});
+// Routes (unchanged except where noted)
 app.get("/signin", (req, res) => res.render("signin"));
 app.get("/signup", (req, res) => res.render("signup"));
-app.get("/otp", (req, res) => res.render("otp"));
+app.get("/otp", (req, res) => {
+  console.log("GET /otp route hit");  // Add this line
+  res.render("otp");
+});  // Now used for both signup and signin
 app.get("/about", (req, res) => res.render("about"));
 app.get("/homepage", (req, res) => res.render("homepage"));
 app.get("/destination", (req, res) => res.render("destination"));
@@ -33,6 +76,7 @@ app.get("/reportadmin", (req, res) => res.render("reportadmin"));
 app.get("/routem", (req, res) => res.render("routemanage"));
 app.get("/userm", (req, res) => res.render("usermanage"));
 app.get("/cpass", (req, res) => res.render("changepass"));
+
 app.get("/route", async (req, res) => {
   try {
     const { from, to } = req.query;
@@ -115,29 +159,36 @@ app.delete('/api/routes/:id', async (req, res) => {
   }
 });
 
+// Modified POST /signup: Generate OTP, send email, store in session, redirect to /otp
 app.post("/signup", async (req, res) => {
   console.log("POST /signup hit", req.body);
-  const { username, email, password } = req.body;  // Added username
-  if (!username || !email || !password) {  // Updated validation
-    console.warn("Missing username, email, or password");
+  const { username, email, password } = req.body;
+  if (!username || !email || !password) {
     return res.status(400).send("Missing username, email, or password");
   }
   try {
-    // Check for existing user by email OR username
     const existing = await collection.findOne({ $or: [{ email }, { username }] });
     if (existing) {
       return res.status(400).send("User with this email or username already exists");
     }
-    const hash = await bcrypt.hash(password, 10);
-    const created = await collection.create({ username, email, password: hash });  // Added username
-    console.log("Created user:", created.username, created.email);
-    return res.status(201).redirect("/signin");
+
+    console.log("Generating OTP and sending email...");
+    const otp = generateOTP();
+    req.session.otp = { code: otp, email, username, password, action: 'signup', timestamp: Date.now() };
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Your OTP for WhereTo Signup',
+      text: `Your 4-digit OTP is: ${otp}. It expires in 10 minutes.`
+    });
+    console.log("Email sent, redirecting to /otp");
+    res.redirect('/otp');
   } catch (err) {
-    console.error("Error inserting user:", err);
-    return res.status(500).send("Server error");
+    console.error("Signup error:", err);
+    res.status(500).send("Server error");
   }
 });
-
+// Modified POST /signin: Generate OTP, send email, store in session, redirect to /otp
 app.post('/signin', async (req, res) => {
   console.log('POST /signin hit', req.body);
   const { email, password } = req.body;
@@ -146,23 +197,66 @@ app.post('/signin', async (req, res) => {
   }
   try {
     const user = await collection.findOne({ email });
-    if (!user) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).render('signin', { error: 'Invalid email or password. Please try again or sign up.' });
     }
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return res.status(401).render('signin', { error: 'Invalid email or password. Please try again or sign up.' });
-    }
-    console.log('User signed in:', user.email);
-    const username = email.toLowerCase().split('@')[0];
-    if (username.includes('admin')) {
-      return res.redirect('/admin');
-    } else {
-      return res.redirect('/destination');
-    }
+
+    // Generate and send OTP
+    const otp = generateOTP();
+    req.session.otp = { code: otp, email, action: 'signin', userId: user._id, timestamp: Date.now() };
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Your OTP for WhereTo Signin',
+      text: `Your 4-digit OTP is: ${otp}. It expires in 10 minutes.`
+    });
+
+    res.redirect('/otp');
   } catch (err) {
     console.error('Signin error:', err);
-    return res.status(500).send('Server error');
+    res.status(500).send('Server error');
+  }
+});
+
+// New POST /verify-otp: Verify OTP and complete signup/signin
+app.post('/verify-otp', async (req, res) => {
+  console.log("POST /verify-otp hit", req.body); 
+  const { code } = req.body;
+  const sessionOtp = req.session.otp;
+
+  if (!sessionOtp || !code) {
+    return res.status(400).send('Invalid request');
+  }
+
+  // Check expiration (10 minutes)
+  if (Date.now() - sessionOtp.timestamp > 10 * 60 * 1000) {
+    delete req.session.otp;
+    return res.status(400).send('OTP expired');
+  }
+
+  if (code !== sessionOtp.code) {
+    return res.status(400).send('Invalid OTP');
+  }
+
+  try {
+    if (sessionOtp.action === 'signup') {
+      // Create and save user to MongoDB
+      const hash = await bcrypt.hash(sessionOtp.password, 10);
+      await collection.create({ username: sessionOtp.username, email: sessionOtp.email, password: hash });
+      delete req.session.otp;
+      return res.json({ redirect: '/signin' });  // Redirect to signin after successful signup
+    } else if (sessionOtp.action === 'signin') {
+      // Proceed with login
+      const user = await collection.findById(sessionOtp.userId);
+      req.session.user = user.email;  // Store user in session for future requests
+      delete req.session.otp;
+      const username = user.email.toLowerCase().split('@')[0];
+      const redirect = username.includes('admin') ? '/admin' : '/destination';
+      return res.json({ redirect });
+    }
+  } catch (err) {
+    console.error('OTP verification error:', err);
+    res.status(500).send('Server error');
   }
 });
 
@@ -200,7 +294,7 @@ app.post("/change-password", async (req, res) => {
 });
 
 // Start server
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server running on Port: ${PORT}`);
 });
