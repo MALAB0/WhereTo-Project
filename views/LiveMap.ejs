@@ -6,101 +6,64 @@
     <link rel="icon" href="/WTFavicon.png" type="image/png">
     <link rel="stylesheet" href="LiveMap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    
-    <!-- Add Leaflet CSS and JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   </head>
 
   <body>
+    <!-- Restored original header -->
     <header class="top-bar">
       <button class="back-btn" onclick="history.back()">←</button>
       <h2>Live Map</h2>
     </header>
 
-    <!-- Replace iframe with a div for Leaflet -->
-    <div id="map" style="  margin-top: 24px;
-      width: 100%;
-      height: 500px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding: 0; /* Removed padding so border fits exactly */
-      max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
-      border: 2px solid #222;
-      border-radius: 5px; /* Added to match iframe border-radius */
-      overflow: hidden;" 
-      
-      ></div>
+    <div class="main-container">
+      <aside class="sidebar">
+        <div class="restaurant-card">
+          <h3>Live location</h3>
+          <p>527 1st St, Suite 1, El Segundo, CA 90245</p>
+        </div>
+      </aside>
 
-    <div class="legend_container">
-      <div class="legend-item"><span class="red dot" ></span> Your location</div>
-      <div class="legend-item"><span class="blue dot"></span>Terminal</div>
-      <div class="legend-item"><span class="yellow dot"></span>Point A</div>
-      <div class="legend-item"><span class="dark-green dot"></span>Point B</div>
-    </div>
-
-    <div class="buttons">
-      <a href="/route" style="text-decoration: none;">
-        <button class="search-btn"><i class="fa fa-search"></i> SEARCH ROUTE</button>
-      </a>
-      <a href="/report" style="text-decoration: none;">
-        <button class="report-btn"><i class="fa fa-exclamation-triangle"></i> REPORT ISSUE</button>
-      </a>
-    </div>
-
-    <div class="location_container">
-      <div class="legend-item"><span class="green dot"></span>Live location</div>
+      <section class="map-section">
+        <div id="map"></div>
+        <div class="map-footer">
+    
+        </div>
+      </section>
     </div>
 
     <script>
-      // Initialize the map (this replaces the iframe logic)
-      let map;  // Declare globally for reuse
+      let map;
 
       async function loadMap() {
-        // Check if Geolocation is supported
         if (!navigator.geolocation) {
-          console.error('Geolocation is not supported by this browser.');
-          // Fallback: Initialize map at a default location
-          map = L.map('map').setView([13.40503, 120.59931], 5);  // Default coords and zoom
-          L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi', {
-            
-          }).addTo(map);
+          map = L.map('map').setView([13.40503, 120.59931], 5);
+          L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi').addTo(map);
           return;
         }
 
-        // Request user's current position
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             const zoom = 16;
-            const accuracy = position.coords.accuracy;
-
 
             const orangeIcon = L.icon({
-              iconUrl: 'WTHere.PNG',  // Replace with your image URL/path
-              iconSize: [55,55],  // Size of the icon (width, height in pixels)
-              iconAnchor: [21, 48],  // Point of the icon that corresponds to the marker's location (bottom center for pin effect)
-              popupAnchor: [1, -34]  // Position of the popup relative to the icon
+              iconUrl: 'WTHere.PNG',
+              iconSize: [55, 55],
+              iconAnchor: [21, 48],
+              popupAnchor: [1, -34]
             });
-            console.log(`GPS Location: Lat ${lat}, Lng ${lng}, Accuracy: ${accuracy} meters`);
 
-            // Initialize Leaflet map centered on GPS location
             map = L.map('map').setView([lat, lng], zoom);
-            L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi', {}).addTo(map);
-
-            // Add a pin (marker) at your location
-            L.marker([lat, lng], {icon: orangeIcon}).addTo(map).bindPopup('Your Location').openPopup();  // Pin with popup
+            L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi').addTo(map);
+            L.marker([lat, lng], { icon: orangeIcon }).addTo(map).bindPopup('Your Location').openPopup();
           },
           (error) => {
             console.error('GPS Error:', error.message);
-            // Fallback: Initialize map at default location
             map = L.map('map').setView([13.40503, 120.59931], 5);
-            L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi', {}).addTo(map);
+            L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi').addTo(map);
           },
           {
             enableHighAccuracy: true,
@@ -110,16 +73,14 @@
         );
       }
 
-      // Call loadMap on page load
       loadMap();
 
-       setInterval(() => {
-         navigator.geolocation.getCurrentPosition((position) => {
-           const lat = position.coords.latitude;
+      setInterval(() => {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude;
           const lng = position.coords.longitude;
-           map.setView([lat, lng], map.getZoom());  // Update view without reloading
-           // Optionally update marker position here
-         });
+          map.setView([lat, lng], map.getZoom());
+        });
       }, 30000);
     </script>
   </body>

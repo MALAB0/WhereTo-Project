@@ -260,6 +260,36 @@ app.post('/verify-otp', async (req, res) => {
   }
 });
 
+// New POST /resend-otp: Resend OTP if session exists
+app.post('/resend-otp', async (req, res) => {
+  const sessionOtp = req.session.otp;
+  if (!sessionOtp) {
+    return res.status(400).send('No active OTP session');
+  }
+
+  // Check expiration
+  if (Date.now() - sessionOtp.timestamp > 10 * 60 * 1000) {
+    delete req.session.otp;
+    return res.status(400).send('OTP session expired');
+  }
+
+  try {
+    const otp = generateOTP();
+    req.session.otp.code = otp;  // Update code in session
+    req.session.otp.timestamp = Date.now();  // Reset timestamp
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: sessionOtp.email,
+      subject: `Your OTP for WhereTo ${sessionOtp.action === 'signup' ? 'Signup' : 'Signin'}`,
+      text: `Your new 4-digit OTP is: ${otp}. It expires in 10 minutes.`
+    });
+    res.send('OTP resent');
+  } catch (err) {
+    console.error('Resend OTP error:', err);
+    res.status(500).send('Failed to resend OTP');
+  }
+});
+
 app.post("/change-password", async (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ message: "Not logged in" });

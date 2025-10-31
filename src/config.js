@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 mongoose.connect('mongodb://127.0.0.1:27017/loginusers', {  // Replace with your MongoDB URI
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -7,7 +8,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/loginusers', {  // Replace with your
   
 const SigninSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },  // Added unique for email too, if not already
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   timestamp: { type: Date, default: Date.now }
 });
@@ -19,22 +20,6 @@ const reportSchema = new mongoose.Schema({
   description: { type: String, required: true },
   timestamp: { type: Date, default: Date.now }
 });
-
-const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  // Add other fields like name, etc.
-});
-
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
-
-userSchema.methods.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
 
 // New schema for routes
 const routeSchema = new mongoose.Schema({

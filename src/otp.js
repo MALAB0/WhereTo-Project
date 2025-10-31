@@ -1,5 +1,5 @@
 const inputs = document.querySelectorAll("input[type='number']"),
-    button = document.querySelector("#verifyBtn"),
+    button = document.querySelector("button[type='submit']"),  // Fixed selector
     errorDiv = document.querySelector("#error");
 
 function checkButtonState() {
@@ -65,10 +65,30 @@ inputs.forEach((input, index1) => {
     });
 });
 
-// Form submission (unchanged)
+// Resend OTP functionality
+document.getElementById('resendLink').addEventListener('click', async function(e) {
+    e.preventDefault();
+    try {
+        const res = await fetch('/resend-otp', { 
+            method: 'POST',
+            credentials: 'include'  // Added to send cookies/session data
+        });
+        if (res.ok) {
+            showToast('OTP resent to your email!', 'success');
+        } else {
+            const error = await res.text();
+            showToast(error, 'error');
+        }
+    } catch (err) {
+        console.error('Resend error:', err);
+        showToast('Failed to resend OTP.', 'error');
+    }
+});
+
+// Form submission
 document.getElementById('otpForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const code = Array.from(inputs).map(inp => inp.value).join('');  // Use Array.from for safety
+    const code = Array.from(inputs).map(inp => inp.value).join('');
     if (code.length !== 4) {
         errorDiv.textContent = 'Please enter a valid 4-digit code';
         errorDiv.style.display = 'block';
@@ -79,7 +99,8 @@ document.getElementById('otpForm').addEventListener('submit', async function(e) 
         const res = await fetch('/verify-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code })
+            body: JSON.stringify({ code }),
+            credentials: 'include'  // Added to send cookies/session data
         });
 
         if (res.ok) {
@@ -100,7 +121,7 @@ document.getElementById('otpForm').addEventListener('submit', async function(e) 
 
 window.addEventListener("load", () => inputs[0].focus());
 
-// Toast function (unchanged)
+// Toast function
 function showToast(message, type = 'info') {
   let bgColor = 'blue';
   if (type === 'success') bgColor = 'green';

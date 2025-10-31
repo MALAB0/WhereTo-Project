@@ -23,7 +23,7 @@
       <div class="otp-box">
         <h2>Enter OTP</h2>
         <form id="otpForm">     
-          <label>We have sent a verigication code to your registered Email</label>
+          <label>We have sent a verification code to your registered Email</label>
           <div class="otp-form">                        
           <input type="number">
           <input type="number"  disabled>
@@ -32,11 +32,12 @@
           </div>
           <button type="submit">Verify OTP</button>
         </form>
-        <p>Didn't recieve an email? <a href="/signup">Resend</a> </p>
-        <p><a href="/signup">Cancel</a> </p>
+        <div id="error" style="color: red; display: none;"></div>  <!-- Added error display -->
+        <p>Didn't receive an email? <a href="#" id="resendLink">Resend</a></p>
+        <p><a href="/signup">Cancel</a></p>
       </div>
   </div>
 
- <script src="otp.js"> </script>
+  <script src="otp.js"></script>
 </body>
 </html>
