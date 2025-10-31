@@ -16,28 +16,30 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 40px;
+  padding: 0px 0px;
   background-color: #fafafa;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   color: white;
 }
 
-.header-left,
-.header-right {
+.header-right,
+.header-left{
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 0px;
+  
 }
 
 header .logo {
-  height: 40px;
+  height: auto;
+  width: 100px;
 }
 
 header .icon {
-  height: 30px;
+  height: auto;
+  width: 50px;
   cursor: pointer;
 }
-
 /* ===== BIG BOX ===== */
 .big-box {
   background: #eaf2f8;
@@ -52,7 +54,7 @@ header .icon {
 }
 
 .big-box.second {
-  width: 500px; /* slightly narrower than the first */
+  width: 600px; /* slightly narrower than the first */
 }
 
 .big-box h1 {

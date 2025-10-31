@@ -1,11 +1,11 @@
-   import express from "express";
-   import session from "express-session";
-   import nodemailer from "nodemailer";
-   import dotenv from 'dotenv';  // Add this
-   import path from "path";
-   import bcrypt from "bcrypt";
-   import collection, { Rcollection, Route } from "./config.js";
-   dotenv.config();
+import express from "express";
+import session from "express-session";
+import nodemailer from "nodemailer";
+import dotenv from 'dotenv';  // Add this
+import path from "path";
+import bcrypt from "bcrypt";
+import collection, { Rcollection, Route } from "./config.js";
+dotenv.config();
 
 const app = express();
 
@@ -188,7 +188,7 @@ app.post("/signup", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-// Modified POST /signin: Generate OTP, send email, store in session, redirect to /otp
+// Modified POST /signin: Directly authenticate and log in without OTP
 app.post('/signin', async (req, res) => {
   console.log('POST /signin hit', req.body);
   const { email, password } = req.body;
@@ -201,17 +201,11 @@ app.post('/signin', async (req, res) => {
       return res.status(401).render('signin', { error: 'Invalid email or password. Please try again or sign up.' });
     }
 
-    // Generate and send OTP
-    const otp = generateOTP();
-    req.session.otp = { code: otp, email, action: 'signin', userId: user._id, timestamp: Date.now() };
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: email,
-      subject: 'Your OTP for WhereTo Signin',
-      text: `Your 4-digit OTP is: ${otp}. It expires in 10 minutes.`
-    });
-
-    res.redirect('/otp');
+    // Directly log in the user
+    req.session.user = user.email;
+    const username = user.email.toLowerCase().split('@')[0];
+    const redirect = username.includes('admin') ? '/admin' : '/destination';
+    res.redirect(redirect);
   } catch (err) {
     console.error('Signin error:', err);
     res.status(500).send('Server error');

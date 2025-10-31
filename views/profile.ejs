@@ -12,7 +12,7 @@
 
     <header>
         <div class="header-left">
-            <img src="Back.png" alt="Back" class="icon back-icon">
+            <img src="Back.png" alt="Back" class="icon back-icon" onclick="history.back()">
             <span>Profile</span>
         </div>
     </header>
@@ -195,6 +195,24 @@
         </div>
     </section>
 
+    <script>
+    // Fetch user data from server and populate profile
+    fetch('/api/user')
+      .then(response => {
+        if (!response.ok) throw new Error('Not authenticated');
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('displayName').textContent = data.name || 'User';
+        document.getElementById('displayEmail').textContent = data.email || 'latciass....';
+        // Save to localStorage for consistency with existing code
+        localStorage.setItem('savedUserData', JSON.stringify({ name: data.name, email: data.email }));
+      })
+      .catch(err => {
+        console.warn('Failed to fetch user data, falling back to localStorage:', err);
+        // Fallback handled by profile.js loadUserData()
+      });
+    </script>
     <script src="profile.js"></script>
 
 </body>
