@@ -11,7 +11,7 @@
 <body>
   <header class="admin-header">
     <div class="header-left">
-      <button class="menu-btn" id="menuBtn">&#9776;</button>
+      <button class="menu-btn" id="menuBtn">&#9776; <span id="pendingBadgeBurger" class="badge">0</span></button>
       <div class="logo">Where<br>To<img src="compass.png" alt="logo" style="height:20px;vertical-align:middle;"></div>
     </div>
     <div class="header-right">
@@ -34,7 +34,7 @@
       <li><a href="/admin"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
       <li><a href="/routem" class="active"><i class="fa-solid fa-route"></i> Routes</a></li>
       <li><a href="/commuters"><i class="fa-solid fa-users"></i> Commuters</a></li>
-      <li><a href="/reportadmin"><i class="fa-solid fa-flag"></i> Reports</a></li>
+      <li><a href="/reportadmin"><i class="fa-solid fa-flag"></i> Reports <span id="pendingBadge" class="badge">0</span></a></li>
       <li><a href="/aprof"><i class="fa-solid fa-user"></i> User Management</a></li>
     </ul>
   </div>
@@ -126,5 +126,31 @@
   </main>
 
   <script src="routemanage.js"></script>
+  <script>
+    async function updatePendingBadge() {
+      try {
+        const response = await fetch('/api/admin/reports/pending-count');
+        const data = await response.json();
+        const sidebarBadge = document.getElementById('pendingBadge');
+        const burgerBadge = document.getElementById('pendingBadgeBurger');
+        const display = data.count > 0 ? 'inline' : 'none';
+        if (sidebarBadge) {
+          sidebarBadge.textContent = data.count;
+          sidebarBadge.style.display = display;
+        }
+        if (burgerBadge) {
+          burgerBadge.textContent = data.count;
+          burgerBadge.style.display = display;
+        }
+      } catch (err) {
+        console.error('Error updating badge:', err);
+      }
+    }
+    // Load on page load and poll
+    document.addEventListener('DOMContentLoaded', () => {
+      updatePendingBadge();
+      setInterval(updatePendingBadge, 10000);  // Poll every 10 seconds
+    });
+    </script>
 </body>
 </html>

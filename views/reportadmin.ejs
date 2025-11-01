@@ -29,7 +29,6 @@
     </div>
   </header>
 
-
   <div class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <img src="Logo.PNG" alt="WhereTo Logo" style="width:100px;margin:20px auto;display:block;">
@@ -38,11 +37,10 @@
       <li><a href="/admin"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
       <li><a href="/routem"><i class="fa-solid fa-route"></i> Routes</a></li>
       <li><a href="/commuters"><i class="fa-solid fa-users"></i> Commuters</a></li>
-      <li><a href="/reportadmin" class="active"><i class="fa-solid fa-flag"></i> Reports</a></li>
+      <li><a href="/reportadmin" class="active"><i class="fa-solid fa-flag"></i> Reports <span id="pendingBadge" class="badge">0</span></a></li>  <!-- New: Badge for pending reports -->
       <li><a href="/aprof"><i class="fa-solid fa-user"></i> User Management</a></li>
     </ul>
   </div>
-
 
   <main class="admin-main">
     <section class="reports-section">
@@ -57,19 +55,20 @@
           <option value="rejected">Rejected</option>
         </select>
       </div>
-<table class="reports-table">
-  <thead>
-    <tr>
-      <th>User</th>  <!-- New column -->
-      <th>Report</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody id="reportTableBody">
-    <!-- Populated dynamically by JS -->
-  </tbody>
-</table>
+
+      <table class="reports-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Report</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="reportTableBody">
+          <!-- Populated dynamically by JS -->
+        </tbody>
+      </table>
     </section>
   </main>
 
@@ -84,4 +83,3 @@
   <script src="reportadmin.js"></script>
 </body>
 </html>
-

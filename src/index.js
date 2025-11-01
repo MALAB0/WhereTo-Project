@@ -183,7 +183,14 @@ app.put('/api/admin/reports/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to update report' });
   }
 });
-
+app.get('/api/admin/reports/pending-count', async (req, res) => {
+  try {
+    const count = await Rcollection.countDocuments({ status: 'pending' });
+    res.json({ count });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch pending count' });
+  }
+});
 // Modified POST /signup: Generate OTP, send email, store in session, redirect to /otp
 app.post("/signup", async (req, res) => {
   console.log("POST /signup hit", req.body);
