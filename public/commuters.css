@@ -460,8 +460,12 @@ body {
   padding: 2px 6px;
   font-size: 12px;
   font-weight: bold;
-  margin-left: 5px;
-  display: none;  /* Hidden by default */
-  position: relative;
-  top: -2px;  /* Slight vertical adjustment for burger */
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-3320%, -20%); 
+  z-index: 10; 
+  min-width: 5px; 
+  text-align: center;
 }
