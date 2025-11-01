@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPreferences();
   loadRoutes();
   enableRouteButtons();
-  loadAvatar(); // ✅ Load avatar when opening profile.html
+  loadAvatar(); // Load avatar when opening profile.html
 });
 
 // === Load saved avatar from localStorage ===
@@ -21,7 +21,7 @@ function enableRouteButtons() {
   const useButtons = document.querySelectorAll('.use-btn');
   const deleteButtons = document.querySelectorAll('.delete-btn');
 
-  // ✅ "Use" works only here and goes to route.html
+  //"Use" works only here and goes to route.html
   useButtons.forEach(btn => {
     btn.disabled = false;
     btn.addEventListener('click', () => {
@@ -31,7 +31,7 @@ function enableRouteButtons() {
     });
   });
 
-  // 🚫 "Delete" disabled here
+  // "Delete" disabled here
   deleteButtons.forEach(btn => {
     btn.disabled = false;
     btn.addEventListener('click', e => {
@@ -102,7 +102,7 @@ function useRoute(routeName) {
     localStorage.setItem('selectedRoute', JSON.stringify({ name: routeName }));
   }
 
-  window.location.href = '/route'; // ✅ goes to route.html now
+  window.location.href = '/route'; // goes to route.html now
 }
 
 // === Navigation & Settings ===

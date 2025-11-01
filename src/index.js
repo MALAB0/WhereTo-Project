@@ -165,6 +165,28 @@ app.delete("/api/routes/:id", async (req, res) => {
   }
 });
 
+app.get('/api/user', async (req, res) => {
+  try {
+    // Check if user is authenticated via session
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+    // Fetch user from database using the email stored in session
+    const user = await collection.findOne({ email: req.session.user });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Return user data (username as name, email)
+    res.json({
+      name: user.username || 'User',  // Fallback if username is missing
+      email: user.email
+    });
+  } catch (err) {
+    console.error('Error fetching user data:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+   
 // ========== ADMIN REPORT MANAGEMENT ==========
 app.get("/api/admin/reports", async (req, res) => {
   try {

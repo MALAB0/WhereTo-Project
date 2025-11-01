@@ -36,6 +36,13 @@ const routeSchema = new mongoose.Schema({
   fare: {type: Number, require: true},
   steps: [{ type: String }],
   createdAt: { type: Date, default: Date.now },
+
+       preferences: {
+       notifications: { type: Boolean, default: true },
+       location: { type: Boolean, default: true },
+       autoSave: { type: Boolean, default: true },
+       offline: { type: Boolean, default: false },
+     },
 });
 
 // ====== SEARCH SCHEMA (NEW for admin analytics) ======
