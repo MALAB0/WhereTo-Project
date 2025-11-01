@@ -1,47 +1,62 @@
-// ✅ Sidebar Toggle
+// ✅ Sidebar Toggle (unchanged)
 document.getElementById("menuBtn").addEventListener("click", function() {
   document.getElementById("sidebar").classList.toggle("active");
 });
 
-// ✅ Report Data (with user images)
-const reports = {
-  "Juan Dela Cruz": {
-    report: "Bus 101 route changed due to construction at EDSA-Ortigas",
-    status: "pending",
-    image: "juan.jpg"
-  },
-  "Maria Santos": {
-    report: "Jeepney stop relocated near SM Dagupan",
-    status: "verified",
-    image: "maria.jpg"
-  },
-  "Carlos Reyes": {
-    report: "Taxi overcharging at downtown terminal",
-    status: "rejected",
-    image: "carlos.jpg"
+// ✅ Fetch and Display Reports from DB
+let reports = [];  // Store fetched reports
+
+async function loadReports() {
+  try {
+    const response = await fetch('/api/admin/reports');
+    reports = await response.json();
+    renderTable();
+  } catch (err) {
+    console.error('Error loading reports:', err);
   }
-};
+}
 
-// ✅ Filter Function
-document.getElementById("statusFilter").addEventListener("change", function() {
-  const value = this.value;
-  document.querySelectorAll("#reportTableBody tr").forEach(row => {
-    row.style.display = (value === "all" || row.dataset.status === value) ? "" : "none";
+// Render table based on current reports and filter
+function renderTable() {
+  const tbody = document.getElementById('reportTableBody');
+  const filterValue = document.getElementById('statusFilter').value;
+  tbody.innerHTML = '';
+
+  reports.forEach(report => {
+    if (filterValue !== 'all' && report.status !== filterValue) return;
+
+    const row = document.createElement('tr');
+    row.setAttribute('data-status', report.status);
+    row.innerHTML = `
+      <td>${report.user}</td>  <!-- New: Show user -->
+      <td>${report.description} (${report.issueType} at ${report.location})</td>
+      <td><span class="status ${report.status}">${report.status.charAt(0).toUpperCase() + report.status.slice(1)}</span></td>
+      <td>
+        ${report.status === 'pending' ? '<button class="verify">Verify</button><button class="reject">Reject</button>' : '<button class="view">View</button>'}
+      </td>
+    `;
+    tbody.appendChild(row);
   });
-});
+}
 
-// ✅ Modal Functions
+// ✅ Filter Function (updated to re-render)
+document.getElementById("statusFilter").addEventListener("change", renderTable);
+
+// ✅ Modal Functions (updated to show user)
 const modal = document.getElementById("viewModal");
 const closeModal = document.querySelector(".close");
 const reportDetails = document.getElementById("reportDetails");
 
-function openModal(user, reportText, status, image) {
+function openModal(report) {
   reportDetails.innerHTML = `
-    <strong>User:</strong> ${user}<br>
-    <strong>Report:</strong> ${reportText}<br>
-    <strong>Status:</strong> ${status}<br><br>
-    <strong>Image Provided:</strong><br>
-    <img src="${image}" alt="Report Image" style="width:100%;max-width:400px;border-radius:6px;margin-top:10px;">
+    <strong>User:</strong> ${report.user}<br>
+    <strong>Issue Type:</strong> ${report.issueType}<br>
+    <strong>Location:</strong> ${report.location}<br>
+    <strong>Affected Route:</strong> ${report.affectedRoute || 'N/A'}<br>
+    <strong>Description:</strong> ${report.description}<br>
+    <strong>Status:</strong> ${report.status}<br>
+    <strong>Timestamp:</strong> ${new Date(report.timestamp).toLocaleString()}<br><br>
+    <strong>Image Provided:</strong> N/A (not implemented yet)  <!-- Placeholder; add photo support later -->
   `;
   modal.style.display = "flex";
 }
@@ -49,43 +64,33 @@ function openModal(user, reportText, status, image) {
 closeModal.onclick = () => modal.style.display = "none";
 window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
 
-// ✅ Button Actions
-document.getElementById("reportTableBody").addEventListener("click", function(e) {
+// ✅ Button Actions (updated to update DB and refresh)
+document.getElementById("reportTableBody").addEventListener("click", async function(e) {
   const row = e.target.closest("tr");
-  const user = row.children[0].textContent.trim();
+  const index = Array.from(row.parentNode.children).indexOf(row);
+  const report = reports[index];
 
   if (e.target.classList.contains("view")) {
-    const reportText = row.children[1].textContent.trim();
-    const status = row.dataset.status;
-    const image = reports[user]?.image || "default.jpg";
-    openModal(user, reportText, status, image);
-  }
-
-  if (e.target.classList.contains("verify")) {
-    row.dataset.status = "verified";
-    row.querySelector(".status").textContent = "Verified";
-    row.querySelector(".status").className = "status verified";
-    e.target.remove();
-    row.querySelector(".reject").remove();
-
-    const viewBtn = document.createElement("button");
-    viewBtn.className = "view";
-    viewBtn.textContent = "View";
-    row.querySelector("td:last-child").appendChild(viewBtn);
-    reports[user].status = "verified";
-  }
-
-  if (e.target.classList.contains("reject")) {
-    row.dataset.status = "rejected";
-    row.querySelector(".status").textContent = "Rejected";
-    row.querySelector(".status").className = "status rejected";
-    e.target.remove();
-    row.querySelector(".verify").remove();
-
-    const viewBtn = document.createElement("button");
-    viewBtn.className = "view";
-    viewBtn.textContent = "View";
-    row.querySelector("td:last-child").appendChild(viewBtn);
-    reports[user].status = "rejected";
+    openModal(report);
+  } else if (e.target.classList.contains("verify")) {
+    await updateReportStatus(report._id, 'verified');
+  } else if (e.target.classList.contains("reject")) {
+    await updateReportStatus(report._id, 'rejected');
   }
 });
+
+async function updateReportStatus(id, status) {
+  try {
+    await fetch(`/api/admin/reports/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    await loadReports();  // Refresh table
+  } catch (err) {
+    console.error('Error updating report:', err);
+  }
+}
+
+// Load reports on page load
+document.addEventListener('DOMContentLoaded', loadReports);

@@ -18,7 +18,9 @@ const reportSchema = new mongoose.Schema({
   location: { type: String, required: true },
   affectedRoute: { type: String },
   description: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now }
+  timestamp: { type: Date, default: Date.now },
+  status: { type: String, default: 'pending' },
+  user: { type: String, default: 'Anonymous' }  // New: User's email (or 'Anonymous' if not logged in)
 });
 
 // New schema for routes

@@ -57,40 +57,19 @@
           <option value="rejected">Rejected</option>
         </select>
       </div>
-
-      <table class="reports-table">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Report</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="reportTableBody">
-          <tr data-status="pending">
-            <td>Juan Dela Cruz</td>
-            <td>Bus 101 route changed due to construction at EDSA-Ortigas</td>
-            <td><span class="status pending">Pending</span></td>
-            <td>
-              <button class="verify">Verify</button>
-              <button class="reject">Reject</button>
-            </td>
-          </tr>
-          <tr data-status="verified">
-            <td>Maria Santos</td>
-            <td>Jeepney stop relocated near SM Dagupan</td>
-            <td><span class="status verified">Verified</span></td>
-            <td><button class="view">View</button></td>
-          </tr>
-          <tr data-status="rejected">
-            <td>Carlos Reyes</td>
-            <td>Taxi overcharging at downtown terminal</td>
-            <td><span class="status rejected">Rejected</span></td>
-            <td><button class="view">View</button></td>
-          </tr>
-        </tbody>
-      </table>
+<table class="reports-table">
+  <thead>
+    <tr>
+      <th>User</th>  <!-- New column -->
+      <th>Report</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="reportTableBody">
+    <!-- Populated dynamically by JS -->
+  </tbody>
+</table>
     </section>
   </main>
 

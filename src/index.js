@@ -159,6 +159,31 @@ app.delete('/api/routes/:id', async (req, res) => {
   }
 });
 
+// New: API for admin to fetch reports
+app.get('/api/admin/reports', async (req, res) => {
+  try {
+    const reports = await Rcollection.find({});
+    res.json(reports);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch reports' });
+  }
+});
+
+// New: API for admin to update report status
+app.put('/api/admin/reports/:id', async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['pending', 'verified', 'rejected'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+    const updatedReport = await Rcollection.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    if (!updatedReport) return res.status(404).json({ error: 'Report not found' });
+    res.json(updatedReport);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update report' });
+  }
+});
+
 // Modified POST /signup: Generate OTP, send email, store in session, redirect to /otp
 app.post("/signup", async (req, res) => {
   console.log("POST /signup hit", req.body);
