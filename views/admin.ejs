@@ -3,18 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhereTo | Admin Dashboard</title>
-    <link rel="icon" href="/AWTFavicon.PNG" type="image/png">
+  <title>WhereTo | Admin Dashboard</title>
+  <link rel="icon" href="/AWTFavicon.PNG" type="image/png">
   <link rel="stylesheet" href="admin.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <style>
+    .export-buttons {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .export-buttons button {
+      background: #0078ff;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .export-buttons button:hover {
+      background: #005fcc;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 90%;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
   <header class="admin-header">
     <div class="header-left">
       <button class="menu-btn" id="menuBtn">&#9776;</button>
-      <div class="logo">Where<br>To<img src="compass.png" alt="logo" style="height:20px;vertical-align:middle;"></div>
+      <div class="logo">Where<br>To
+        <img src="compass.png" alt="logo" style="height:20px;vertical-align:middle;">
+      </div>
     </div>
     <div class="header-right">
       <div class="notification-bell">
@@ -70,16 +102,98 @@
     </section>
 
     <!-- Most Used Routes Chart -->
-  <section class="most-used-routes">
-  <h2>Most Used Routes</h2>
-  <div class="chart-container">
-    <canvas id="mostUsedRoutesChart"></canvas>
-  </div>
-</section>
+    <section class="most-used-routes">
+      <h2>Most Used Routes</h2>
+      <div class="chart-container">
+        <canvas id="mostUsedRoutesChart"></canvas>
+      </div>
 
+      <div class="export-buttons">
+        <button id="exportChartBtn"><i class="fa-solid fa-image"></i> Export Chart</button>
+        <button id="exportDataBtn"><i class="fa-solid fa-file-excel"></i> Export Data</button>
+      </div>
+    </section>
   </main>
 
-  <script src="admin.js"  ></script>
+  <!-- Chart and Export Logic -->
+  <script>
+    let routeChart;
+    async function loadRouteStats() {
+      try {
+        const res = await fetch("/api/search/stats");
+        const data = await res.json();
 
+        if (!data.length) {
+          document.getElementById("mostUsedRoutesChart").outerHTML =
+            "<p style='text-align:center;margin-top:20px;'>No search data available yet.</p>";
+          return;
+        }
+
+        const labels = data.map(item => `${item._id.from} → ${item._id.to}`);
+        const counts = data.map(item => item.count);
+
+        const ctx = document.getElementById("mostUsedRoutesChart").getContext("2d");
+        routeChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [{
+              label: "Route Usage",
+              data: counts,
+              backgroundColor: "rgba(54, 162, 235, 0.6)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: "Most Searched Routes (Live Data)"
+              }
+            },
+            scales: {
+              y: { beginAtZero: true }
+            }
+          }
+        });
+
+        // Attach export handlers
+        setupExportButtons(data);
+      } catch (err) {
+        console.error("❌ Failed to load route stats:", err);
+      }
+    }
+
+    function setupExportButtons(data) {
+      // Export Chart Image
+      document.getElementById("exportChartBtn").addEventListener("click", () => {
+        if (!routeChart) return;
+        const link = document.createElement("a");
+        link.download = "MostUsedRoutesChart.png";
+        link.href = routeChart.toBase64Image();
+        link.click();
+      });
+
+      // Export Data Excel
+      document.getElementById("exportDataBtn").addEventListener("click", () => {
+        if (!data || !data.length) return;
+        const excelData = data.map(item => ({
+          Route: `${item._id.from} → ${item._id.to}`,
+          "Search Count": item.count
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(excelData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "MostUsedRoutes");
+        XLSX.writeFile(workbook, "MostUsedRoutesData.xlsx");
+      });
+    }
+
+    // Load chart data on page load
+    loadRouteStats();
+  </script>
 </body>
 </html>
