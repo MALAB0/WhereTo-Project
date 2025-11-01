@@ -5,40 +5,123 @@
   <title>WhereTo | Jeepney Route Finder</title>
   <link rel="icon" href="/WTFavicon.png" type="image/png">
   <link rel="stylesheet" href="destination.css" />
+  <link rel="stylesheet" href="alerts.css" />
   <style>
     /* Additional styles for recent searches container */
     #recentSearchesContainer {
       max-height: 180px; /* Adjust based on 3 small-box heights; assuming each is ~60px */
       overflow-y: auto;
     }
+
+    /* Floating Notifications */
+    .floating-notifications {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 320px;
+      max-width: calc(100% - 40px);
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      z-index: 9999;
+      font-family: Poppins, Arial, sans-serif;
+    }
+    .fn-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .fn-title { font-weight: 600; color: #ff0000; }
+    .fn-toggle {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      color: #0a3d62;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .fn-toggle:hover { background: rgba(10,61,98,0.08); }
+    .fn-list { list-style: none; margin: 0; padding: 8px 8px 10px 8px; max-height: 260px; overflow: auto; }
+    .fn-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px;
+      border-radius: 10px;
+      background: #f8fbff;
+      border: 1px solid #e6f0f7;
+      margin: 6px 0;
+    }
+    .fn-item .fn-icon { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 2px; }
+    .fn-item .fn-text { font-size: 12px; color: #244; line-height: 1.3; }
+
+    .fn-hidden .fn-list,
+    .fn-hidden .report-status-section { display: none; }
+
+    /* Report Status Section */
+    .report-status-section {
+      border-bottom: 1px solid #e0e0e0;
+      background: #fffef7;
+      padding: 8px 12px 10px 12px;
+    }
+    .report-status-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0a3d62;
+      margin-bottom: 6px;
+    }
+    .report-status-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      max-height: 90px;
+      overflow-y: auto;
+    }
+    .report-status-item {
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    }
+    .report-status-item.pending { border-left: 4px solid #ffb300; }
+    .report-status-item.verified { border-left: 4px solid #4caf50; }
+    .report-status-item.rejected { border-left: 4px solid #f44336; }
   </style>
 </head>
 <body>
-<!-- ===== HEADER ===== -->
-<header>
-  <div class="header-left">
-    <img src="compass.PNG" alt="Compass" class="icon logo-icon" />
-    <img src="Logo.PNG" alt="WhereTo Logo" class="logo" />
-  </div>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="header-left">
+      <img src="compass.PNG" alt="Compass" class="icon logo-icon" />
+      <img src="Logo.PNG" alt="WhereTo Logo" class="logo" />
+    </div>
 
-  <div class="header-right">
-    <div class="nav-icon" title="Live Map">
-      <img src="map.png" alt="Live Map" onclick="window.location.href='/LiveMap'" />
+    <div class="header-right">
+      <div class="nav-icon" title="Live Map">
+        <img src="map.png" alt="Live Map" onclick="window.location.href='/LiveMap'" />
+      </div>
+      <div class="nav-icon" title="Report Issue">
+        <img src="report.png" alt="Report" onclick="window.location.href='/report'" />
+      </div>
+      <div class="nav-icon" title="Notifications">
+        <img src="notification.png" alt="Notifications" onclick="window.location.href='/notification'" />
+      </div>
+      <div class="nav-icon" title="Profile">
+        <img src="profile.png" alt="Profile" onclick="window.location.href='/profile'" />
+      </div>
     </div>
-    <div class="nav-icon" title="Report Issue">
-      <img src="report.png" alt="Report" onclick="window.location.href='/report'" />
-    </div>
-    <div class="nav-icon" title="Notifications">
-      <img src="notification.png" alt="Notifications" onclick="window.location.href='/notification'" />
-    </div>
-    <div class="nav-icon" title="Profile">
-      <img src="profile.png" alt="Profile" onclick="window.location.href='/profile'" />
-    </div>
-  </div>
-</header>
+  </header>
 
-
-  <!-- ===== MAIN SECTION (Hero Section) ===== -->
+  <!-- ===== HERO SECTION ===== -->
   <section class="hero">
     <div class="overlay">
       <h2>Plan your trip</h2>
@@ -57,58 +140,44 @@
   </section>
 
   <div class="buttons-row">
-  <button class="info-btn" onclick="window.location.href='/LiveMap'">
-  <img src="map.png" alt="Routes" />
-  <span>Live Map</span>
-</button>
+    <button class="info-btn" onclick="window.location.href='/LiveMap'">
+      <img src="map.png" alt="Routes" />
+      <span>Live Map</span>
+    </button>
 
-  <button class="info-btn" onclick="window.location.href='/report'">
-    <img src="report.png" alt="Report" />
-    <span>Report Issue</span>
-  </button>
-</div>
+    <button class="info-btn" onclick="window.location.href='/report'">
+      <img src="report.png" alt="Report" />
+      <span>Report Issue</span>
+    </button>
+  </div>
 
-    <div class="big-box">
-      <h1>Recent Searches</h1>
-      <div id="recentSearchesContainer">
-        <!-- Recent searches will be populated here dynamically -->
-      </div>
-    </div>
+  <div class="big-box">
+    <h1>Recent Searches</h1>
+    <div id="recentSearchesContainer"></div>
+  </div>
 
-<!-- Floating Notifications -->
+  <!-- Floating Notifications + Report Status -->
   <div id="floatingNotifications" class="floating-notifications" aria-live="polite">
     <div class="fn-header">
       <span class="fn-title">Alerts</span>
       <button id="fnToggle" class="fn-toggle" aria-label="Minimize">–</button>
     </div>
+    <div id="reportStatusSection" class="report-status-section">
+      <h4 class="report-status-title">Your Report Updates</h4>
+      <ul id="reportStatusList" class="report-status-list"></ul>
+    </div>
     <ul id="fnList" class="fn-list"></ul>
   </div>
 
-  <style>
-    .floating-notifications { position: fixed; right: 20px; bottom: 20px; width: 320px; max-width: calc(100% - 40px); background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 9999; font-family: Poppins, Arial, sans-serif; }
-    .fn-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid rgba(0,0,0,0.06); }
-    .fn-title { font-weight: 600; color: #ff0000; }
-    .fn-toggle { background: transparent; border: none; font-size: 20px; line-height: 1; cursor: pointer; color: #0a3d62; padding: 4px 8px; border-radius: 8px; }
-    .fn-toggle:hover { background: rgba(10,61,98,0.08); }
-    .fn-list { list-style: none; margin: 0; padding: 8px 8px 10px 8px; max-height: 260px; overflow: auto; }
-    .fn-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border-radius: 10px; background: #f8fbff; border: 1px solid #e6f0f7; margin: 6px 0; }
-    .fn-item .fn-icon { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 2px; }
-    .fn-item .fn-text { font-size: 12px; color: #244; line-height: 1.3; }
-    .fn-hidden .fn-list { display: none; }
-  </style>
-
   <script>
+    // ===== FLOATING ALERTS =====
     (function() {
       const NT_KEY = 'notificationsList';
       const defaultNotifications = [
         { id: 1, title: 'Service Delay', desc: 'Heavy traffic reported near Main Ave.' },
         { id: 2, title: 'Route Change', desc: 'Jeepney route 101 has a temporary detour.' }
       ];
-      try {
-        if (!localStorage.getItem(NT_KEY)) {
-          localStorage.setItem(NT_KEY, JSON.stringify(defaultNotifications));
-        }
-      } catch (e) {}
+      if (!localStorage.getItem(NT_KEY)) localStorage.setItem(NT_KEY, JSON.stringify(defaultNotifications));
       const list = JSON.parse(localStorage.getItem(NT_KEY) || '[]');
 
       const fn = document.getElementById('floatingNotifications');
@@ -117,13 +186,12 @@
 
       function render() {
         ul.innerHTML = '';
-        list.slice(0, 5).forEach(item => {
+        list.slice(0,5).forEach(item => {
           const li = document.createElement('li');
           li.className = 'fn-item';
-          li.innerHTML =
-            '<img src="notification.png" alt="" class="fn-icon" aria-hidden="true">' +
-            '<div class="fn-text"><strong>' + (item.title || 'Alert') + ':</strong> ' +
-            (item.desc || '') + '</div>';
+          li.innerHTML = '<img src="notification.png" alt="" class="fn-icon" aria-hidden="true">' +
+                         '<div class="fn-text"><strong>' + (item.title || 'Alert') + ':</strong> ' +
+                         (item.desc || '') + '</div>';
           ul.appendChild(li);
         });
       }
@@ -138,128 +206,120 @@
     })();
   </script>
 
+  <script>
+    // ===== REPORT STATUS DATA =====
+    const REPORTS_KEY = "userReportsStatus";
+    const defaultReports = [
+      { id: 1, status: "pending", text: "Your report about 'Broken signage' is pending." },
+      { id: 2, status: "verified", text: "Your report 'Wrong jeepney route' was verified." },
+      { id: 3, status: "rejected", text: "Your report 'Traffic near Main Ave.' was rejected." }
+    ];
+    localStorage.setItem(REPORTS_KEY, JSON.stringify(defaultReports)); // force updated text
 
-  </section>
+    const reportList = JSON.parse(localStorage.getItem(REPORTS_KEY) || "[]");
+    const reportContainer = document.getElementById("reportStatusList");
 
-  <!-- destination.ejs (only the script section is updated) -->
-<!-- ... (rest of the file remains the same) ... -->
-
-<!-- JavaScript for Destination Page -->
-<script>
-  const fromInput = document.getElementById('from');
-  const toInput = document.getElementById('to');
-  const searchBtn = document.getElementById('searchBtn');
-  const recentSearchesContainer = document.getElementById('recentSearchesContainer');
-
-  const RECENT_SEARCHES_KEY = 'recentSearches';
-  const MAX_RECENT_SEARCHES = 10; // Increased to allow more storage, but display will be scrollable
-
-  // Function to get recent searches from localStorage
-  function getRecentSearches() {
-    try {
-      return JSON.parse(localStorage.getItem(RECENT_SEARCHES_KEY)) || [];
-    } catch (e) {
-      return [];
+    function renderReportStatuses() {
+      reportContainer.innerHTML = "";
+      reportList.forEach((report) => {
+        const li = document.createElement("li");
+        li.className = `report-status-item ${report.status}`;
+        li.textContent = report.text;
+        reportContainer.appendChild(li);
+      });
     }
-  }
 
-  // Function to save recent searches to localStorage
-  function saveRecentSearches(searches) {
-    try {
-      localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(searches));
-    } catch (e) {}
-  }
+    renderReportStatuses();
+  </script>
 
-  // Function to add a new search
-  function addRecentSearch(from, to) {
-    const searches = getRecentSearches();
-    // Remove if already exists
-    const filtered = searches.filter(s => !(s.from === from && s.to === to));
-    // Add to front
-    filtered.unshift({ from, to });
-    // Limit to MAX_RECENT_SEARCHES
-    const limited = filtered.slice(0, MAX_RECENT_SEARCHES);
-    saveRecentSearches(limited);
-    renderRecentSearches();
-  }
+  <script>
+    // ===== RECENT SEARCHES =====
+    const fromInput = document.getElementById('from');
+    const toInput = document.getElementById('to');
+    const searchBtn = document.getElementById('searchBtn');
+    const recentSearchesContainer = document.getElementById('recentSearchesContainer');
 
-  // Function to render recent searches
-  function renderRecentSearches() {
-    const searches = getRecentSearches();
-    recentSearchesContainer.innerHTML = '';
-    searches.forEach((search, index) => {
-      const div = document.createElement('div');
-      div.className = 'small-box recent-search';
-      div.setAttribute('data-from', search.from);
-      div.setAttribute('data-to', search.to);
-      div.innerHTML = `
-        <img src="route.png" alt="Jeep Left" class="small-icon left">
-        <span>Route ${index + 1}: ${search.from} to ${search.to}</span>
-        <img src="favorites.png" alt="Jeep Right" class="small-icon right">
-      `;
-      div.style.cursor = 'pointer';
-      div.addEventListener('click', function() {
-        fromInput.value = search.from;
-        toInput.value = search.to;
-        validateInputs();
-        // Visual feedback
-        this.style.backgroundColor = '#e3f2fd';
-        setTimeout(() => {
-          this.style.backgroundColor = 'white';
-        }, 1000);
-      });
-      // Hover effects
-      div.addEventListener('mouseenter', function() {
-        this.style.backgroundColor = '#f0f8ff';
-        this.style.transform = 'translateY(-2px)';
-        this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
-      });
-      div.addEventListener('mouseleave', function() {
-        this.style.backgroundColor = 'white';
-        this.style.transform = 'translateY(0)';
-        this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-      });
-      recentSearchesContainer.appendChild(div);
-    });
-  }
+    const RECENT_SEARCHES_KEY = 'recentSearches';
+    const MAX_RECENT_SEARCHES = 10;
 
-  // Function to validate inputs and enable/disable search button
-  function validateInputs() {
-    const fromValue = fromInput.value.trim();
-    const toValue = toInput.value.trim();
-    
-    if (fromValue && toValue) {
-      searchBtn.disabled = false;
-      searchBtn.style.opacity = '1';
-      searchBtn.style.cursor = 'pointer';
-    } else {
-      searchBtn.disabled = true;
-      searchBtn.style.opacity = '0.5';
-      searchBtn.style.cursor = 'not-allowed';
+    function getRecentSearches() {
+      try { return JSON.parse(localStorage.getItem(RECENT_SEARCHES_KEY)) || []; } catch(e){ return []; }
     }
-  }
 
-  // Add event listeners to input fields
-  fromInput.addEventListener('input', validateInputs);
-  toInput.addEventListener('input', validateInputs);
+    function saveRecentSearches(searches) {
+      try { localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(searches)); } catch(e){}
+    }
 
-  // Handle search button click
-  searchBtn.addEventListener('click', function() {
-    if (!this.disabled) {
+    function addRecentSearch(from, to) {
+      const searches = getRecentSearches();
+      const filtered = searches.filter(s => !(s.from===from && s.to===to));
+      filtered.unshift({from,to});
+      const limited = filtered.slice(0, MAX_RECENT_SEARCHES);
+      saveRecentSearches(limited);
+      renderRecentSearches();
+    }
+
+    function renderRecentSearches() {
+      const searches = getRecentSearches();
+      recentSearchesContainer.innerHTML = '';
+      searches.forEach((search,index)=>{
+        const div = document.createElement('div');
+        div.className='small-box recent-search';
+        div.setAttribute('data-from',search.from);
+        div.setAttribute('data-to',search.to);
+        div.innerHTML=`<img src="route.png" alt="Jeep Left" class="small-icon left">
+          <span>Route ${index+1}: ${search.from} to ${search.to}</span>
+          <img src="favorites.png" alt="Jeep Right" class="small-icon right">`;
+        div.style.cursor='pointer';
+        div.addEventListener('click',function(){
+          fromInput.value=search.from;
+          toInput.value=search.to;
+          validateInputs();
+          this.style.backgroundColor='#e3f2fd';
+          setTimeout(()=>{this.style.backgroundColor='white';},1000);
+        });
+        div.addEventListener('mouseenter',function(){
+          this.style.backgroundColor='#f0f8ff';
+          this.style.transform='translateY(-2px)';
+          this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.15)';
+        });
+        div.addEventListener('mouseleave',function(){
+          this.style.backgroundColor='white';
+          this.style.transform='translateY(0)';
+          this.style.boxShadow='0 2px 10px rgba(0, 0, 0, 0.1)';
+        });
+        recentSearchesContainer.appendChild(div);
+      });
+    }
+
+    function validateInputs() {
       const fromValue = fromInput.value.trim();
       const toValue = toInput.value.trim();
-      
-      // Add to recent searches
-      addRecentSearch(fromValue, toValue);
-      
-      // Redirect to /route with query params
-      window.location.href = `/route?from=${encodeURIComponent(fromValue)}&to=${encodeURIComponent(toValue)}`;
+      if(fromValue && toValue){
+        searchBtn.disabled=false;
+        searchBtn.style.opacity='1';
+        searchBtn.style.cursor='pointer';
+      } else {
+        searchBtn.disabled=true;
+        searchBtn.style.opacity='0.5';
+        searchBtn.style.cursor='not-allowed';
+      }
     }
-  });
 
-  // Initialize validation and render recent searches on page load
-  validateInputs();
-  renderRecentSearches();
-</script>
+    fromInput.addEventListener('input',validateInputs);
+    toInput.addEventListener('input',validateInputs);
+
+    searchBtn.addEventListener('click',function(){
+      if(!this.disabled){
+        const fromValue=fromInput.value.trim();
+        const toValue=toInput.value.trim();
+        addRecentSearch(fromValue,toValue);
+        window.location.href=`/route?from=${encodeURIComponent(fromValue)}&to=${encodeURIComponent(toValue)}`;
+      }
+    });
+
+    validateInputs();
+    renderRecentSearches();
+  </script>
 </body>
 </html>
