@@ -5,9 +5,10 @@ body {
   background-position: center;
   background-attachment: fixed;
   color: #222;
-  min-height: 100vh;
+  height: 100vh; /* Full viewport height */
   margin: 0;
   padding: 0;
+  overflow: hidden; /* Prevents scrolling */
 }
 
 .top-bar {
@@ -20,6 +21,7 @@ body {
   border-bottom: 1px solid #ccc;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   z-index: 1100;
+  height: 60px; /* Fixed height for header */
 }
 
 .back-btn {
@@ -45,21 +47,25 @@ body {
   margin: 0 auto;
   padding: 20px;
   gap: 20px;
+  height: calc(100vh - 60px); /* Full height minus header */
+  box-sizing: border-box; /* Include padding in height calculation */
 }
 
 .sidebar {
-  width: 400px;
+  width: 350px;
   background-color: #ff9641;
   border: 1px solid #ff7b00;
   border-radius: 8px;
   padding: 16px;
-  overflow-y: auto;
-  max-height: 570px;
+  overflow-y: auto; /* Allow internal scrolling if needed */
+  height: 100%; /* Fill available height */
+  box-sizing: border-box;
+  justify-content: flex-end;
 }
 
 .restaurant-card {
-  border-bottom: 1px solid #eee;
-  padding: 12px 0;
+  border-bottom: 1px solid #000000;
+  margin-top: 7px;
 }
 
 .restaurant-card h3 {
@@ -69,7 +75,7 @@ body {
 
 .restaurant-card p {
   font-size: 14px;
-  color: #555;
+  color: #000000;
 }
 
 .status.open {
@@ -77,14 +83,35 @@ body {
   font-weight: bold;
 }
 
+.report-button {
+  display: flex;               /* Enable flexbox */
+  justify-content: center;     /* Center horizontally */
+  align-items: center;         /* Center vertically */
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  background-color: #0a3d62;
+  margin-top: 250px;
+}
+
+.report-button p {
+  font-size: large;
+  font-family: inherit;
+  font-weight: bold;
+  color: thistle;
+  margin: 0;                   /* Remove default margin */
+}
+
+
 .map-section {
   flex: 1;
   position: relative;
+  height: 100%; /* Fill available height */
 }
 
 #map {
   width: 100%;
-  height: 600px;
+  height: 100%; /* Fill the map-section height */
   border: 2px solid #222;
   border-radius: 8px;
 }
@@ -104,14 +131,16 @@ body {
 
   .sidebar {
     width: 100%;
-    max-height: none;
+    height: auto; /* Allow natural height on mobile */
+    max-height: 50vh; /* Limit to half viewport on mobile to avoid cutoff */
   }
 
   .map-section {
     width: 100%;
+    height: calc(100vh - 60px - 50vh - 40px); /* Adjust for header, sidebar, and padding */
   }
 
   #map {
-    height: 400px;
+    height: 100%;
   }
 }

@@ -21,7 +21,15 @@
       <aside class="sidebar">
         <div class="restaurant-card">
           <h3>Live location</h3>
-          <p>527 1st St, Suite 1, El Segundo, CA 90245</p>
+          <p id="location-display">Loading location...</p>
+        </div>
+          <div class="restaurant-card">
+          <h3>Your route</h3>
+          <p id="location-display">Loading location...</p>
+        </div>
+        <div>
+          <button class="report-button" onclick="window.location.href='/report'"> <p> Report Issues</p> </button>
+         
         </div>
       </aside>
 
@@ -36,10 +44,27 @@
     <script>
       let map;
 
+      // Function to update the location display in the sidebar
+      async function updateLocationDisplay(lat, lng) {
+        try {
+          // Reverse geocode using Nominatim (free, open-source service)
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+          const data = await response.json();
+          // Use the display_name if available, otherwise fall back to coordinates
+          const address = data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+          document.getElementById('location-display').textContent = address;
+        } catch (error) {
+          console.error('Reverse geocoding error:', error);
+          // Fallback to coordinates if geocoding fails
+          document.getElementById('location-display').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        }
+      }
+
       async function loadMap() {
         if (!navigator.geolocation) {
           map = L.map('map').setView([13.40503, 120.59931], 5);
           L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi').addTo(map);
+          document.getElementById('location-display').textContent = 'Geolocation not supported';
           return;
         }
 
@@ -59,11 +84,15 @@
             map = L.map('map').setView([lat, lng], zoom);
             L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi').addTo(map);
             L.marker([lat, lng], { icon: orangeIcon }).addTo(map).bindPopup('Your Location').openPopup();
+
+            // Update the sidebar with the live location
+            updateLocationDisplay(lat, lng);
           },
           (error) => {
             console.error('GPS Error:', error.message);
             map = L.map('map').setView([13.40503, 120.59931], 5);
             L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.png?key=7gC1ycjhdrekilmBwtUi').addTo(map);
+            document.getElementById('location-display').textContent = 'Unable to get location';
           },
           {
             enableHighAccuracy: true,
@@ -75,11 +104,14 @@
 
       loadMap();
 
+      // Update map view and location display every 30 seconds
       setInterval(() => {
         navigator.geolocation.getCurrentPosition((position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           map.setView([lat, lng], map.getZoom());
+          // Update the sidebar with the new live location
+          updateLocationDisplay(lat, lng);
         });
       }, 30000);
     </script>
