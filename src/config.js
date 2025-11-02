@@ -31,7 +31,6 @@ const routeSchema = new mongoose.Schema({
   end: { type: String, required: true },
   fare: {type: Number, require: true},
   steps: [{ type: String }],
-<<<<<<< HEAD
   createdAt: { type: Date, default: Date.now },
 
        preferences: {
@@ -40,9 +39,9 @@ const routeSchema = new mongoose.Schema({
        autoSave: { type: Boolean, default: true },
        offline: { type: Boolean, default: false },
      },
-=======
+
   createdAt: { type: Date, default: Date.now }
->>>>>>> parent of a94ec87 (Functioning Chart data in admin with exportable buttons)
+
 });
 
 const collection = mongoose.model("users", SigninSchema);

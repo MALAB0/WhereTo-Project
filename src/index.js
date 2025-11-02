@@ -159,7 +159,6 @@ app.delete('/api/routes/:id', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 app.get('/api/user', async (req, res) => {
   try {
     // Check if user is authenticated via session
@@ -184,10 +183,6 @@ app.get('/api/user', async (req, res) => {
    
 // ========== ADMIN REPORT MANAGEMENT ==========
 app.get("/api/admin/reports", async (req, res) => {
-=======
-// New: API for admin to fetch reports
-app.get('/api/admin/reports', async (req, res) => {
->>>>>>> parent of a94ec87 (Functioning Chart data in admin with exportable buttons)
   try {
     const reports = await Rcollection.find({});
     res.json(reports);
@@ -211,7 +206,6 @@ app.put('/api/admin/reports/:id', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 app.get('/api/admin/reports/pending-count', async (req, res) => {
   try {
     const count = await Rcollection.countDocuments({ status: 'pending' });
@@ -264,9 +258,6 @@ app.get("/api/search/stats", async (req, res) => {
 // ========== USER AUTH WITH OTP ==========
 
 // Signup
-=======
-// Modified POST /signup: Generate OTP, send email, store in session, redirect to /otp
->>>>>>> parent of a94ec87 (Functioning Chart data in admin with exportable buttons)
 app.post("/signup", async (req, res) => {
   console.log("POST /signup hit", req.body);
   const { username, email, password } = req.body;
