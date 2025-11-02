@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     card.querySelector('.route-desc').textContent = `${data.start} → ${data.end}`;
     card.querySelector('.route-riders').textContent = (data.steps?.length) ? data.steps.length + ' steps' : '0 steps';
-    card.querySelector('.route-fare').textContent = `Fare: ₱${escapeHtml(data.fare || '0')}`;  // Added fare display
+    card.querySelector('.route-fare').textContent = `Estimated Fare: ₱${escapeHtml(data.fare || '0')}`;  // Added fare display
     card.dataset.steps = JSON.stringify(data.steps || []);
     card.dataset.fare = data.fare || '';
   }
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
       <div class="route-desc">${escapeHtml(data.start)} → ${escapeHtml(data.end)}</div>
       <div class="route-riders">${(data.steps?.length) ? data.steps.length + ' steps' : '0 steps'}</div>
-      <div class="route-fare">Fare: ₱${escapeHtml(data.fare || '0')}</div>  <!-- Added fare display -->
+      <div class="route-fare">Estimated Fare: ₱${escapeHtml(data.fare || '0')}</div>  <!-- Added fare display -->
       <div class="route-actions">
         <button class="view"><i class="fa-solid fa-eye"></i> view</button>
         <button class="edit"><i class="fa-solid fa-pen"></i> edit</button>
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <p><strong>Status:</strong> ${escapeHtml(status)}</p>
             <p><strong>Start Point:</strong> ${escapeHtml(start || '')}</p>
             <p><strong>End Point:</strong> ${escapeHtml(end || '')}</p>
-            <p><strong>Fare:</strong> ₱${escapeHtml(fare)}</p>
+            <p><strong>Estimated Fare:</strong> ₱${escapeHtml(fare)}</p>
             <h4>Steps:</h4>
             <ul>${stepsList}</ul>
           `;
@@ -214,6 +214,8 @@ document.addEventListener('DOMContentLoaded', function () {
   if (routeStepsForm) {
     routeStepsForm.addEventListener('submit', async e => {
       e.preventDefault();
+      
+      // Collect steps data
       const steps = ['step1', 'step2', 'step3', 'step4', 'step5']
         .map(id => document.getElementById(id)?.value.trim() || '')
         .filter(s => s);
@@ -221,41 +223,66 @@ document.addEventListener('DOMContentLoaded', function () {
 
       try {
         let response;
+        const payload = {
+          name: tempRouteData.name,
+          status: tempRouteData.status || 'active',
+          start: tempRouteData.start,
+          end: tempRouteData.end,
+          fare: tempRouteData.fare,
+          steps: tempRouteData.steps
+        };
+
+        console.log('Submitting route data:', payload);
+
         if (editingRoute && tempRouteData.id) {
           // Update existing
           response = await fetch(`/api/routes/${tempRouteData.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(tempRouteData)
+            body: JSON.stringify(payload)
           });
+          
           if (response.ok) {
             const updated = await response.json();
+            console.log('Route updated successfully:', updated);
             updateRouteCard(editingRoute, updated);
           } else {
-            console.error('PUT failed:', response.status, await response.text());
+            const error = await response.text();
+            console.error('PUT failed:', response.status, error);
+            alert('Failed to update route: ' + error);
+            return;
           }
         } else {
           // Create new
           response = await fetch('/api/routes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(tempRouteData)
+            body: JSON.stringify(payload)
           });
+          
           if (response.ok) {
             const newRoute = await response.json();
+            console.log('Route created successfully:', newRoute);
             createRouteCard(newRoute);
           } else {
-            console.error('POST failed:', response.status, await response.text());
+            const error = await response.text();
+            console.error('POST failed:', response.status, error);
+            alert('Failed to create route: ' + error);
+            return;
           }
         }
+
+        // Only clear forms and close modal if save was successful
+        if (routeStepsModal) routeStepsModal.style.display = 'none';
+        if (addRouteForm) addRouteForm.reset();
+        if (routeStepsForm) routeStepsForm.reset();
+        editingRoute = null;
+        tempRouteData = {};
+
       } catch (err) {
         console.error('Failed to save route:', err);
+        alert('Failed to save route. Please try again.');
       }
-
-      if (routeStepsModal) routeStepsModal.style.display = 'none';
-      if (addRouteForm) addRouteForm.reset();
-      if (routeStepsForm) routeStepsForm.reset();
-      editingRoute = null;
     });
   }
 });

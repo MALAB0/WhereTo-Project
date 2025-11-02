@@ -79,22 +79,22 @@
       <div class="stats-grid">
         <div class="stat-card users">
           <div class="stat-title">Total Users</div>
-          <div class="stat-value">15,427</div>
+          <div class="stat-value"><%= stats ? stats.totalUsers.toLocaleString() : '0' %></div>
           <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
         </div>
         <div class="stat-card routes">
           <div class="stat-title">Active Routes</div>
-          <div class="stat-value">342</div>
+          <div class="stat-value"><%= stats ? stats.activeRoutes.toLocaleString() : '0' %></div>
           <div class="stat-icon"><i class="fa-solid fa-route"></i></div>
         </div>
         <div class="stat-card reports">
           <div class="stat-title">Pending Reports</div>
-          <div class="stat-value">23</div>
+          <div class="stat-value"><%= stats ? stats.pendingReports.toLocaleString() : '0' %></div>
           <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
         </div>
         <div class="stat-card trips">
           <div class="stat-title">Daily Trips</div>
-          <div class="stat-value">8,434</div>
+          <div class="stat-value"><%= stats ? stats.dailySearches.toLocaleString() : '0' %></div>
           <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
         </div>
       </div>

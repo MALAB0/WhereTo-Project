@@ -84,7 +84,46 @@ app.get("/notification", (req, res) => res.render("notification"));
 app.get("/nav", (req, res) => res.render("navigation"));
 app.get("/profile", (req, res) => res.render("profile"));
 app.get("/prof2", (req, res) => res.render("profile2"));
-app.get("/admin", (req, res) => res.render("admin"));
+app.get("/admin", async (req, res) => {
+  try {
+    // Get all stats in parallel for better performance
+    const [totalUsers, activeRoutes, pendingReports, dailySearches] = await Promise.all([
+      // Count total users
+      collection.countDocuments(),
+      // Count active routes (routes with valid start and end points)
+      Route.countDocuments({ 
+        status: { $ne: 'deleted' },  // Exclude deleted routes
+        start: { $exists: true, $ne: '' }, // Has valid start point
+        end: { $exists: true, $ne: '' }    // Has valid end point
+      }),
+      // Count pending reports
+      Rcollection.countDocuments({ status: 'pending' }),
+      // Count today's searches
+      Search.countDocuments({
+        date: { $gte: new Date(new Date().setHours(0,0,0,0)) }
+      })
+    ]);
+
+    res.render("admin", {
+      stats: {
+        totalUsers,
+        activeRoutes,
+        pendingReports,
+        dailySearches
+      }
+    });
+  } catch (err) {
+    console.error('Error fetching admin stats:', err);
+    res.render("admin", {
+      stats: {
+        totalUsers: 0,
+        activeRoutes: 0,
+        pendingReports: 0,
+        dailySearches: 0
+      }
+    });
+  }
+});
 app.get("/commuters", (req, res) => res.render("commuters"));
 app.get("/aprof", (req, res) => res.render("aprofile"));
 app.get("/reportadmin", (req, res) => res.render("reportadmin"));
@@ -147,21 +186,64 @@ app.get('/api/routes', async (req, res) => {
 
 app.post('/api/routes', async (req, res) => {
   try {
-    const newRoute = new Route(req.body);
+    console.log('Creating new route:', req.body);
+    const { name, status, start, end, fare, steps } = req.body;
+    
+    // Validate required fields
+    if (!name || !status || !start || !end || !fare) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const newRoute = new Route({
+      name,
+      status,
+      start,
+      end,
+      fare: parseFloat(fare),
+      steps: Array.isArray(steps) ? steps : []
+    });
+
     await newRoute.save();
+    console.log('Route created:', newRoute);
     res.status(201).json(newRoute);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to save route' });
+    console.error('Failed to save route:', err);
+    res.status(500).json({ error: 'Failed to save route: ' + err.message });
   }
 });
 
 app.put('/api/routes/:id', async (req, res) => {
   try {
-    const updatedRoute = await Route.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedRoute) return res.status(404).json({ error: 'Route not found' });
+    console.log('Updating route:', req.params.id, req.body);
+    const { name, status, start, end, fare, steps } = req.body;
+    
+    // Validate required fields
+    if (!name || !status || !start || !end || !fare) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const updatedRoute = await Route.findByIdAndUpdate(
+      req.params.id, 
+      {
+        name,
+        status,
+        start,
+        end,
+        fare: parseFloat(fare),
+        steps: Array.isArray(steps) ? steps : []
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedRoute) {
+      return res.status(404).json({ error: 'Route not found' });
+    }
+
+    console.log('Route updated:', updatedRoute);
     res.json(updatedRoute);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update route' });
+    console.error('Failed to update route:', err);
+    res.status(500).json({ error: 'Failed to update route: ' + err.message });
   }
 });
 
