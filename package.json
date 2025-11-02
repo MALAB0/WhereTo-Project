@@ -5,35 +5,22 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MALAB0/WhereTo-Project.git"
-  },
-  "author": "labo",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MALAB0/WhereTo-Project/issues"
-  },
-  "homepage": "https://github.com/MALAB0/WhereTo-Project#readme",
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "ejs": "^3.1.10",
-    "env": "^0.0.2",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
-    "express-session": "^1.18.2",
-    "mongoose": "^8.19.1",
-    "nodemailer": "^7.0.10",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "express-session": "^1.17.3",
+    "mongoose": "^7.5.0",
+    "nodemailer": "^6.9.4",
     "socket.io": "^4.7.1",
     "toastify-js": "^1.12.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.0.1"
   }
 }

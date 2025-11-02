@@ -3,9 +3,14 @@ import session from "express-session";
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv';  // Add this
 import path from "path";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
+import { promisify } from 'util';
 import collection, { Rcollection, Route } from "./config.js";
 dotenv.config();
+
+// Promisify bcryptjs callback-style functions so existing `await bcrypt.hash/compare` works
+bcrypt.hash = promisify(bcrypt.hash);
+bcrypt.compare = promisify(bcrypt.compare);
 
 const app = express();
 
@@ -18,7 +23,7 @@ app.use(express.static(path.join(process.cwd(), "src")));
 
 // Session middleware (added for OTP)
 app.use(session({
-  secret: 'your-secret-key',  // Change to a secure key in production
+  secret: process.env.SESSION_SECRET || 'dev-secret-key', // Use SESSION_SECRET from .env in production
   resave: false,
   saveUninitialized: true,
   cookie: { maxAge: 10 * 60 * 1000 }  // 10 minutes
