@@ -415,7 +415,7 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-3320%, -20%); 
+  transform: translate(-3350%, -20%); 
   z-index: 10; 
   min-width: 5px; 
   text-align: center;

@@ -39,8 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     card.querySelector('.route-desc').textContent = `${data.start} → ${data.end}`;
     card.querySelector('.route-riders').textContent = (data.steps?.length) ? data.steps.length + ' steps' : '0 steps';
+    card.querySelector('.route-fare').textContent = `Fare: $${escapeHtml(data.fare || '0')}`;  // Added fare display
     card.dataset.steps = JSON.stringify(data.steps || []);
-    card.dataset.fare = data.fare || '';  // Added to store fare
+    card.dataset.fare = data.fare || '';
   }
 
   // Sidebar toggle
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
     newCard.className = 'route-card';
     newCard.dataset.id = data._id;
     newCard.dataset.steps = JSON.stringify(data.steps || []);
-    newCard.dataset.fare = data.fare || '';  // Added to store fare
+    newCard.dataset.fare = data.fare || '';
     newCard.innerHTML = `
       <div class="route-title">
         <span>${escapeHtml(data.name)}</span>
@@ -81,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
       <div class="route-desc">${escapeHtml(data.start)} → ${escapeHtml(data.end)}</div>
       <div class="route-riders">${(data.steps?.length) ? data.steps.length + ' steps' : '0 steps'}</div>
+      <div class="route-fare">Fare: $${escapeHtml(data.fare || '0')}</div>  <!-- Added fare display -->
       <div class="route-actions">
         <button class="view"><i class="fa-solid fa-eye"></i> view</button>
         <button class="edit"><i class="fa-solid fa-pen"></i> edit</button>
@@ -107,15 +109,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const desc = card.querySelector('.route-desc')?.textContent || '';
         const [start, end] = desc.split(' → ');
         const steps = JSON.parse(card.dataset.steps || '[]');
-        const fare = card.dataset.fare;  // Added to get fare
+        const fare = card.dataset.fare;
 
         document.getElementById('newRouteName').value = name;
         document.getElementById('newRouteStart').value = start || '';
         document.getElementById('newRouteEnd').value = end || '';
-        document.getElementById('newRouteFare').value = fare;  // Fixed: now fare is defined
+        document.getElementById('newRouteFare').value = fare;
         document.getElementById('newRouteStatus').value = status.toLowerCase();
 
-        tempRouteData = { id, name, start: start || '', end: end || '', status, steps, fare };  // Added fare
+        tempRouteData = { id, name, start: start || '', end: end || '', status, steps, fare };
         if (modalTitle) modalTitle.textContent = "Edit Route";
         if (addRouteModal) addRouteModal.style.display = 'flex';
       });
@@ -142,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const desc = card.querySelector('.route-desc')?.textContent || '';
         const [start, end] = desc.split(' → ');
         const steps = JSON.parse(card.dataset.steps || '[]');
-        const fare = card.dataset.fare;  // Added to get fare
+        const fare = card.dataset.fare;
 
         const stepsList = steps.length ? steps.slice(0, 5).map(s => `<li>${escapeHtml(s)}</li>`).join('') : '<li>No steps added</li>';
 
@@ -152,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <p><strong>Status:</strong> ${escapeHtml(status)}</p>
             <p><strong>Start Point:</strong> ${escapeHtml(start || '')}</p>
             <p><strong>End Point:</strong> ${escapeHtml(end || '')}</p>
-            <p><strong>Fare:</strong> ${escapeHtml(fare)}</p>  <!-- Added fare display -->
+            <p><strong>Fare:</strong> $${escapeHtml(fare)}</p>
             <h4>Steps:</h4>
             <ul>${stepsList}</ul>
           `;
@@ -195,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
         name: document.getElementById('newRouteName')?.value || '',
         start: document.getElementById('newRouteStart')?.value || '',
         end: document.getElementById('newRouteEnd')?.value || '',
-        fare: document.getElementById('newRouteFare')?.value || '',  // Fixed: added optional chaining
+        fare: document.getElementById('newRouteFare')?.value || '',
         status: document.getElementById('newRouteStatus')?.value || ''
       };
       if (addRouteModal) addRouteModal.style.display = 'none';
