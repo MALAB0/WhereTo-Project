@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     card.querySelector('.route-desc').textContent = `${data.start} → ${data.end}`;
     card.querySelector('.route-riders').textContent = (data.steps?.length) ? data.steps.length + ' steps' : '0 steps';
-    card.querySelector('.route-fare').textContent = `Fare: $${escapeHtml(data.fare || '0')}`;  // Added fare display
+    card.querySelector('.route-fare').textContent = `Fare: ₱${escapeHtml(data.fare || '0')}`;  // Added fare display
     card.dataset.steps = JSON.stringify(data.steps || []);
     card.dataset.fare = data.fare || '';
   }
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
       <div class="route-desc">${escapeHtml(data.start)} → ${escapeHtml(data.end)}</div>
       <div class="route-riders">${(data.steps?.length) ? data.steps.length + ' steps' : '0 steps'}</div>
-      <div class="route-fare">Fare: $${escapeHtml(data.fare || '0')}</div>  <!-- Added fare display -->
+      <div class="route-fare">Fare: ₱${escapeHtml(data.fare || '0')}</div>  <!-- Added fare display -->
       <div class="route-actions">
         <button class="view"><i class="fa-solid fa-eye"></i> view</button>
         <button class="edit"><i class="fa-solid fa-pen"></i> edit</button>
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <p><strong>Status:</strong> ${escapeHtml(status)}</p>
             <p><strong>Start Point:</strong> ${escapeHtml(start || '')}</p>
             <p><strong>End Point:</strong> ${escapeHtml(end || '')}</p>
-            <p><strong>Fare:</strong> $${escapeHtml(fare)}</p>
+            <p><strong>Fare:</strong> ₱${escapeHtml(fare)}</p>
             <h4>Steps:</h4>
             <ul>${stepsList}</ul>
           `;

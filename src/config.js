@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-mongoose.connect('mongodb://127.0.0.1:27017/loginusers', {  // Replace with your MongoDB URI
+mongoose.connect('mongodb://127.0.0.1:27017/loginusers', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log('Connected to MongoDB'))
@@ -10,7 +10,13 @@ const SigninSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now }
+  timestamp: { type: Date, default: Date.now },
+  preferences: {    
+    notifications: { type: Boolean, default: true },
+    location: { type: Boolean, default: true },
+    autoSave: { type: Boolean, default: true },
+    offline: { type: Boolean, default: false },
+  },
 });
 
 const reportSchema = new mongoose.Schema({
@@ -20,7 +26,7 @@ const reportSchema = new mongoose.Schema({
   description: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
   status: { type: String, default: 'pending' },
-  user: { type: String, default: 'Anonymous' }  // New: User's email (or 'Anonymous' if not logged in)
+  user: { type: String, default: 'Anonymous' } 
 });
 
 // New schema for routes
@@ -31,26 +37,25 @@ const routeSchema = new mongoose.Schema({
   end: { type: String, required: true },
   fare: {type: Number, require: true},
   steps: [{ type: String }],
-  createdAt: { type: Date, default: Date.now },
-
-       preferences: {
-       notifications: { type: Boolean, default: true },
-       location: { type: Boolean, default: true },
-       autoSave: { type: Boolean, default: true },
-       offline: { type: Boolean, default: false },
-     },
-
   createdAt: { type: Date, default: Date.now }
-
 });
+
+const searchSchema = new mongoose.Schema({
+  from: { type: String, required: true },
+  to: { type: String, required: true },
+  date: { type: Date, default: Date.now },
+});
+
 
 const collection = mongoose.model("users", SigninSchema);
 const Rcollection = mongoose.model("reports", reportSchema);
 const Route = mongoose.model("routes", routeSchema);
+const Search = mongoose.model("searches", searchSchema);
 
 console.log("User model ready ->", collection.collection.name);
 console.log("Report model ready ->", Rcollection.collection.name);
 console.log("Route model ready ->", Route.collection.name);
+console.log("Search model ready ->", Search.collection.name);
 
 export default collection;
-export { Rcollection, Route };
+export { Rcollection, Route, Search};

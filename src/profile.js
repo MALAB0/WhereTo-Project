@@ -1,12 +1,92 @@
 document.addEventListener('DOMContentLoaded', () => {
-  loadUserData();
-  loadPreferences();
+  fetchAndUpdateProfile();
   loadRoutes();
   enableRouteButtons();
-  loadAvatar(); // Load avatar when opening profile.html
+  loadAvatar();
+  setupPreferenceListeners();
 });
 
-// === Load saved avatar from localStorage ===
+// === Fetch and update profile data ===
+async function fetchAndUpdateProfile() {
+  try {
+    const response = await fetch('/api/user', {
+      credentials: 'include' // Important: send cookies/session data
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        window.location.href = '/signin'; // Redirect to signin if not authenticated
+        return;
+      }
+      throw new Error('Failed to fetch profile data');
+    }
+
+    const data = await response.json();
+    updateProfileUI(data);
+  } catch (err) {
+    console.error('Error loading profile:', err);
+    showError('Failed to load profile data. Please try again later.');
+  }
+}
+
+// === Update UI with profile data ===
+function updateProfileUI(data) {
+  // Update name and email
+  const nameEl = document.getElementById('displayName');
+  const emailEl = document.getElementById('displayEmail');
+  if (nameEl) nameEl.textContent = data.name;
+  if (emailEl) emailEl.textContent = data.email;
+
+  // Update stats
+  const statsElements = {
+    tripsTaken: document.querySelector('.stat-item:nth-child(1) .stat-number'),
+    savedRoutes: document.querySelector('.stat-item:nth-child(2) .stat-number'),
+    reportsMade: document.querySelector('.stat-item:nth-child(3) .stat-number'),
+    rating: document.querySelector('.rating')
+  };
+
+  Object.entries(statsElements).forEach(([key, element]) => {
+    if (element && data.stats && data.stats[key] !== undefined) {
+      element.textContent = data.stats[key];
+    }
+  });
+
+  // Update preferences
+  if (data.preferences) {
+    Object.entries(data.preferences).forEach(([key, value]) => {
+      const toggle = document.getElementById(key);
+      if (toggle) toggle.checked = value;
+    });
+  }
+}
+
+// === Set up preference change listeners ===
+function setupPreferenceListeners() {
+  const toggles = document.querySelectorAll('.toggle-switch input');
+  toggles.forEach(toggle => {
+    toggle.addEventListener('change', async () => {
+      try {
+        const response = await fetch('/api/user/preferences', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            [toggle.id]: toggle.checked
+          }),
+          credentials: 'include'
+        });
+
+        if (!response.ok) throw new Error('Failed to update preference');
+        
+      } catch (err) {
+        console.error('Error updating preference:', err);
+        toggle.checked = !toggle.checked; // Revert the toggle
+        showError('Failed to update preference. Please try again.');
+      }
+    });
+  });
+}
+
+// === Load saved avatar ===
 function loadAvatar() {
   const savedAvatar = localStorage.getItem('userAvatar');
   if (savedAvatar) {
@@ -16,48 +96,10 @@ function loadAvatar() {
   }
 }
 
-// === Enable route buttons ===
-function enableRouteButtons() {
-  const useButtons = document.querySelectorAll('.use-btn');
-  const deleteButtons = document.querySelectorAll('.delete-btn');
-
-  //"Use" works only here and goes to route.html
-  useButtons.forEach(btn => {
-    btn.disabled = false;
-    btn.addEventListener('click', () => {
-      const routeItem = btn.closest('.route-item');
-      const routeName = routeItem.querySelector('.route-name').textContent.trim();
-      useRoute(routeName);
-    });
-  });
-
-  // "Delete" disabled here
-  deleteButtons.forEach(btn => {
-    btn.disabled = false;
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      alert('You can only delete routes from Edit Profile.');
-    });
-  });
-}
-
-// === Load user data ===
-function loadUserData() {
-  const saved = JSON.parse(localStorage.getItem('savedUserData') || '{}');
-  const nameEl = document.getElementById('displayName') || document.querySelector('.user-details h2');
-  const emailEl = document.getElementById('displayEmail') || document.querySelector('.user-details p');
-
-  if (saved.name && nameEl) nameEl.textContent = saved.name;
-  if (saved.email && emailEl) emailEl.textContent = saved.email;
-}
-
-// === Load preferences ===
-function loadPreferences() {
-  const savedPrefs = JSON.parse(localStorage.getItem('userPreferences') || '{}');
-  Object.keys(savedPrefs).forEach(id => {
-    const toggle = document.getElementById(id);
-    if (toggle) toggle.checked = savedPrefs[id];
-  });
+// === Show error message ===
+function showError(message) {
+  // You can implement this using a toast or alert
+  alert(message);
 }
 
 // === Load routes ===

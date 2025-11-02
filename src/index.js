@@ -5,7 +5,9 @@ import dotenv from 'dotenv';  // Add this
 import path from "path";
 import bcrypt from "bcryptjs";
 import { promisify } from 'util';
+import mongoose from "mongoose";
 import collection, { Rcollection, Route } from "./config.js";
+
 dotenv.config();
 
 // Promisify bcryptjs callback-style functions so existing `await bcrypt.hash/compare` works
@@ -13,6 +15,14 @@ bcrypt.hash = promisify(bcrypt.hash);
 bcrypt.compare = promisify(bcrypt.compare);
 
 const app = express();
+
+const searchSchema = new mongoose.Schema({
+  from: String,
+  to: String,
+  date: { type: Date, default: Date.now },
+});
+
+const Search = mongoose.model("Search", searchSchema);
 
 // Middleware
 app.use(express.json());
@@ -164,6 +174,37 @@ app.delete('/api/routes/:id', async (req, res) => {
   }
 });
 
+// ========== 🔹 SEARCH TRACKING (For Admin Analytics) ==========
+app.post("/api/search", async (req, res) => {
+  try {
+    const { from, to } = req.body;
+    if (!from || !to) {
+      return res.status(400).json({ error: "Missing 'from' or 'to'" });
+    }
+
+    await Search.create({ from, to });
+    console.log(`📍 New route searched: ${from} → ${to}`);
+    res.status(201).json({ message: "Search recorded" });
+  } catch (err) {
+    console.error("Search save error:", err);
+    res.status(500).json({ error: "Failed to save search" });
+  }
+});
+
+app.get("/api/search/stats", async (req, res) => {
+  try {
+    const stats = await Search.aggregate([
+      { $group: { _id: { from: "$from", to: "$to" }, count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+    ]);
+    res.json(stats);
+  } catch (err) {
+    console.error("Stats fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch stats" });
+  }
+});
+
 app.get('/api/user', async (req, res) => {
   try {
     // Check if user is authenticated via session
@@ -175,14 +216,77 @@ app.get('/api/user', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    // Return user data (username as name, email)
+
+    // Get saved routes count
+    const savedRoutes = await Route.countDocuments({ 'createdBy': user._id });
+    
+    // Get reports count
+    const reports = await Rcollection.countDocuments({ 'submittedBy': user._id });
+
+    // Return complete profile data
     res.json({
-      name: user.username || 'User',  // Fallback if username is missing
-      email: user.email
+      name: user.username || 'User',
+      email: user.email,
+      stats: {
+        tripsTaken: user.tripsTaken || 0,
+        savedRoutes: savedRoutes || 0,
+        reportsMade: reports || 0,
+        rating: user.rating || 4.5
+      },
+      preferences: {
+        notifications: user.preferences?.notifications ?? true,
+        location: user.preferences?.location ?? true,
+        autoSave: user.preferences?.autoSave ?? false
+      }
     });
   } catch (err) {
     console.error('Error fetching user data:', err);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Update user preferences
+app.post('/api/user/preferences', async (req, res) => {
+  try {
+    // Check authentication
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    // Validate preferences object
+    const preferences = req.body;
+    if (!preferences || typeof preferences !== 'object') {
+      return res.status(400).json({ error: 'Invalid preferences data' });
+    }
+
+    // Only allow valid preference keys
+    const allowedPreferences = ['notifications', 'location', 'autoSave'];
+    const invalidKeys = Object.keys(preferences).filter(key => !allowedPreferences.includes(key));
+    if (invalidKeys.length > 0) {
+      return res.status(400).json({ error: 'Invalid preference keys: ' + invalidKeys.join(', ') });
+    }
+
+    // Update user preferences
+    const user = await collection.findOne({ email: req.session.user });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Merge existing preferences with updates
+    const updatedPreferences = {
+      ...user.preferences || {},
+      ...preferences
+    };
+
+    await collection.updateOne(
+      { email: req.session.user },
+      { $set: { preferences: updatedPreferences } }
+    );
+
+    res.json({ message: 'Preferences updated successfully' });
+  } catch (err) {
+    console.error('Error updating preferences:', err);
+    res.status(500).json({ error: 'Failed to update preferences' });
   }
 });
    
@@ -486,6 +590,18 @@ app.post("/change-password", async (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`Server running on Port: ${PORT}`);
+app.listen(PORT, (err) => {
+  if (err) {
+    if (err.code === 'EADDRINUSE') {
+      // Try alternative port
+      console.log(`Port ${PORT} is busy, trying ${PORT + 1}...`);
+      app.listen(PORT + 1, () => {
+        console.log(`Server running on Port: ${PORT + 1}`);
+      });
+    } else {
+      console.error('Server error:', err);
+    }
+  } else {
+    console.log(`Server running on Port: ${PORT}`);
+  }
 });
