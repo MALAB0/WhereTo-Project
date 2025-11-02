@@ -7,11 +7,13 @@
   <link rel="stylesheet" href="destination.css" />
   <link rel="stylesheet" href="alerts.css" />
   <style>
+    /* Additional styles for recent searches container */
     #recentSearchesContainer {
-      max-height: 180px;
+      max-height: 180px; /* Adjust based on 3 small-box heights; assuming each is ~60px */
       overflow-y: auto;
     }
 
+    /* Floating Notifications */
     .floating-notifications {
       position: fixed;
       right: 20px;
@@ -36,6 +38,7 @@
       background: transparent;
       border: none;
       font-size: 20px;
+      line-height: 1;
       cursor: pointer;
       color: #0a3d62;
       padding: 4px 8px;
@@ -53,11 +56,13 @@
       border: 1px solid #e6f0f7;
       margin: 6px 0;
     }
-    .fn-item .fn-icon { width: 16px; height: 16px; margin-top: 2px; }
+    .fn-item .fn-icon { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 2px; }
     .fn-item .fn-text { font-size: 12px; color: #244; line-height: 1.3; }
+
     .fn-hidden .fn-list,
     .fn-hidden .report-status-section { display: none; }
 
+    /* Report Status Section */
     .report-status-section {
       border-bottom: 1px solid #e0e0e0;
       background: #fffef7;
@@ -93,6 +98,7 @@
   </style>
 </head>
 <body>
+  <!-- ===== HEADER ===== -->
   <header>
     <div class="header-left">
       <img src="compass.PNG" alt="Compass" class="icon logo-icon" />
@@ -115,6 +121,7 @@
     </div>
   </header>
 
+  <!-- ===== HERO SECTION ===== -->
   <section class="hero">
     <div class="overlay">
       <h2>Plan your trip</h2>
@@ -127,7 +134,7 @@
           <label for="to">To</label>
           <input type="text" id="to" placeholder="Enter destination">
         </div>
-        <button id="searchBtn" class="search-btn">Search Routes</button>
+        <button id="searchBtn" class="search-btn" >Search Routes</button>
       </div>
     </div>
   </section>
@@ -149,6 +156,7 @@
     <div id="recentSearchesContainer"></div>
   </div>
 
+  <!-- Floating Notifications + Report Status -->
   <div id="floatingNotifications" class="floating-notifications" aria-live="polite">
     <div class="fn-header">
       <span class="fn-title">Alerts</span>
@@ -171,6 +179,7 @@
       ];
       if (!localStorage.getItem(NT_KEY)) localStorage.setItem(NT_KEY, JSON.stringify(defaultNotifications));
       const list = JSON.parse(localStorage.getItem(NT_KEY) || '[]');
+
       const fn = document.getElementById('floatingNotifications');
       const ul = document.getElementById('fnList');
       const toggle = document.getElementById('fnToggle');
@@ -205,7 +214,8 @@
       { id: 2, status: "verified", text: "Your report 'Wrong jeepney route' was verified." },
       { id: 3, status: "rejected", text: "Your report 'Traffic near Main Ave.' was rejected." }
     ];
-    localStorage.setItem(REPORTS_KEY, JSON.stringify(defaultReports));
+    localStorage.setItem(REPORTS_KEY, JSON.stringify(defaultReports)); // force updated text
+
     const reportList = JSON.parse(localStorage.getItem(REPORTS_KEY) || "[]");
     const reportContainer = document.getElementById("reportStatusList");
 
@@ -218,11 +228,12 @@
         reportContainer.appendChild(li);
       });
     }
+
     renderReportStatuses();
   </script>
 
   <script>
-    // ===== RECENT SEARCHES + SERVER RECORDING =====
+    // ===== RECENT SEARCHES =====
     const fromInput = document.getElementById('from');
     const toInput = document.getElementById('to');
     const searchBtn = document.getElementById('searchBtn');
@@ -254,13 +265,28 @@
       searches.forEach((search,index)=>{
         const div = document.createElement('div');
         div.className='small-box recent-search';
+        div.setAttribute('data-from',search.from);
+        div.setAttribute('data-to',search.to);
         div.innerHTML=`<img src="route.png" alt="Jeep Left" class="small-icon left">
           <span>Route ${index+1}: ${search.from} to ${search.to}</span>
           <img src="favorites.png" alt="Jeep Right" class="small-icon right">`;
-        div.addEventListener('click',()=> {
+        div.style.cursor='pointer';
+        div.addEventListener('click',function(){
           fromInput.value=search.from;
           toInput.value=search.to;
           validateInputs();
+          this.style.backgroundColor='#e3f2fd';
+          setTimeout(()=>{this.style.backgroundColor='white';},1000);
+        });
+        div.addEventListener('mouseenter',function(){
+          this.style.backgroundColor='#f0f8ff';
+          this.style.transform='translateY(-2px)';
+          this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.15)';
+        });
+        div.addEventListener('mouseleave',function(){
+          this.style.backgroundColor='white';
+          this.style.transform='translateY(0)';
+          this.style.boxShadow='0 2px 10px rgba(0, 0, 0, 0.1)';
         });
         recentSearchesContainer.appendChild(div);
       });
@@ -269,32 +295,26 @@
     function validateInputs() {
       const fromValue = fromInput.value.trim();
       const toValue = toInput.value.trim();
-      searchBtn.disabled = !(fromValue && toValue);
-      searchBtn.style.opacity = searchBtn.disabled ? '0.5' : '1';
+      if(fromValue && toValue){
+        searchBtn.disabled=false;
+        searchBtn.style.opacity='1';
+        searchBtn.style.cursor='pointer';
+      } else {
+        searchBtn.disabled=true;
+        searchBtn.style.opacity='0.5';
+        searchBtn.style.cursor='not-allowed';
+      }
     }
 
-    fromInput.addEventListener('input', validateInputs);
-    toInput.addEventListener('input', validateInputs);
+    fromInput.addEventListener('input',validateInputs);
+    toInput.addEventListener('input',validateInputs);
 
-    searchBtn.addEventListener('click', async function() {
-      if (!this.disabled) {
-        const fromValue = fromInput.value.trim();
-        const toValue = toInput.value.trim();
-
-        // ✅ Step 4: Send search data to backend before redirecting
-        try {
-          await fetch("/api/search", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ from: fromValue, to: toValue })
-          });
-          console.log("✅ Search recorded:", fromValue, "→", toValue);
-        } catch (err) {
-          console.error("❌ Failed to record search:", err);
-        }
-
-        addRecentSearch(fromValue, toValue);
-        window.location.href = `/route?from=${encodeURIComponent(fromValue)}&to=${encodeURIComponent(toValue)}`;
+    searchBtn.addEventListener('click',function(){
+      if(!this.disabled){
+        const fromValue=fromInput.value.trim();
+        const toValue=toInput.value.trim();
+        addRecentSearch(fromValue,toValue);
+        window.location.href=`/route?from=${encodeURIComponent(fromValue)}&to=${encodeURIComponent(toValue)}`;
       }
     });
 
