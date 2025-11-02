@@ -219,14 +219,7 @@ app.get('/api/admin/reports/pending-count', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch pending count' });
   }
 });
-// Modified POST /signup: Generate OTP, send email, store in session, redirect to /otp
-app.post("/signup", async (req, res) => {
-  console.log("POST /signup hit", req.body);
-  const { username, email, password } = req.body;
-  if (!username || !email || !password) {
-    return res.status(400).send("Missing username, email, or password");
-  }
-});
+// (removed duplicate incomplete /signup handler) 
 
 // ========== 🔹 SEARCH TRACKING (For Admin Analytics) ==========
 app.post("/api/search", async (req, res) => {
@@ -317,43 +310,114 @@ app.post('/signin', async (req, res) => {
 
 // New POST /verify-otp: Verify OTP and complete signup/signin
 app.post('/verify-otp', async (req, res) => {
-  console.log("POST /verify-otp hit", req.body); 
-  const { code } = req.body;
-  const sessionOtp = req.session.otp;
-
-  if (!sessionOtp || !code) {
-    return res.status(400).send('Invalid request');
-  }
-
-  // Check expiration (10 minutes)
-  if (Date.now() - sessionOtp.timestamp > 10 * 60 * 1000) {
-    delete req.session.otp;
-    return res.status(400).send('OTP expired');
-  }
-
-  if (code !== sessionOtp.code) {
-    return res.status(400).send('Invalid OTP');
-  }
-
   try {
-    if (sessionOtp.action === 'signup') {
-      // Create and save user to MongoDB
-      const hash = await bcrypt.hash(sessionOtp.password, 10);
-      await collection.create({ username: sessionOtp.username, email: sessionOtp.email, password: hash });
-      delete req.session.otp;
-      return res.json({ redirect: '/signin' });  // Redirect to signin after successful signup
-    } else if (sessionOtp.action === 'signin') {
-      // Proceed with login
-      const user = await collection.findById(sessionOtp.userId);
-      req.session.user = user.email;  // Store user in session for future requests
-      delete req.session.otp;
-      const username = user.email.toLowerCase().split('@')[0];
-      const redirect = username.includes('admin') ? '/admin' : '/destination';
-      return res.json({ redirect });
+    console.log("=== OTP Verification Start ===");
+    console.log("Request body:", req.body); 
+    console.log("Session state:", {
+      hasSession: !!req.session,
+      hasOtp: !!req.session?.otp,
+      otpData: req.session?.otp
+    });
+
+    const { code } = req.body;
+    const sessionOtp = req.session?.otp;
+
+    if (!sessionOtp || !code) {
+      console.log("Validation failed:", { hasSessionOtp: !!sessionOtp, hasCode: !!code });
+      return res.status(400).json({ error: 'Invalid request - missing OTP data' });
     }
+
+    // Check expiration (10 minutes)
+    if (Date.now() - sessionOtp.timestamp > 10 * 60 * 1000) {
+      delete req.session.otp;
+      await req.session.save();
+      return res.status(400).json({ error: 'OTP expired' });
+    }
+
+    console.log("Comparing OTPs:", {
+      submitted: code,
+      expected: sessionOtp.code,
+      action: sessionOtp.action
+    });
+
+    if (code !== sessionOtp.code) {
+      return res.status(400).json({ error: 'Invalid OTP - codes do not match' });
+    }
+
+    if (sessionOtp.action === 'signup') {
+      console.log("Starting signup completion...");
+      
+      // Check for existing user first
+      const existingUser = await collection.findOne({ 
+        $or: [
+          { email: sessionOtp.email },
+          { username: sessionOtp.username }
+        ]
+      });
+      
+      if (existingUser) {
+        console.log("User already exists:", existingUser.email);
+        return res.status(400).json({ 
+          error: 'User with this email or username already exists' 
+        });
+      }
+      
+      try {
+        // Create new user
+        const hash = await bcrypt.hash(sessionOtp.password, 10);
+        console.log("Password hashed successfully");
+        
+        const newUser = await collection.create({ 
+          username: sessionOtp.username, 
+          email: sessionOtp.email, 
+          password: hash 
+        });
+        console.log("User created successfully:", newUser.email);
+        
+        // Clear OTP session after successful creation
+        delete req.session.otp;
+        await req.session.save();
+        console.log("Session OTP cleared and saved");
+        
+        console.log("Sending redirect response");
+        return res.status(200).json({ redirect: '/signin' });
+      } catch (err) {
+        console.error("User creation error:", err);
+        return res.status(500).json({ error: "Failed to create user account" });
+      }
+    } 
+    
+    if (sessionOtp.action === 'signin') {
+      try {
+        const user = await collection.findById(sessionOtp.userId);
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        
+        req.session.user = user.email;
+        delete req.session.otp;
+        await req.session.save();
+        
+        const username = user.email.toLowerCase().split('@')[0];
+        const redirect = username.includes('admin') ? '/admin' : '/destination';
+        return res.status(200).json({ redirect });
+      } catch (err) {
+        console.error("Signin completion error:", err);
+        return res.status(500).json({ error: "Failed to complete signin" });
+      }
+    }
+
+    // If we get here, action was neither signup nor signin
+    return res.status(400).json({ error: 'Invalid OTP action' });
+
   } catch (err) {
     console.error('OTP verification error:', err);
-    res.status(500).send('Server error');
+    console.error('Error details:', {
+      name: err.name,
+      message: err.message,
+      stack: err.stack
+    });
+    return res.status(500).json({ error: `Server error during OTP verification` });
   }
 });
 
@@ -380,10 +444,10 @@ app.post('/resend-otp', async (req, res) => {
       subject: `Your OTP for WhereTo ${sessionOtp.action === 'signup' ? 'Signup' : 'Signin'}`,
       text: `Your new 4-digit OTP is: ${otp}. It expires in 10 minutes.`
     });
-    res.send('OTP resent');
+    res.json({ message: 'OTP resent' });
   } catch (err) {
     console.error('Resend OTP error:', err);
-    res.status(500).send('Failed to resend OTP');
+    res.status(500).json({ error: 'Failed to resend OTP' });
   }
 });
 

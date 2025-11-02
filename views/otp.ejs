@@ -5,6 +5,8 @@
   <title>WhereTo | Sign In</title>
   <link rel="icon" href="/WTFavicon.png" type="image/png">
   <link rel="stylesheet" href="/otp.css" >
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </head>
 <body>
   <!-- HEADER -->
@@ -25,10 +27,10 @@
         <form id="otpForm">     
           <label>We have sent a verification code to your registered Email</label>
           <div class="otp-form">                        
-          <input type="number">
-          <input type="number"  disabled>
-          <input type="number"  disabled>
-          <input type="number"  disabled>          
+          <input type="number" name="digit1" id="digit1" maxlength="1">
+          <input type="number" name="digit2" id="digit2" disabled maxlength="1">
+          <input type="number" name="digit3" id="digit3" disabled maxlength="1">
+          <input type="number" name="digit4" id="digit4" disabled maxlength="1">
           </div>
           <button type="submit">Verify OTP</button>
         </form>
