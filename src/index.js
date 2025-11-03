@@ -39,6 +39,10 @@ app.use(session({
   cookie: { maxAge: 10 * 60 * 1000 }  // 10 minutes
 }));
 
+// Route handlers
+import { searchRouter } from './routes/index.js';
+app.use('/api/search', searchRouter);
+
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -140,8 +144,11 @@ app.get("/route", async (req, res) => {
       return res.render("route", { routes: [], from: null, to: null, error: "Please provide a starting point and destination." });
     }
     
-    // Query MongoDB for routes matching start and end
-    const routes = await Route.find({ start: from, end: to });
+    // Query MongoDB for routes matching start and end (case-insensitive)
+    const routes = await Route.find({ 
+      start: { $regex: new RegExp('^' + from + '$', 'i') },
+      end: { $regex: new RegExp('^' + to + '$', 'i') }
+    });
     
     // Render the route.ejs template with fetched data
     res.render("route", { routes, from, to, error: null });
