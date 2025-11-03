@@ -35,8 +35,7 @@ app.use(express.static(path.join(process.cwd(), "src")));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-key', // Use SESSION_SECRET from .env in production
   resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
+  saveUninitialized: true, // 24 hours
   rolling: true
 }));
 
