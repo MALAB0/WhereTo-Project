@@ -15,7 +15,9 @@ async function fetchAndUpdateProfile() {
 
     if (!response.ok) {
       if (response.status === 401) {
-        window.location.href = '/signin'; // Redirect to signin if not authenticated
+        // Avoid an immediate client-side redirect which may be mistaken for a logout.
+        // Show a message and allow the server-side route protection to handle redirects.
+        showError('You are not authenticated. Please sign in.');
         return;
       }
       throw new Error('Failed to fetch profile data');

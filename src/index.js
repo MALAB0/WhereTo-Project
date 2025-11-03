@@ -36,7 +36,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-key', // Use SESSION_SECRET from .env in production
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 10 * 60 * 1000 }  // 10 minutes
+  cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
+  rolling: true
 }));
 
 // Route handlers
@@ -86,7 +87,10 @@ app.get("/livemap", (req, res) => res.render("LiveMap"));
 app.get("/report", (req, res) => res.render("report"));
 app.get("/notification", (req, res) => res.render("notification"));
 app.get("/nav", (req, res) => res.render("navigation"));
-app.get("/profile", (req, res) => res.render("profile"));
+app.get("/profile", (req, res) => {
+  if (!req.session || !req.session.user) return res.redirect("/signin");
+  return res.render("profile", { user: req.session.user });
+});
 app.get("/prof2", (req, res) => res.render("profile2"));
 app.get("/admin", async (req, res) => {
   try {
