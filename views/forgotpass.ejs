@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>WhereTo | Change password</title>
+  <title>WhereTo | Forgot Password</title>
   <link rel="icon" href="/WTFavicon.png" type="image/png">
   <link rel="stylesheet" href="changepass.css" />
-  <link rel="icon" href="/WTFavicon.png " type="image/png">
-
 </head>
 <body>
   <!-- HEADER -->
@@ -23,10 +21,11 @@
       <div class="cpass-box">
         <h2>Change Password</h2>
         <form id="changePasswordForm">
-            <label>Email</label>
-            <input type="email" name="email" id="signupEmail" placeholder="Enter your email" required />
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Enter your email" required />
 
-            <label>New Password</label>
+            <!-- For forgot password flow we do not require the current password -->
+            <label for="newPassword">New Password</label>
             <input type="password" name="newpassword" id="newPassword" placeholder="Enter new password" required />
 
             <div class="form-inline">
@@ -41,7 +40,7 @@
             </div>
 
         </form>
-        <p><a class="back-btn" onclick="history.back()">Cancel</a></p>
+  <p><a id="back-btn" class="back-btn" onclick="history.back()">Cancel</a></p>
       </div>
     </div>
   </div>
@@ -60,11 +59,9 @@
       e.preventDefault();
 
       const email = document.getElementById('email').value;
-      const currentPassword = document.getElementById('currentPassword').value;
       const newPassword = document.getElementById('newPassword').value;
       const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-
-      if (!email || !currentPassword || !newPassword || !confirmNewPassword) {
+      if (!email || !newPassword || !confirmNewPassword) {
         alert('Please fill in all fields');
         return;
       }
@@ -80,15 +77,15 @@
       }
 
       try {
-        const res = await fetch('/change-password', {
+        const res = await fetch('/api/forgot-password', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, currentPassword, newPassword })
+          body: JSON.stringify({ email, newPassword })
         });
 
         if (res.ok) {
           alert('Password changed successfully');
-          window.location.href = '/dashboard';
+          window.location.href = '/signin';
         } else {
           const err = await res.json();
           alert(err.message || 'Could not change password');

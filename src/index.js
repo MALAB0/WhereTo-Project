@@ -771,3 +771,28 @@ app.listen(PORT, (err) => {
     console.log(`Server running on Port: ${PORT}`);
   }
 });
+
+// Endpoint for forgot-password page (no current password required)
+app.post('/api/forgot-password', async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    if (!email || !newPassword) {
+      return res.status(400).json({ message: 'Email and new password are required.' });
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters long.' });
+    }
+    const user = await collection.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    // NOTE: In a real app you should verify an email token/OTP before allowing a password reset.
+    const hash = await bcrypt.hash(newPassword, 10);
+    await collection.updateOne({ email }, { $set: { password: hash } });
+    console.log('Forgot-password: password updated for', email);
+    res.json({ message: 'Password updated successfully.' });
+  } catch (err) {
+    console.error('Forgot-password error:', err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
