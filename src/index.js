@@ -6,6 +6,7 @@ import path from "path";
 import bcrypt from "bcryptjs";
 import { promisify } from 'util';
 import mongoose from "mongoose";
+import MongoStore from 'connect-mongo';
 import collection, { Rcollection, Route } from "./config.js";
 
 dotenv.config();
@@ -31,12 +32,23 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(process.cwd(), "public")));
 app.use(express.static(path.join(process.cwd(), "src")));
 
-// Session middleware (added for OTP)
+// Session middleware with permanent MongoDB storage
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'dev-secret-key', // Use SESSION_SECRET from .env in production
+  secret: process.env.SESSION_SECRET || 'dev-secret-key',
   resave: false,
-  saveUninitialized: true, // 24 hours
-  rolling: true
+  saveUninitialized: false,
+  rolling: true, // Reset maxAge on each request
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/loginusers',
+    ttl: 365 * 24 * 60 * 60, // 1 year in seconds
+    autoRemove: 'disabled', // Disable automatic removal of old sessions
+  }),
+  cookie: {
+    maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year in milliseconds
+    secure: false, // Set to true in production
+    httpOnly: true,
+    sameSite: 'lax'
+  }
 }));
 
 // Route handlers

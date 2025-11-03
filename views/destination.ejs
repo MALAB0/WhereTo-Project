@@ -111,7 +111,7 @@
         <img src="notification.png" alt="Notifications" onclick="window.location.href='/notification'" />
       </div>
       <div class="nav-icon" title="Profile">
-        <img src="profile.png" alt="Profile" onclick="window.location.href='/profile'" />
+        <img src="profile.png" alt="Profile" id="profileButton" />
       </div>
     </div>
   </header>
@@ -303,6 +303,33 @@
 
     validateInputs();
     renderRecentSearches();
+  </script>
+
+  <!-- Profile Navigation Script -->
+  <script>
+    document.getElementById('profileButton').addEventListener('click', async function(e) {
+      e.preventDefault();
+      try {
+        const response = await fetch('/api/user', {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          },
+          credentials: 'same-origin'  // Important: send cookies
+        });
+        
+        if (response.ok) {
+          window.location.href = '/profile';
+        } else {
+          // Only redirect to signin if we get a 401 (unauthorized)
+          if (response.status === 401) {
+            window.location.href = '/signin';
+          }
+        }
+      } catch (err) {
+        console.error('Profile navigation error:', err);
+      }
+    });
   </script>
 </body>
 </html>
