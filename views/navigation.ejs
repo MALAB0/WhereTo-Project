@@ -17,11 +17,9 @@
 
   <!-- ===== FIRST BIG BOX: TRIP INFO ===== -->
   <div class="big-box">
-    <div class="location-info">
-      <h3 id="routeTitle">Loading route...</h3>
-      <p id="routeDetails">Preparing your journey...</p>
-    </div>
-    
+      <h1 id="routeTitle">Loading route...</h1>
+      <p id="routeDetails">Preparing your journey...</p>  
+
     <div class="small-box">
       <!-- Loading bar -->
       <div class="loading-btn">
@@ -65,15 +63,7 @@
     </div>
   </div>
 
-  <!-- ===== THIRD BIG BOX: ROUTE ALERTS ===== -->
-  <div class="big-box third">
-    <h1>Route Alerts</h1>
-
-    <div class="small-box">
-      <span>Route Tip:</span>
-      <p>Expect heavy traffic during rush hours.</p>
-    </div>
-  </div>
+ 
 
     <section class="content-section">
     <div class="buttons-row">
@@ -115,19 +105,32 @@
       if (currentSearch) {
         const fromLocation = currentSearch.from;
         const toLocation = currentSearch.to;
+        const stepsArr = currentSearch.steps || [];
         
         console.log('Loading route:', fromLocation, 'to', toLocation);
         
-        // Update route title and details
-        routeTitle.textContent = `${fromLocation} → ${toLocation}`;
+        // Update route title and details (use routeName if provided)
+        if (currentSearch.routeName) {
+          routeTitle.textContent = `${currentSearch.routeName} ${currentSearch.status ? '(' + currentSearch.status + ')' : ''}`;
+        } else {
+          routeTitle.textContent = `${fromLocation} → ${toLocation}`;
+        }
         routeDetails.textContent = `Estimated travel time: 45-60 minutes`;
-        
-        // Update step descriptions based on locations
-        step1.textContent = `Walk to ${fromLocation} starting point...`;
-        step2.textContent = `Board jeepney from ${fromLocation} to ${toLocation}...`;
-        step3.textContent = `Transfer at intermediate stop if needed...`;
-        step4.textContent = `Continue journey towards ${toLocation}...`;
-        step5.textContent = `Arrive at your ${toLocation} destination!`;
+
+        // If detailed steps provided, use them; otherwise fallback to generic steps
+        if (stepsArr.length > 0) {
+          step1.textContent = stepsArr[0] || `Walk to ${fromLocation} starting point...`;
+          step2.textContent = stepsArr[1] || `Board jeepney from ${fromLocation} to ${toLocation}...`;
+          step3.textContent = stepsArr[2] || `Transfer at intermediate stop if needed...`;
+          step4.textContent = stepsArr[3] || `Continue journey towards ${toLocation}...`;
+          step5.textContent = stepsArr[4] || `Arrive at your ${toLocation} destination!`;
+        } else {
+          step1.textContent = `Walk to ${fromLocation} starting point...`;
+          step2.textContent = `Board jeepney from ${fromLocation} to ${toLocation}...`;
+          step3.textContent = `Transfer at intermediate stop if needed...`;
+          step4.textContent = `Continue journey towards ${toLocation}...`;
+          step5.textContent = `Arrive at your ${toLocation} destination!`;
+        }
       } else {
         console.log('No search data found, using default route');
         // Default route if no data found

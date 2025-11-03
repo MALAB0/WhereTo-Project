@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <title>WhereTo | Jeepney Route Finder</title>
   <link rel="icon" href="/WTFavicon.png" type="image/png">
-  <link rel="stylesheet" href="route.css" />
+  <link rel="stylesheet" href="navigation.css" />
 </head>
 <body>
   <!-- ===== HEADER ===== -->
@@ -13,10 +13,6 @@
     <div class="header-left">
       <img src="compass.PNG" alt="Compass" class="icon" />
       <img src="Logo.PNG" alt="WhereTo Logo" class="logo" />
-    </div>
-    <div class="header-right">
-      <img src="favorites.png" alt="Help" class="icon" />
-      <img src="pin.png" alt="User" class="icon" />
     </div>
   </header>
 
@@ -32,7 +28,7 @@
         <h1 id="routeTitle"><%= route.name %> (<%= route.status %>)</h1>
         <p id="routeTime">Route from <%= from %> to <%= to %> - Estimated travel time: 45-60 minutes</p>
         <div class="small-box">
-          <button class="nav-btn" onclick="window.location.href='/nav'">
+          <button class="nav-btn" onclick="startNavigation(<%= index %>)">
             <span>Start Navigation</span>
           </button>
         </div>
@@ -43,7 +39,7 @@
         <% if (route.steps && route.steps.length > 0) { %>
           <% route.steps.forEach((step, stepIndex) => { %>
             <div class="small-box">
-              <img src="route.png" alt="Jeep Left" class="small-icon left">
+            
               <span>Step <%= stepIndex + 1 %>.</span>
               <p><%= step %></p>
             </div>
@@ -62,15 +58,15 @@
     </div>
   <% } %>
 
-  <!-- Route Alerts (kept as is, or customize) -->
+  <!-- Route Alerts (kept as is, or customize) 
   <div class="big-box third">
     <h1>Route Alerts</h1>
     <div class="small-box">
-      <img src="route.png" alt="Jeep Left" class="small-icon left">
+
       <span>Route tip</span>
       <p>During rush hours...</p>
     </div>
-  </div>
+  </div>-->
 
   <!-- ===== WHITE CONTENT AREA ===== -->
   <section class="content-section">
@@ -85,6 +81,31 @@
       </button>
     </div>
   </section>
+
+  <!-- Script to pass selected route to navigation via localStorage -->
+  <script>
+    // Inject server-side route data into client JS
+    const _routeOptions = <%- JSON.stringify(routes || []) %>;
+    const _from = "<%= from || '' %>";
+    const _to = "<%= to || '' %>";
+
+    function startNavigation(index) {
+      const sel = _routeOptions[index] || {};
+      const recent = [{
+        from: _from,
+        to: _to,
+        routeName: sel.name || '',
+        steps: sel.steps || [],
+        status: sel.status || ''
+      }];
+      try {
+        localStorage.setItem('recentSearches', JSON.stringify(recent));
+      } catch (e) {
+        console.error('Failed to save recentSearches', e);
+      }
+      window.location.href = '/nav';
+    }
+  </script>
 
 </body>
 </html>

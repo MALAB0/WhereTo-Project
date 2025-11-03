@@ -77,6 +77,19 @@ header .icon:hover {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #0a3d62;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
 /* ===== NEXT STEP BUTTON ===== */
 .next-btn {
   display: flex;
