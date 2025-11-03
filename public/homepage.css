@@ -24,7 +24,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 60px;
+  padding: 0px 20px;
   position: absolute;
   top: 0;
   left: 0;
@@ -36,15 +36,15 @@ header {
 }
 
 .left-icon {
-  width: 45px;
+  width: 50px;
   height: auto;
   margin: 0;
 }
 
 .logo-img {
-  width: 110px;
+  width: 100px;
   height: auto;
-  margin-left: -650px;
+  margin-left:-908px;
 }
 
 /* ===== NAVIGATION ===== */

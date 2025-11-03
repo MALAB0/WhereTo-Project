@@ -1,4 +1,3 @@
-/* ===== GENERAL ===== */
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
@@ -34,12 +33,12 @@ header {
 .header-left {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 0; /* remove spacing between images */
 }
 
 .left-icon,
 .logo-img {
-  display: block;
+  display: block; /* removes tiny inline gaps */
 }
 
 .left-icon {
@@ -54,63 +53,18 @@ header {
   margin: 0;
 }
 
-/* ===== NAVIGATION ===== */
-nav {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-}
-
-nav a {
-  text-decoration: none;
-  color: #0a3d62;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-nav a:hover {
-  color: #07415a;
-}
-
-nav .start-btn {
-  background: #0a3d62;
-  color: white;
-  padding: 8px 18px;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
-nav .start-btn:hover {
-  background: #07415a;
-}
-
 /* ===== MAIN SECTION ===== */
-.signup-container {
+.signin-container {
   display: flex;
   flex: 1;
   height: 100vh;
   align-items: center;
   justify-content: space-between;
-  padding: 100px 80px 40px;
+  padding: 100px 80px 40px; /* leaves space for header */
   box-sizing: border-box;
+  
 }
 
-/* ===== LEFT IMAGE ===== */
-.image-section {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.image-section img {
-  width: 80%;
-  max-width: 400px;
-  height: auto;
-  object-fit: contain;
-}
-
-/* ===== RIGHT FORM BOX ===== */
 .form-section {
   flex: 1;
   display: flex;
@@ -118,8 +72,8 @@ nav .start-btn:hover {
   align-items: center;
 }
 
-.signup-box {
-  background: #ffffff;
+.cpass-box {
+  background: #f7f7f7;
   width: 380px;
   padding: 40px 35px;
   border-radius: 15px;
@@ -141,7 +95,7 @@ label {
 
 input {
   width: 100%;
-  padding: 10px 0px;
+  padding: 10px 0;
   margin-top: 6px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -155,7 +109,7 @@ input:focus {
 
 button {
   width: 100%;
-  margin-top: 25px;
+  margin-top: 5px;
   padding: 12px;
   background: #0a3d62;
   color: white;

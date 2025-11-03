@@ -87,10 +87,8 @@ app.get('/test-email', async (req, res) => {
 // Routes (unchanged except where noted)
 app.get("/signin", (req, res) => res.render("signin"));
 app.get("/signup", (req, res) => res.render("signup"));
-app.get("/otp", (req, res) => {
-  console.log("GET /otp route hit");  // Add this line
-  res.render("otp");
-});  // Now used for both signup and signin
+app.get("/otp", (req, res) => { onsole.log("GET /otp route hit");res.render("otp");});
+app.get("/forgotpass", (req, res) => res.render("forgotpass"));
 app.get("/about", (req, res) => res.render("about"));
 app.get("/homepage", (req, res) => res.render("homepage"));
 app.get("/destination", (req, res) => res.render("destination"));
@@ -99,7 +97,7 @@ app.get("/report", (req, res) => res.render("report"));
 app.get("/notification", (req, res) => res.render("notification"));
 app.get("/nav", (req, res) => res.render("navigation"));
 app.get("/profile", (req, res) => {
-  if (!req.session || !req.session.user) return res.redirect("/signin");
+if (!req.session || !req.session.user) return res.redirect("/signin");
   return res.render("profile", { user: req.session.user });
 });
 app.get("/prof2", (req, res) => res.render("profile2"));
