@@ -7,9 +7,116 @@
   <link rel="stylesheet" href="destination.css" />
   <link rel="stylesheet" href="alerts.css" />
   <style>
-       #recentSearchesContainer {
+    #recentSearchesContainer {
       max-height: 180px;
       overflow-y: auto;
+    }
+
+    /* Notification Badge */
+    .nav-icon {
+      position: relative;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ff0000;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      display: none;
+    }
+
+    /* Notification Sidebar */
+    .notification-sidebar {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 400px;
+      height: 100vh;
+      background: #ffffff;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+      transition: right 0.3s ease-in-out;
+      padding: 20px 0;
+      overflow-y: auto;
+    }
+
+    .notification-sidebar.active {
+      right: 0;
+    }
+
+    .notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .notification-header h3 {
+      margin: 0;
+      color: #333;
+    }
+
+    .close-sidebar {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .close-sidebar:hover {
+      color: #333;
+    }
+
+    .notification-list {
+      padding: 20px;
+    }
+
+    .notification-card {
+      background: #f8f9fa;
+      border-left: 4px solid #0056b3;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .notification-card:hover {
+      transform: translateX(5px);
+      background: #f1f3f5;
+    }
+
+    .notification-card.unread {
+      border-left-color: #dc3545;
+      background: #fff;
+    }
+
+    .notification-time {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
     }
 
     .floating-notifications {
@@ -107,14 +214,29 @@
       <div class="nav-icon" title="Report Issue">
         <img src="report.png" alt="Report" onclick="window.location.href='/report'" />
       </div>
-      <div class="nav-icon" title="Notifications">
-        <img src="notification.png" alt="Notifications" onclick="window.location.href='/notification'" />
+      <div class="nav-icon" title="Notifications" id="notificationButton">
+        <img src="notification.png" alt="Notifications" />
+        <span class="notification-badge" id="notificationCount">0</span>
       </div>
       <div class="nav-icon" title="Profile">
         <img src="profile.png" alt="Profile" id="profileButton" />
       </div>
     </div>
   </header>
+
+  <!-- Notification Sidebar -->
+  <div class="notification-sidebar" id="notificationSidebar">
+    <div class="notification-header">
+      <h3>Notifications</h3>
+      <button class="close-sidebar" id="closeSidebar">&times;</button>
+    </div>
+    <div class="notification-list" id="notificationList">
+      <!-- Notifications will be inserted here -->
+    </div>
+  </div>
+  
+  <!-- Overlay for sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <!-- ===== HERO SECTION ===== -->
   <section class="hero">
@@ -201,6 +323,95 @@
   </script>
 
   <script>
+    // ===== NOTIFICATION SYSTEM =====
+    document.addEventListener('DOMContentLoaded', function() {
+      const notificationButton = document.getElementById('notificationButton');
+      const notificationSidebar = document.getElementById('notificationSidebar');
+      const closeSidebar = document.getElementById('closeSidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const notificationList = document.getElementById('notificationList');
+      const notificationCount = document.getElementById('notificationCount');
+
+      // Toggle sidebar
+      function toggleSidebar() {
+        notificationSidebar.classList.toggle('active');
+        sidebarOverlay.classList.toggle('active');
+        if (notificationSidebar.classList.contains('active')) {
+          markAllAsRead();
+        }
+      }
+
+      // Close sidebar when clicking outside
+      sidebarOverlay.addEventListener('click', toggleSidebar);
+      notificationButton.addEventListener('click', toggleSidebar);
+      closeSidebar.addEventListener('click', toggleSidebar);
+
+      // Sample notifications data (replace with your actual data source)
+      let notifications = [
+        {
+          id: 1,
+          title: 'Route Update',
+          message: 'Route 101 has been temporarily diverted due to road construction.',
+          time: '5 minutes ago',
+          unread: true
+        },
+        {
+          id: 2,
+          title: 'System Maintenance',
+          message: 'WhereTo will undergo maintenance on Sunday, 2 AM - 4 AM.',
+          time: '1 hour ago',
+          unread: true
+        },
+        {
+          id: 3,
+          title: 'New Feature',
+          message: 'Live traffic updates are now available for all major routes!',
+          time: '1 day ago',
+          unread: false
+        }
+      ];
+
+      // Render notifications
+      function renderNotifications() {
+        notificationList.innerHTML = '';
+        notifications.forEach(notif => {
+          const card = document.createElement('div');
+          card.className = `notification-card ${notif.unread ? 'unread' : ''}`;
+          card.innerHTML = `
+            <strong>${notif.title}</strong>
+            <p>${notif.message}</p>
+            <div class="notification-time">${notif.time}</div>
+          `;
+          notificationList.appendChild(card);
+        });
+        
+        // Update badge
+        const unreadCount = notifications.filter(n => n.unread).length;
+        notificationCount.textContent = unreadCount;
+        notificationCount.style.display = unreadCount > 0 ? 'block' : 'none';
+      }
+
+      // Mark all notifications as read
+      function markAllAsRead() {
+        notifications.forEach(notif => notif.unread = false);
+        renderNotifications();
+      }
+
+      // Initial render
+      renderNotifications();
+
+      // Fetch new notifications periodically (every 30 seconds)
+      setInterval(() => {
+        fetch('/api/notifications')
+          .then(response => response.json())
+          .then(data => {
+            notifications = data;
+            renderNotifications();
+          })
+          .catch(error => console.error('Error fetching notifications:', error));
+      }, 30000);
+    });
+
     // ===== REPORT STATUS DATA =====
     const REPORTS_KEY = "userReportsStatus";
     const defaultReports = [
