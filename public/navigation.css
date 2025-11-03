@@ -90,6 +90,7 @@ header .icon:hover {
   cursor: pointer;
   transition: background 0.3s;
 }
+
 /* ===== NEXT STEP BUTTON ===== */
 .next-btn {
   display: flex;

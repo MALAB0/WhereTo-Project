@@ -266,7 +266,7 @@ app.get('/api/routes', async (req, res) => {
 app.post('/api/routes', async (req, res) => {
   try {
     console.log('Creating new route:', req.body);
-    const { name, status, start, end, fare, steps } = req.body;
+    const { name, status, start, end, fare, steps, travelTime } = req.body;
     
     // Validate required fields
     if (!name || !status || !start || !end || !fare) {
@@ -279,6 +279,7 @@ app.post('/api/routes', async (req, res) => {
       start,
       end,
       fare: parseFloat(fare),
+      travelTime: travelTime || '',
       steps: Array.isArray(steps) ? steps : []
     });
 
@@ -294,7 +295,7 @@ app.post('/api/routes', async (req, res) => {
 app.put('/api/routes/:id', async (req, res) => {
   try {
     console.log('Updating route:', req.params.id, req.body);
-    const { name, status, start, end, fare, steps } = req.body;
+    const { name, status, start, end, fare, steps, travelTime } = req.body;
     
     // Validate required fields
     if (!name || !status || !start || !end || !fare) {
@@ -309,6 +310,7 @@ app.put('/api/routes/:id', async (req, res) => {
         start,
         end,
         fare: parseFloat(fare),
+        travelTime: travelTime || '',
         steps: Array.isArray(steps) ? steps : []
       },
       { new: true, runValidators: true }

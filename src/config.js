@@ -38,6 +38,7 @@ const routeSchema = new mongoose.Schema({
   start: { type: String, required: true },
   end: { type: String, required: true },
   fare: {type: Number, require: true},
+  travelTime: { type: String, default: '' },
   steps: [{ type: String }],
   createdAt: { type: Date, default: Date.now }
 });

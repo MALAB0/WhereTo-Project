@@ -40,8 +40,12 @@ document.addEventListener('DOMContentLoaded', function () {
     card.querySelector('.route-desc').textContent = `${data.start} → ${data.end}`;
     card.querySelector('.route-riders').textContent = (data.steps?.length) ? data.steps.length + ' steps' : '0 steps';
     card.querySelector('.route-fare').textContent = `Estimated Fare: ₱${escapeHtml(data.fare || '0')}`;  // Added fare display
+    // Travel time
+    const travelEl = card.querySelector('.route-travel');
+    if (travelEl) travelEl.textContent = `Estimated travel time: ${escapeHtml(data.travelTime || '')}`;
     card.dataset.steps = JSON.stringify(data.steps || []);
     card.dataset.fare = data.fare || '';
+    card.dataset.travelTime = data.travelTime || '';
   }
 
   // Sidebar toggle
@@ -83,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="route-desc">${escapeHtml(data.start)} → ${escapeHtml(data.end)}</div>
       <div class="route-riders">${(data.steps?.length) ? data.steps.length + ' steps' : '0 steps'}</div>
       <div class="route-fare">Estimated Fare: ₱${escapeHtml(data.fare || '0')}</div>  <!-- Added fare display -->
+      <div class="route-travel">Estimated travel time: ${escapeHtml(data.travelTime || '')}</div>
       <div class="route-actions">
         <button class="view"><i class="fa-solid fa-eye"></i> view</button>
         <button class="edit"><i class="fa-solid fa-pen"></i> edit</button>
@@ -110,11 +115,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const [start, end] = desc.split(' → ');
         const steps = JSON.parse(card.dataset.steps || '[]');
         const fare = card.dataset.fare;
+  const travelTime = card.dataset.travelTime || '';
 
         document.getElementById('newRouteName').value = name;
         document.getElementById('newRouteStart').value = start || '';
         document.getElementById('newRouteEnd').value = end || '';
         document.getElementById('newRouteFare').value = fare;
+  document.getElementById('newTravelTime').value = travelTime;
         document.getElementById('newRouteStatus').value = status.toLowerCase();
 
         tempRouteData = { id, name, start: start || '', end: end || '', status, steps, fare };
@@ -198,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
         start: document.getElementById('newRouteStart')?.value || '',
         end: document.getElementById('newRouteEnd')?.value || '',
         fare: document.getElementById('newRouteFare')?.value || '',
+        travelTime: document.getElementById('newTravelTime')?.value || '',
         status: document.getElementById('newRouteStatus')?.value || ''
       };
       if (addRouteModal) addRouteModal.style.display = 'none';
@@ -229,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
           start: tempRouteData.start,
           end: tempRouteData.end,
           fare: tempRouteData.fare,
+          travelTime: tempRouteData.travelTime || '',
           steps: tempRouteData.steps
         };
 
