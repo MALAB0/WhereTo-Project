@@ -132,7 +132,19 @@ app.get("/admin", async (req, res) => {
     });
   }
 });
-app.get("/commuters", (req, res) => res.render("commuters"));
+app.get("/commuters", async (req, res) => {
+  try {
+    const users = await collection.find({}).sort({ timestamp: -1 }); // Fetch all users, sorted by newest first
+    const totalUsers = users.length;
+    const active = users.filter(u => u.status === 'active').length;
+    const suspended = users.filter(u => u.status === 'suspended').length;
+    const admins = users.filter(u => u.role === 'admin').length;
+    res.render("commuters", { users, stats: { totalUsers, active, suspended, admins } });
+  } catch (err) {
+    console.error('Error fetching commuters data:', err);
+    res.render("commuters", { users: [], stats: { totalUsers: 0, active: 0, suspended: 0, admins: 0 } });
+  }
+});
 app.get("/aprof", (req, res) => res.render("aprofile"));
 app.get("/reportadmin", (req, res) => res.render("reportadmin"));
 app.get("/routem", (req, res) => res.render("routemanage"));
@@ -173,6 +185,53 @@ app.post('/api/reports', async (req, res) => {
     res.status(201).json(newReport);
   } catch (err) {
     res.status(500).json({ error: 'Failed to save report' });
+  }
+});
+
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await collection.find({});
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+app.post('/api/users', async (req, res) => {
+  try {
+    const { username, email, password, role } = req.body;
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    const hash = await bcrypt.hash(password, 10);
+    const newUser = new collection({ username, email, password: hash, role: role || 'user' });
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['active', 'suspended'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+    const updatedUser = await collection.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    if (!updatedUser) return res.status(404).json({ error: 'User not found' });
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    await collection.findByIdAndDelete(req.params.id);
+    res.json({ message: 'User deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

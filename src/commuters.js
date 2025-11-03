@@ -37,23 +37,59 @@ document.addEventListener('DOMContentLoaded', function () {
     noEl.style.display = anyVisible ? 'none' : '';
   }
 
-  // --- Suspend button ---
-  document.querySelectorAll('.user-card-actions .suspend').forEach(btn => {
-    btn.addEventListener('click', function () {
-      alert('User suspended!');
-    });
-  });
-
-  // --- Delete button ---
-  document.querySelectorAll('.user-card-actions .delete').forEach(btn => {
-    btn.addEventListener('click', function () {
-      if (confirm('Are you sure you want to delete this user?')) {
-        alert('User deleted!');
-        // Optional: Remove user card from DOM
-        // btn.closest('.user-card').remove();
+// --- Suspend button (updated to toggle) ---
+document.addEventListener('click', async function (e) {
+  if (e.target.closest('.suspend')) {
+    e.preventDefault();
+    const card = e.target.closest('.user-card');
+    const id = card.dataset.id;
+    const statusSpan = card.querySelector('.user-status');
+    const button = card.querySelector('.suspend');
+    const icon = button.querySelector('i');
+    
+    const currentStatus = statusSpan.textContent.trim();
+    const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
+    
+    try {
+      const res = await fetch('/api/users/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        // Update status span
+        statusSpan.textContent = newStatus;
+        statusSpan.className = `user-status ${newStatus}`;
+        
+        // Update button text and icon
+        button.innerHTML = `<i class="fa-solid fa-${newStatus === 'active' ? 'ban' : 'check'}"></i> ${newStatus === 'active' ? 'suspend' : 'unsuspend'}`;
+      } else {
+        alert('Error updating user status');
       }
-    });
-  });
+    } catch (err) {
+      console.error('Suspend toggle error:', err);
+    }
+  }
+});
+// --- Delete button (updated for API) ---
+document.addEventListener('click', async function (e) {
+  if (e.target.closest('.delete')) {
+    e.preventDefault();
+    const card = e.target.closest('.user-card');
+    const id = card.dataset.id;
+    if (!confirm('Are you sure you want to delete this user?')) return;
+    try {
+      const res = await fetch('/api/users/' + id, { method: 'DELETE' });
+      if (res.ok) {
+        card.remove();
+      } else {
+        alert('Error deleting user');
+      }
+    } catch (err) {
+      console.error('Delete error:', err);
+    }
+  }
+});
 
   // --- Search functionality ---
   const searchInput = document.querySelector('.user-searchbar input');
@@ -109,53 +145,32 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Submit Add User form
-  if (addUserForm) {
-    addUserForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const name = document.getElementById('newUserName').value;
-      const email = document.getElementById('newUserEmail').value;
-      const status = document.getElementById('newUserStatus').value;
-      const role = document.getElementById('newUserRole').value;
-
-      const userGrid = document.querySelector('.user-grid');
-      const newUserCard = document.createElement('div');
-      newUserCard.className = 'user-card';
-      newUserCard.innerHTML = `
-        <div class="user-card-header">
-          <i class="fa-solid fa-user-circle"></i>
-          <div>
-            <div class="user-name">${name}</div>
-            <div class="user-email">${email}</div>
-          </div>
-          <span class="user-status ${status.toLowerCase()}">${status}</span>
-        </div>
-        <div class="user-card-info">
-          <div><i class="fa-solid fa-calendar"></i> Joined ${new Date().toISOString().split('T')[0]}</div>
-          <div><i class="fa-solid fa-clock"></i> Just now</div>
-          <div><i class="fa-solid fa-route"></i> 0 trips</div>
-          <div><i class="fa-solid fa-user"></i> ${role}</div>
-        </div>
-        <div class="user-card-actions">
-          <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
-          <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
-        </div>
-      `;
-      userGrid.prepend(newUserCard);
-
-      // Reattach suspend/delete functionality for new card
-      newUserCard.querySelector('.suspend').addEventListener('click', () => alert('User suspended!'));
-      newUserCard.querySelector('.delete').addEventListener('click', () => {
-        if (confirm('Are you sure you want to delete this user?')) {
-          newUserCard.remove();
-        }
+// Submit Add User form (updated for API)
+if (addUserForm) {
+  addUserForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const name = document.getElementById('newUserName').value;
+    const email = document.getElementById('newUserEmail').value;
+    const password = document.getElementById('newUserPassword').value;
+    const role = document.getElementById('newUserRole').value;
+    try {
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: name, email, password, role })
       });
-
-      addUserModal.style.display = 'none';
-      addUserForm.reset();
-      updateNoResults();
-    });
-  }
+      if (res.ok) {
+        addUserModal.style.display = 'none';
+        addUserForm.reset();
+        location.reload();  // Reload to show new user; alternatively, fetch users and re-render grid
+      } else {
+        const error = await res.json();
+        alert('Error: ' + error.error);
+      }
+    } catch (err) {
+      console.error('Add user error:', err);
+    }
+  });
+}
 });
 

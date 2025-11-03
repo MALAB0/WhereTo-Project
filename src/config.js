@@ -11,6 +11,8 @@ const SigninSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
+  status: { type: String, default: 'active' },  // New: 'active' or 'suspended'
+  role: { type: String, default: 'user' },     // New: 'user' or 'admin'
   preferences: {    
     notifications: { type: Boolean, default: true },
     location: { type: Boolean, default: true },

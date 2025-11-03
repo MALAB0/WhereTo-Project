@@ -42,14 +42,12 @@
   <div>
     <h2>Commuters</h2>
     <p>Manage user accounts and permissions</p>
-
-    <div class="user-stats">
-      <div class="stat-card"><span>Total Users</span><span class="stat-value">6</span><i class="fa-solid fa-users"></i></div>
-      <div class="stat-card"><span>Active</span><span class="stat-value">4</span><i class="fa-solid fa-user-check"></i></div>
-      <div class="stat-card"><span>Suspended</span><span class="stat-value">1</span><i class="fa-solid fa-user-xmark"></i></div>
-      <div class="stat-card"><span>Inactive</span><span class="stat-value">1</span><i class="fa-solid fa-clock"></i></div>
-      <div class="stat-card"><span>Admins</span><span class="stat-value">1</span><i class="fa-solid fa-user-shield"></i></div>
-    </div>
+<div class="user-stats">
+  <div class="stat-card"><span>Total Users</span><span class="stat-value"><%= stats.totalUsers %></span><i class="fa-solid fa-users"></i></div>
+  <div class="stat-card"><span>Active</span><span class="stat-value"><%= stats.active %></span><i class="fa-solid fa-user-check"></i></div>
+  <div class="stat-card"><span>Suspended</span><span class="stat-value"><%= stats.suspended %></span><i class="fa-solid fa-user-xmark"></i></div>
+  <div class="stat-card"><span>Admins</span><span class="stat-value"><%= stats.admins %></span><i class="fa-solid fa-user-shield"></i></div>
+</div>
     <div class="user-searchbar">
       <input type="text" placeholder="Search users by name or email...">
       <div class="filter-group">
@@ -57,148 +55,38 @@
           <option>All status</option>
           <option>Active</option>
           <option>Suspended</option>
-          <option>Inactive</option>
         </select>
         <i class="fa-solid fa-filter"></i>
       </div>
     </div>
-    <h3>Users (1)</h3>
-    <div class="user-grid">
-  <!-- User 1 -->
-  <div class="user-card">
-    <div class="user-card-header">
-      <i class="fa-solid fa-user-circle"></i>
-      <div>
-        <div class="user-name">Maria Santos</div>
-        <div class="user-email">maria.santos@email.com</div>
+<h3>Users (<%= users.length %>)</h3>
+<div class="user-grid">
+  <% users.forEach(user => { %>
+    <div class="user-card" data-id="<%= user._id %>">
+      <div class="user-card-header">
+        <i class="fa-solid fa-user-circle"></i>
+        <div>
+          <div class="user-name"><%= user.username %></div>
+          <div class="user-email"><%= user.email %></div>
+        </div>
+        <span class="user-status <%= user.status %>"><%= user.status %></span>
       </div>
-      <span class="user-status active">active</span>
-    </div>
-    <div class="user-card-info">
-      <div><i class="fa-solid fa-calendar"></i> Joined 2024-01-15</div>
-      <div><i class="fa-solid fa-clock"></i> 2 hours ago</div>
-      <div><i class="fa-solid fa-route"></i> 156 trips</div>
-      <div><i class="fa-solid fa-user"></i> user</div>
-    </div>
+      <div class="user-card-info">
+        <div><i class="fa-solid fa-calendar"></i> Joined <%= user.timestamp.toISOString().split('T')[0] %></div>
+        <div><i class="fa-solid fa-clock"></i> <%= user.timestamp.toISOString().split('T')[0] %> (last activity)</div>  <!-- Placeholder; update if you add a field -->
+        <div><i class="fa-solid fa-route"></i> 0 trips</div>  <!-- Placeholder; update if you add a field -->
+        <div><i class="fa-solid fa-user"></i> <%= user.role %></div>
+      </div>
     <div class="user-card-actions">
-      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
+      <button class="suspend">
+        <i class="fa-solid fa-<%= user.status === 'active' ? 'ban' : 'check' %>"></i> 
+        <%= user.status === 'active' ? 'suspend' : 'unsuspend' %>
+      </button>
       <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
     </div>
-  </div>
-
-  
-
-  <!-- User 2 -->
-  <div class="user-card">
-    <div class="user-card-header">
-      <i class="fa-solid fa-user-circle"></i>
-      <div>
-        <div class="user-name">Juan Dela Cruz</div>
-        <div class="user-email">juan.delacruz@email.com</div>
-      </div>
-      <span class="user-status active">active</span>
     </div>
-    <div class="user-card-info">
-      <div><i class="fa-solid fa-calendar"></i> Joined 2023-09-20</div>
-      <div><i class="fa-solid fa-clock"></i> 5 hours ago</div>
-      <div><i class="fa-solid fa-route"></i> 210 trips</div>
-      <div><i class="fa-solid fa-user"></i> user</div>
-    </div>
-    <div class="user-card-actions">
-      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
-      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
-    </div>
-  </div>
-
-  <!-- User 3 -->
-  <div class="user-card">
-    <div class="user-card-header">
-      <i class="fa-solid fa-user-circle"></i>
-      <div>
-        <div class="user-name">Angela Reyes</div>
-        <div class="user-email">angela.reyes@email.com</div>
-      </div>
-      <span class="user-status suspended">suspended</span>
-    </div>
-    <div class="user-card-info">
-      <div><i class="fa-solid fa-calendar"></i> Joined 2024-03-10</div>
-      <div><i class="fa-solid fa-clock"></i> 1 week ago</div>
-      <div><i class="fa-solid fa-route"></i> 98 trips</div>
-      <div><i class="fa-solid fa-user"></i> user</div>
-    </div>
-    <div class="user-card-actions">
-      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
-      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
-    </div>
-  </div>
-
-  <!-- User 4 -->
-  <div class="user-card">
-    <div class="user-card-header">
-      <i class="fa-solid fa-user-circle"></i>
-      <div>
-        <div class="user-name">Kevin Tan</div>
-        <div class="user-email">kevin.tan@email.com</div>
-      </div>
-      <span class="user-status inactive">inactive</span>
-    </div>
-    <div class="user-card-info">
-      <div><i class="fa-solid fa-calendar"></i> Joined 2023-05-05</div>
-      <div><i class="fa-solid fa-clock"></i> 3 months ago</div>
-      <div><i class="fa-solid fa-route"></i> 45 trips</div>
-      <div><i class="fa-solid fa-user"></i> user</div>
-    </div>
-    <div class="user-card-actions">
-      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
-      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
-    </div>
-  </div>
-
-  <!-- User 5 -->
-  <div class="user-card">
-    <div class="user-card-header">
-      <i class="fa-solid fa-user-circle"></i>
-      <div>
-        <div class="user-name">Lara Mendoza</div>
-        <div class="user-email">lara.mendoza@email.com</div>
-      </div>
-      <span class="user-status active">active</span>
-    </div>
-    <div class="user-card-info">
-      <div><i class="fa-solid fa-calendar"></i> Joined 2022-12-22</div>
-      <div><i class="fa-solid fa-clock"></i> 1 day ago</div>
-      <div><i class="fa-solid fa-route"></i> 320 trips</div>
-      <div><i class="fa-solid fa-user-shield"></i> admin</div>
-    </div>
-    <div class="user-card-actions">
-      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
-      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
-    </div>
-  </div>
-
-  <!-- User 6 -->
-  <div class="user-card">
-    <div class="user-card-header">
-      <i class="fa-solid fa-user-circle"></i>
-      <div>
-        <div class="user-name">Daniel Cruz</div>
-        <div class="user-email">daniel.cruz@email.com</div>
-      </div>
-      <span class="user-status active">active</span>
-    </div>
-    <div class="user-card-info">
-      <div><i class="fa-solid fa-calendar"></i> Joined 2024-07-18</div>
-      <div><i class="fa-solid fa-clock"></i> 5 minutes ago</div>
-      <div><i class="fa-solid fa-route"></i> 27 trips</div>
-      <div><i class="fa-solid fa-user"></i> user</div>
-    </div>
-    <div class="user-card-actions">
-      <button class="suspend"><i class="fa-solid fa-ban"></i> suspend</button>
-      <button class="delete"><i class="fa-solid fa-trash"></i> delete</button>
-    </div>
-  </div>
+  <% }); %>
 </div>
-
   </main>
   <script src="commuters.js"></script>
   <script>
