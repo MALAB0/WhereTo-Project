@@ -18,7 +18,10 @@
   <!-- ===== FIRST BIG BOX: TRIP INFO ===== -->
   <div class="big-box">
       <h1 id="routeTitle">Loading route...</h1>
-      <p id="routeDetails">Preparing your journey...</p>  
+      <div class="route-meta">
+        <span class="meta-time" id="routeDetails">Preparing your journey...</span>
+        <span class="meta-fare" id="routeFare">&nbsp;</span>
+      </div>
 
     <div class="small-box">
       <!-- Loading bar -->
@@ -115,7 +118,18 @@
         } else {
           routeTitle.textContent = `${fromLocation} → ${toLocation}`;
         }
-        routeDetails.textContent = `Estimated travel time: 45-60 minutes`;
+        // Show travel time if provided, otherwise fallback
+        if (currentSearch.travelTime) {
+          routeDetails.textContent = `Estimated travel time: ${currentSearch.travelTime}`;
+        } else {
+          routeDetails.textContent = `Estimated travel time: 45-60 minutes`;
+        }
+
+        // Show fare if provided
+        const fareEl = document.getElementById('routeFare');
+        if (fareEl) {
+          fareEl.textContent = currentSearch.fare ? `Estimated Fare: ₱${currentSearch.fare}` : '';
+        }
 
         // If detailed steps provided, use them; otherwise fallback to generic steps
         if (stepsArr.length > 0) {

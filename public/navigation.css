@@ -270,3 +270,21 @@ header .icon:hover {
     padding: 15px;
   }
 }
+
+.route-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: #444;
+  font-size: 0.95rem;
+  margin: 6px 0 0 0;
+}
+.route-meta .meta-time {
+
+  color: #0a3d62;
+}
+.route-meta .meta-fare {
+
+  color: #083051;
+}
+

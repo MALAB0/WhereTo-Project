@@ -26,8 +26,10 @@
     <% routes.forEach((route, index) => { %>
       <div class="big-box">
         <h1 id="routeTitle"><%= route.name %> (<%= route.status %>)</h1>
-        <p id="routeTime">Route from <%= from %> to <%= to %> - Estimated travel time: 45-60 minutes</p>
-        <p>Estimated Fare: </p>
+        <div class="route-meta">
+          <span class="meta-time">Estimated travel time: <%= route.travelTime || 'N/A' %></span>
+          <span class="meta-fare">Estimated Fare: ₱<%= route.fare != null ? route.fare : 'N/A' %></span>
+  </div>
         <div class="small-box">
           <button class="nav-btn" onclick="startNavigation(<%= index %>)">
             <span>Start Navigation</span>
@@ -97,7 +99,9 @@
         to: _to,
         routeName: sel.name || '',
         steps: sel.steps || [],
-        status: sel.status || ''
+        status: sel.status || '',
+        fare: sel.fare || '',
+        travelTime: sel.travelTime || ''
       }];
       try {
         localStorage.setItem('recentSearches', JSON.stringify(recent));
