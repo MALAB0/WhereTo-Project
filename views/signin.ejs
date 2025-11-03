@@ -31,7 +31,12 @@
     <div class="form-section">
       <div class="signin-box">
         <h2>Sign In</h2>
-        <form id="signinForm" action="/signin" method="post">
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="error-message" style="color: #ff0000; margin-bottom: 15px; text-align: center;">
+            <%= error %>
+          </div>
+        <% } %>
+        <form id="signinForm">
           <label>Email</label>
           <input type="email" name="email" id="signinEmail" placeholder="Enter your email" required />
           <label>Password</label>
@@ -42,7 +47,7 @@
       </div>
     </div>
   </div>
-  
+
   <script>
     // Define showToast using Toastify
     function showToast(message, type = 'info') {
@@ -60,18 +65,40 @@
       }).showToast();
     }
 
-    document.getElementById('signinForm').addEventListener('submit', function(e) {
+    document.getElementById('signinForm').addEventListener('submit', async function(e) {
+      e.preventDefault(); // Prevent form from submitting normally
+      
       const email = document.getElementById('signinEmail').value.trim();
       const password = document.getElementById('signinPassword').value;
 
-      // Basic validations (show toast and prevent submission if invalid)
+      // Basic validations
       if (!email || !password) {
         showToast('Please fill in all fields', 'error');
-        e.preventDefault();
         return;
       }
 
-      // If validations pass, let the form submit naturally (server will handle redirect to /otp)
+      try {
+        const response = await fetch('/signin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Successful login - redirect
+          window.location.href = data.redirect;
+        } else {
+          // Show error message
+          showToast(data.error, 'error');
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        showToast('An error occurred during sign in. Please try again.', 'error');
+      }
     });
   </script>
 </body>

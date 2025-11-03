@@ -556,19 +556,24 @@ app.post('/signin', async (req, res) => {
   console.log('POST /signin hit', req.body);
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).render('signin', { error: 'Missing email or password' });
+    return res.status(400).json({ error: 'Missing email or password' });
   }
   try {
     const user = await collection.findOne({ email });
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).render('signin', { error: 'Invalid email or password. Please try again or sign up.' });
+      return res.status(401).json({ error: 'Invalid email or password. Please try again or sign up.' });
+    }
+
+    // Check if user is suspended
+    if (user.status === 'suspended') {
+      return res.status(403).json({ error: 'Your account has been suspended. Please contact an administrator.' });
     }
 
     // Directly log in the user
     req.session.user = user.email;
     const username = user.email.toLowerCase().split('@')[0];
     const redirect = username.includes('admin') ? '/admin' : '/destination';
-    res.redirect(redirect);
+    res.json({ redirect });
   } catch (err) {
     console.error('Signin error:', err);
     res.status(500).send('Server error');
