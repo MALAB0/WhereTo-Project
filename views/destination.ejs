@@ -279,12 +279,9 @@
       <span class="fn-title">Alerts</span>
       <button id="fnToggle" class="fn-toggle" aria-label="Minimize">–</button>
     </div>
-    <div id="reportStatusSection" class="report-status-section">
-      <h4 class="report-status-title">Your Report Updates</h4>
-      <ul id="reportStatusList" class="report-status-list"></ul>
-    </div>
     <ul id="fnList" class="fn-list"></ul>
   </div>
+  
 
    <script>
     // ===== FLOATING ALERTS =====
@@ -346,32 +343,22 @@
       notificationButton.addEventListener('click', toggleSidebar);
       closeSidebar.addEventListener('click', toggleSidebar);
 
-      // Sample notifications data (replace with your actual data source)
-      let notifications = [
-        {
-          id: 1,
-          title: 'Route Update',
-          message: 'Route 101 has been temporarily diverted due to road construction.',
-          time: '5 minutes ago',
-          unread: true
-        },
-        {
-          id: 2,
-          title: 'System Maintenance',
-          message: 'WhereTo will undergo maintenance on Sunday, 2 AM - 4 AM.',
-          time: '1 hour ago',
-          unread: true
-        },
-        {
-          id: 3,
-          title: 'New Feature',
-          message: 'Live traffic updates are now available for all major routes!',
-          time: '1 day ago',
-          unread: false
-        }
-      ];
+      // Notifications are loaded from the server for the logged-in user.
+      // We persist a list of seen report IDs in localStorage so we can show "unread" badges
+      const SEEN_NOTIF_KEY = 'seenReportNotifications';
+      let notifications = [];
 
-      // Render notifications
+      function getSeenIds() {
+        try {
+          return new Set(JSON.parse(localStorage.getItem(SEEN_NOTIF_KEY) || '[]'));
+        } catch (e) { return new Set(); }
+      }
+
+      function saveSeenIds(set) {
+        try { localStorage.setItem(SEEN_NOTIF_KEY, JSON.stringify(Array.from(set))); } catch (e) {}
+      }
+
+      // Render notifications into the sidebar and update badge
       function renderNotifications() {
         notificationList.innerHTML = '';
         notifications.forEach(notif => {
@@ -384,55 +371,57 @@
           `;
           notificationList.appendChild(card);
         });
-        
+
         // Update badge
         const unreadCount = notifications.filter(n => n.unread).length;
         notificationCount.textContent = unreadCount;
         notificationCount.style.display = unreadCount > 0 ? 'block' : 'none';
       }
 
-      // Mark all notifications as read
+      // Mark all notifications as read (store seen ids in localStorage)
       function markAllAsRead() {
-        notifications.forEach(notif => notif.unread = false);
+        const seen = getSeenIds();
+        notifications.forEach(notif => {
+          if (notif.id) seen.add(String(notif.id));
+          notif.unread = false;
+        });
+        saveSeenIds(seen);
         renderNotifications();
       }
 
-      // Initial render
-      renderNotifications();
+      // Load notifications from server and compute unread flags
+      async function loadNotifications() {
+        try {
+          const res = await fetch('/api/notifications');
+          if (!res.ok) return console.error('Failed to fetch notifications');
+          const data = await res.json();
+          const seen = getSeenIds();
+          notifications = (data || []).map(r => ({
+            id: r._id,
+            title: (r.status || 'Update').toUpperCase(),
+            message: `${r.description || ''} (${r.issueType || ''} at ${r.location || ''})`,
+            time: new Date(r.timestamp || Date.now()).toLocaleString(),
+            unread: !seen.has(String(r._id))
+          }));
+          renderNotifications();
+        } catch (err) {
+          console.error('Error loading notifications:', err);
+        }
+      }
 
-      // Fetch new notifications periodically (every 30 seconds)
-      setInterval(() => {
-        fetch('/api/notifications')
-          .then(response => response.json())
-          .then(data => {
-            notifications = data;
-            renderNotifications();
-          })
-          .catch(error => console.error('Error fetching notifications:', error));
-      }, 30000);
+      // Initial load and periodic polling
+      loadNotifications();
+      setInterval(loadNotifications, 30000);
     });
 
     // ===== REPORT STATUS DATA =====
-    const REPORTS_KEY = "userReportsStatus";
-    const defaultReports = [
-      { id: 1, status: "pending", text: "Your report about 'Broken signage' is pending." },
-      { id: 2, status: "verified", text: "Your report 'Wrong jeepney route' was verified." },
-      { id: 3, status: "rejected", text: "Your report 'Traffic near Main Ave.' was rejected." }
-    ];
+;
+
+      
+    
     localStorage.setItem(REPORTS_KEY, JSON.stringify(defaultReports));
     const reportList = JSON.parse(localStorage.getItem(REPORTS_KEY) || "[]");
     const reportContainer = document.getElementById("reportStatusList");
-
-    function renderReportStatuses() {
-      reportContainer.innerHTML = "";
-      reportList.forEach((report) => {
-        const li = document.createElement("li");
-        li.className = `report-status-item ${report.status}`;
-        li.textContent = report.text;
-        reportContainer.appendChild(li);
-      });
-    }
-    renderReportStatuses();
   </script>
 
   <script>

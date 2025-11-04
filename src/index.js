@@ -189,7 +189,12 @@ app.get("/changepassword", (req, res) => {
 
 app.post('/api/reports', async (req, res) => {
   try {
-    const newReport = new Rcollection(req.body);
+    // Attach the submitting user (from session) if available
+    const reportData = {
+      ...req.body,
+      user: req.session && req.session.user ? req.session.user : (req.body.user || 'Anonymous')
+    };
+    const newReport = new Rcollection(reportData);
     await newReport.save();
     res.status(201).json(newReport);
   } catch (err) {
@@ -796,5 +801,21 @@ app.post('/api/forgot-password', async (req, res) => {
   } catch (err) {
     console.error('Forgot-password error:', err);
     res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// Notifications endpoint for regular users: return verified/rejected reports for the logged-in user
+app.get('/api/notifications', async (req, res) => {
+  try {
+    if (!req.session || !req.session.user) return res.json([]);
+    const userEmail = req.session.user;
+    const notifications = await Rcollection.find({
+      user: userEmail,
+      status: { $in: ['verified', 'rejected'] }
+    }).sort({ timestamp: -1 }).limit(50);
+    res.json(notifications);
+  } catch (err) {
+    console.error('Failed to fetch notifications:', err);
+    res.status(500).json({ error: 'Failed to fetch notifications' });
   }
 });
