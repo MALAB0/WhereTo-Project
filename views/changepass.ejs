@@ -22,12 +22,12 @@
     <div  class="form-wrapper">
       <div class="cpass-box">
         <h2>Change Password</h2>
-        <form id="changePasswordForm">
+  <form id="changePasswordForm">
             <label>Email</label>
             <input type="email" name="email" id="signupEmail" placeholder="Enter your email" required />
 
             <label>Current Password</label>
-           <input type="email" name="currentPassword" id="currentPassword" placeholder="Enter current password" required />
+           <input type="password" name="currentPassword" id="currentPassword" placeholder="Enter current password" required />
 
             <label>New Password</label>
             <input type="password" name="newpassword" id="newPassword" placeholder="Enter new password" required />
@@ -39,8 +39,12 @@
               </div>
               <div>
                 <label style="opacity:0; height:0; display:block">&nbsp;</label>
-                <button type="submit">Change password</button>
+                <button type="submit" id="actionButton">Request OTP</button>
               </div>
+            </div>
+            <div id="otpSection" style="display:none; margin-top:12px;">
+              <label for="otpInput">Enter OTP</label>
+              <input id="otpInput" type="text" placeholder="Enter OTP" />
             </div>
 
         </form>
@@ -59,48 +63,78 @@
       });
     }
 
-    document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
+    (function() {
+      const form = document.getElementById('changePasswordForm');
+      const actionButton = document.getElementById('actionButton');
+      const otpSection = document.getElementById('otpSection');
+      const otpInput = document.getElementById('otpInput');
+      let otpRequested = false;
 
-      const email = document.getElementById('email').value;
-      const currentPassword = document.getElementById('currentPassword').value;
-      const newPassword = document.getElementById('newPassword').value;
-      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-      if (!email || !currentPassword || !newPassword || !confirmNewPassword) {
-        alert('Please fill in all fields');
-        return;
-      }
+        const email = document.getElementById('signupEmail').value;
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
 
-      if (newPassword !== confirmNewPassword) {
-        alert('New passwords do not match');
-        return;
-      }
-
-      if (newPassword.length < 6) {
-        alert('New password must be at least 6 characters');
-        return;
-      }
-
-      try {
-        const res = await fetch('/change-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, currentPassword, newPassword })
-        });
-
-        if (res.ok) {
-          alert('Password changed successfully');
-          window.location.href = '/dashboard';
-        } else {
-          const err = await res.json();
-          alert(err.message || 'Could not change password');
+        if (!email || !currentPassword || !newPassword || !confirmNewPassword) {
+          alert('Please fill in all fields');
+          return;
         }
-      } catch (err) {
-        console.error(err);
-        alert('Network error');
-      }
-    });
+
+        if (newPassword !== confirmNewPassword) {
+          alert('New passwords do not match');
+          return;
+        }
+
+        if (newPassword.length < 6) {
+          alert('New password must be at least 6 characters');
+          return;
+        }
+
+        try {
+          if (!otpRequested) {
+            // Request OTP
+            const res = await fetch('/change-password/request', {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ currentPassword, newPassword })
+            });
+            if (res.ok) {
+              alert('OTP sent to your email. Enter it below to confirm the change.');
+              otpRequested = true;
+              otpSection.style.display = 'block';
+              actionButton.textContent = 'Confirm Change';
+            } else {
+              const err = await res.json();
+              alert(err.message || 'Failed to request OTP');
+            }
+          } else {
+            // Confirm OTP
+            const code = otpInput.value.trim();
+            if (!code) { alert('Please enter the OTP'); return; }
+            const res = await fetch('/change-password/confirm', {
+              method: 'POST',
+              credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code })
+            });
+            if (res.ok) {
+              alert('Password changed successfully');
+              window.location.href = '/profile';
+            } else {
+              const err = await res.json();
+              alert(err.message || 'Could not confirm OTP');
+            }
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Network error');
+        }
+      });
+    })();
   </script>
 </body>
 </html>

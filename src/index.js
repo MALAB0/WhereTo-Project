@@ -158,7 +158,10 @@ app.get("/aprof", (req, res) => res.render("aprofile"));
 app.get("/reportadmin", (req, res) => res.render("reportadmin"));
 app.get("/routem", (req, res) => res.render("routemanage"));
 app.get("/userm", (req, res) => res.render("usermanage"));
-app.get("/cpass", (req, res) => res.render("changepass"));
+app.get("/cpass", (req, res) => {
+  if (!req.session || !req.session.user) return res.redirect('/signin');
+  return res.render("changepass");
+});
 
 app.get("/route", async (req, res) => {
   try {
@@ -825,5 +828,75 @@ app.get('/api/notifications', async (req, res) => {
   } catch (err) {
     console.error('Failed to fetch notifications:', err);
     res.status(500).json({ error: 'Failed to fetch notifications' });
+  }
+});
+
+// Step 1: Request OTP for change-password (verifies current password then sends OTP)
+app.post('/change-password/request', async (req, res) => {
+  if (!req.session.user) return res.status(401).json({ message: 'Not logged in' });
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) return res.status(400).json({ message: 'Missing fields' });
+  if (newPassword.length < 6) return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+  try {
+    const email = req.session.user;
+    const user = await collection.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) return res.status(401).json({ message: 'Current password is incorrect' });
+
+    // Generate OTP and store in session scoped for change-password
+    const otp = generateOTP();
+    req.session.changePassword = {
+      code: otp,
+      email,
+      newPassword,
+      timestamp: Date.now()
+    };
+
+    // Delivery mapping: if admin.com -> gmail mapping (keeps behavior used elsewhere)
+    const deliverTo = (typeof email === 'string' && email.toLowerCase().endsWith('@admin.com'))
+      ? email.replace(/@admin\.com$/i, '@gmail.com')
+      : email;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: deliverTo,
+      subject: 'Your OTP to confirm password change',
+      text: `Your OTP to confirm password change is: ${otp}. It expires in 10 minutes.`
+    });
+
+    return res.json({ message: 'OTP sent to your email' });
+  } catch (err) {
+    console.error('Change-password request error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Step 2: Confirm OTP and perform password change
+app.post('/change-password/confirm', async (req, res) => {
+  if (!req.session.user) return res.status(401).json({ message: 'Not logged in' });
+  const { code } = req.body;
+  if (!code) return res.status(400).json({ message: 'OTP code is required' });
+  try {
+    const sessionData = req.session.changePassword;
+    if (!sessionData) return res.status(400).json({ message: 'No pending password change request' });
+    if (sessionData.email !== req.session.user) return res.status(403).json({ message: 'Session mismatch' });
+    if (Date.now() - sessionData.timestamp > 10 * 60 * 1000) {
+      delete req.session.changePassword;
+      await req.session.save();
+      return res.status(400).json({ message: 'OTP expired' });
+    }
+    if (String(code) !== String(sessionData.code)) return res.status(400).json({ message: 'Invalid OTP' });
+
+    // All good — update password
+    const hash = await bcrypt.hash(sessionData.newPassword, 10);
+    await collection.updateOne({ email: sessionData.email }, { $set: { password: hash } });
+    delete req.session.changePassword;
+    await req.session.save();
+    console.log('Password changed for (via OTP):', sessionData.email);
+    return res.json({ message: 'Password changed successfully' });
+  } catch (err) {
+    console.error('Change-password confirm error:', err);
+    return res.status(500).json({ message: 'Server error' });
   }
 });
