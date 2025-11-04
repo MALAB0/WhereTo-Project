@@ -173,7 +173,7 @@
     loadRouteData();
     initializeSteps();
 
-    nextBtn.addEventListener('click', () => {
+    nextBtn.addEventListener('click', async () => {
       if (currentStep < totalSteps) {
         // Mark current step as completed
         steps[currentStep].classList.remove('active');
@@ -195,6 +195,19 @@
         if (currentStep === totalSteps) {
           nextBtn.disabled = true;
           nextBtn.innerHTML = '<span>All Steps Completed</span>';
+          // Best-effort: tell server user completed trip
+          try {
+            const resp = await fetch('/api/trips/complete', { method: 'POST', credentials: 'same-origin' });
+            if (resp.ok) {
+              const info = await resp.json();
+              console.log('Trip recorded, tripsTaken:', info.tripsTaken);
+            } else {
+              console.warn('Failed to record trip on server');
+            }
+          } catch (err) {
+            console.error('Error recording trip:', err);
+          }
+
           // Auto-navigate to destination page after a short delay
           setTimeout(() => {
             window.location.href = '/destination';

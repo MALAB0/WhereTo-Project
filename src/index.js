@@ -957,3 +957,21 @@ app.post('/change-password/confirm', async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 });
+
+// Endpoint: record a completed trip for the authenticated user
+app.post('/api/trips/complete', async (req, res) => {
+  try {
+    if (!req.session || !req.session.user) return res.status(401).json({ error: 'Not authenticated' });
+    const email = req.session.user;
+    const user = await collection.findOne({ email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Atomically increment tripsTaken
+    await collection.updateOne({ email }, { $inc: { tripsTaken: 1 } });
+    const refreshed = await collection.findOne({ email });
+    return res.json({ message: 'Trip recorded', tripsTaken: refreshed.tripsTaken || 0 });
+  } catch (err) {
+    console.error('Error recording trip:', err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});

@@ -15,10 +15,11 @@ const SigninSchema = new mongoose.Schema({
   role: { type: String, default: 'user' },     // New: 'user' or 'admin'
   preferences: {    
     notifications: { type: Boolean, default: true },
-    location: { type: Boolean, default: true },
     autoSave: { type: Boolean, default: true },
     offline: { type: Boolean, default: false },
   },
+  // Track how many trips the user has completed via navigation
+  tripsTaken: { type: Number, default: 0 },
 });
 
 const reportSchema = new mongoose.Schema({

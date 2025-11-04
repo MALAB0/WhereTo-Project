@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-  loadUserData();
+  // Try to populate from server first, fall back to localStorage
+  fetchAndUpdateProfile();
   loadPreferences();
   loadRoutes();
   enableEditMode();
@@ -12,9 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggles = document.querySelectorAll('.toggle-switch input');
   toggles.forEach(toggle => {
     toggle.disabled = false;
-    toggle.addEventListener('change', e => {
-      savePreference(e);
-      showSavePopup();
+    toggle.addEventListener('change', async (e) => {
+      // Send preference to server; fallback to local save
+      try {
+        const res = await fetch('/api/user/preferences', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [toggle.id]: toggle.checked })
+        });
+        if (!res.ok) throw new Error('Failed to save preference');
+      } catch (err) {
+        console.error('Preference save failed, falling back to localStorage', err);
+        savePreference(e);
+        showSavePopup();
+      }
     });
   });
 
@@ -187,12 +200,73 @@ function savePreference(e) {
 }
 
 function loadPreferences() {
+  // preferences may come from server via fetchAndUpdateProfile; fallback to localStorage
   const savedPrefs = JSON.parse(localStorage.getItem('userPreferences') || '{}');
   Object.keys(savedPrefs).forEach(id => {
     const toggle = document.getElementById(id);
     if (toggle) toggle.checked = savedPrefs[id];
   });
 }
+
+// Fetch profile from server and update UI (mirrors profile.js)
+async function fetchAndUpdateProfile() {
+  try {
+    const response = await fetch('/api/user', { credentials: 'include' });
+    if (!response.ok) {
+      // If not authenticated, fall back to locally saved data
+      if (response.status === 401) {
+        console.warn('Not authenticated for /api/user; falling back to local');
+        loadUserData();
+        return;
+      }
+      throw new Error('Failed to fetch profile');
+    }
+
+    const data = await response.json();
+    updateProfileUI(data);
+  } catch (err) {
+    console.error('Error loading profile (profile2), falling back to local:', err);
+    loadUserData();
+  }
+}
+
+function updateProfileUI(data) {
+  // Update name and email
+  const nameEl = document.getElementById('userName');
+  const emailEl = document.getElementById('userEmail');
+  if (nameEl) nameEl.textContent = data.name || data.username || 'User';
+  if (emailEl) emailEl.textContent = data.email || '';
+
+  // Update stats
+  const statsElements = {
+    tripsTaken: document.querySelector('.stat-item:nth-child(1) .stat-number'),
+    savedRoutes: document.querySelector('.stat-item:nth-child(2) .stat-number'),
+    reportsMade: document.querySelector('.stat-item:nth-child(3) .stat-number'),
+    rating: document.querySelector('.rating')
+  };
+
+  Object.entries(statsElements).forEach(([key, element]) => {
+    if (element && data.stats && data.stats[key] !== undefined) {
+      element.textContent = data.stats[key];
+    }
+  });
+
+  // Update preferences toggles
+  if (data.preferences) {
+    Object.entries(data.preferences).forEach(([key, value]) => {
+      const toggle = document.getElementById(key);
+      if (toggle) toggle.checked = value;
+    });
+  }
+
+  // Save a lightweight local copy for offline use
+  try {
+    localStorage.setItem('savedUserData', JSON.stringify({ name: data.name, email: data.email }));
+  } catch (err) {
+    // ignore local save failures
+  }
+}
+
 
 function createSavePopup() {
   const popup = document.createElement('div');
