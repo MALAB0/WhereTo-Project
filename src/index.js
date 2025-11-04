@@ -87,7 +87,7 @@ app.get('/test-email', async (req, res) => {
 // Routes (unchanged except where noted)
 app.get("/signin", (req, res) => res.render("signin"));
 app.get("/signup", (req, res) => res.render("signup"));
-app.get("/otp", (req, res) => { onsole.log("GET /otp route hit");res.render("otp");});
+app.get("/otp", (req, res) => { console.log("GET /otp route hit"); res.render("otp"); });
 app.get("/forgotpass", (req, res) => res.render("forgotpass"));
 app.get("/about", (req, res) => res.render("about"));
 app.get("/homepage", (req, res) => res.render("homepage"));
@@ -540,12 +540,19 @@ app.post("/signup", async (req, res) => {
       return res.status(400).send("User with this email or username already exists");
     }
 
-    console.log("Generating OTP and sending email...");
-    const otp = generateOTP();
-    req.session.otp = { code: otp, email, username, password, action: 'signup', timestamp: Date.now() };
+  console.log("Generating OTP and sending email...");
+  const otp = generateOTP();
+  // If signup email belongs to admin domain, mark pending role as 'admin'.
+  // Note: this is permissive for convenience/testing. For production, restrict admin signups.
+  const roleForSignup = (typeof email === 'string' && email.toLowerCase().endsWith('@admin.com')) ? 'admin' : 'user';
+    req.session.otp = { code: otp, email, username, password, action: 'signup', role: roleForSignup, timestamp: Date.now() };
+    // If the signup used the admin domain, deliver the OTP to the mapped gmail address
+    const deliverTo = (typeof email === 'string' && email.toLowerCase().endsWith('@admin.com'))
+      ? email.replace(/@admin\.com$/i, '@gmail.com')
+      : email;
     await transporter.sendMail({
       from: process.env.EMAIL_FROM,
-      to: email,
+      to: deliverTo,
       subject: 'Your OTP for WhereTo Signup',
       text: `Your 4-digit OTP is: ${otp}. It expires in 10 minutes.`
     });
@@ -574,11 +581,11 @@ app.post('/signin', async (req, res) => {
       return res.status(403).json({ error: 'Your account has been suspended. Please contact an administrator.' });
     }
 
-    // Directly log in the user
-    req.session.user = user.email;
-    const username = user.email.toLowerCase().split('@')[0];
-    const redirect = username.includes('admin') ? '/admin' : '/destination';
-    res.json({ redirect });
+  // Directly log in the user
+  req.session.user = user.email;
+  // Prefer role-based redirect; fall back to previous email heuristic
+  const redirect = (user.role === 'admin') ? '/admin' : (user.email.toLowerCase().includes('admin') ? '/admin' : '/destination');
+  res.json({ redirect });
   } catch (err) {
     console.error('Signin error:', err);
     res.status(500).send('Server error');
@@ -645,10 +652,11 @@ app.post('/verify-otp', async (req, res) => {
         console.log("Password hashed successfully");
         
         const newUser = await collection.create({ 
-          username: sessionOtp.username, 
-          email: sessionOtp.email, 
-          password: hash 
-        });
+              username: sessionOtp.username, 
+              email: sessionOtp.email, 
+              password: hash,
+              role: sessionOtp.role || 'user'
+            });
         console.log("User created successfully:", newUser.email);
         
         // Clear OTP session after successful creation
