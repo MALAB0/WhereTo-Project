@@ -815,6 +815,63 @@ app.post('/api/forgot-password', async (req, res) => {
   }
 });
 
+// Forgot-password OTP request: send OTP to email and store pending reset in session
+app.post('/forgot-password/request', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+    const user = await collection.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const otp = generateOTP();
+    req.session.forgotPassword = { code: otp, email, timestamp: Date.now() };
+
+    // Delivery mapping: admin.com -> gmail.com
+    const deliverTo = (typeof email === 'string' && email.toLowerCase().endsWith('@admin.com'))
+      ? email.replace(/@admin\.com$/i, '@gmail.com')
+      : email;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: deliverTo,
+      subject: 'Your OTP to reset password',
+      text: `Your OTP to reset your WhereTo password is: ${otp}. It expires in 10 minutes.`
+    });
+
+    return res.json({ message: 'OTP sent to email' });
+  } catch (err) {
+    console.error('Forgot-password request error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Forgot-password OTP confirm: verify OTP and set new password
+app.post('/forgot-password/confirm', async (req, res) => {
+  try {
+    const { code, newPassword } = req.body;
+    if (!code || !newPassword) return res.status(400).json({ message: 'Code and newPassword are required' });
+    const sessionData = req.session.forgotPassword;
+    if (!sessionData) return res.status(400).json({ message: 'No pending reset request' });
+    if (Date.now() - sessionData.timestamp > 10 * 60 * 1000) {
+      delete req.session.forgotPassword;
+      await req.session.save();
+      return res.status(400).json({ message: 'OTP expired' });
+    }
+    if (String(code) !== String(sessionData.code)) return res.status(400).json({ message: 'Invalid OTP' });
+    if (newPassword.length < 6) return res.status(400).json({ message: 'New password must be at least 6 characters long.' });
+
+    const hash = await bcrypt.hash(newPassword, 10);
+    await collection.updateOne({ email: sessionData.email }, { $set: { password: hash } });
+    delete req.session.forgotPassword;
+    await req.session.save();
+    console.log('Forgot-password: password reset for', sessionData.email);
+    return res.json({ message: 'Password reset successfully' });
+  } catch (err) {
+    console.error('Forgot-password confirm error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Notifications endpoint for regular users: return verified/rejected reports for the logged-in user
 app.get('/api/notifications', async (req, res) => {
   try {
