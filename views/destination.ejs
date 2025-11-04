@@ -136,7 +136,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px 12px;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
+      border-bottom: 1.5px solid rgba(0, 0, 0, 0.692);
     }
     .fn-title { font-weight: 600; color: #0e0e0e; }
     .fn-toggle {
@@ -283,7 +283,7 @@
   </div>
   
 
-   <script>
+  <script>
     // ===== FLOATING ALERTS =====
     (function() {
       const NT_KEY = 'notificationsList';
@@ -291,15 +291,14 @@
         { id: 1, title: 'Service Delay', desc: 'Heavy traffic reported near Main Ave.' },
         { id: 2, title: 'Route Change', desc: 'Jeepney route 101 has a temporary detour.' }
       ];
-      if (!localStorage.getItem(NT_KEY)) localStorage.setItem(NT_KEY, JSON.stringify(defaultNotifications));
-      const list = JSON.parse(localStorage.getItem(NT_KEY) || '[]');
+
       const fn = document.getElementById('floatingNotifications');
       const ul = document.getElementById('fnList');
       const toggle = document.getElementById('fnToggle');
 
-      function render() {
+      function render(list) {
         ul.innerHTML = '';
-        list.slice(0,5).forEach(item => {
+        (list || []).slice(0,5).forEach(item => {
           const li = document.createElement('li');
           li.className = 'fn-item';
           li.innerHTML = '<img src="notification.png" alt="" class="fn-icon" aria-hidden="true">' +
@@ -315,7 +314,45 @@
         toggle.setAttribute('aria-label', fn.classList.contains('fn-hidden') ? 'Expand' : 'Minimize');
       });
 
-      render();
+      // Try to load verified reports for the logged-in user from the server.
+      // If that fails, fallback to default notifications from localStorage.
+      function humanizeIssueType(type) {
+        if (!type) return '';
+        return type.replace(/[-_]/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
+
+      async function loadVerifiedAlerts() {
+        try {
+          const res = await fetch('/api/notifications');
+          if (!res.ok) throw new Error('Network response not ok');
+          const data = await res.json();
+          // Filter only verified reports for floating alerts
+          const verified = (data || []).filter(r => r.status === 'verified').map(r => ({
+            id: r._id,
+            title: humanizeIssueType(r.issueType) || 'Verified',
+            desc: `${r.description || ''} ${r.location ? '(' + r.location + ')' : ''}`
+          }));
+          if (verified.length > 0) {
+            render(verified);
+            return;
+          }
+        } catch (err) {
+          console.warn('Could not load verified alerts:', err);
+        }
+
+        // Fallback: use localStorage defaults
+        try {
+          if (!localStorage.getItem(NT_KEY)) localStorage.setItem(NT_KEY, JSON.stringify(defaultNotifications));
+          const list = JSON.parse(localStorage.getItem(NT_KEY) || '[]');
+          render(list);
+        } catch (e) {
+          render(defaultNotifications);
+        }
+      }
+
+      // Initial load and periodic refresh
+      loadVerifiedAlerts();
+      setInterval(loadVerifiedAlerts, 60000); // refresh every 60s
     })();
   </script>
 
